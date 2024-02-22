@@ -1,0 +1,23 @@
+query {
+  tradeReinforcementModels(where: {status : 1, game_id: 1}) {
+    edges{
+      node{
+        entity{
+          keys
+          models{
+            ... on TradeReinforcement{
+               __typename
+            buyer
+            seller
+            price
+            count
+            game_id
+            }
+            
+          }
+        }
+       
+      }
+    }
+  }
+}

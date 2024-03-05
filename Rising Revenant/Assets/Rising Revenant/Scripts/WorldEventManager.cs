@@ -1,20 +1,23 @@
+using bottlenoselabs.C2CS.Runtime;
+using Dojo;
+using dojo_bindings;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class WorldEventManager : MonoBehaviour
 {
-    private WorldEvent latestEvent;
-
     public MenuManager menuManager;
     public Menu eventMenu;
+    public WorldManager worldManager;
 
+    private bool loaded = false;
 
+    // world ebent manager shoudl dod that amange
+    // on new event check whicih outpost have been hit, call an update by sending the event to the rev journal and minimap
 
-
-
-
+    // this should be called all only when the game is game phase prob just disable and then actiove
 
     private static readonly int SizeOfCircle = Shader.PropertyToID("_SizeOfCircle");
     private static readonly int FullnessOfColor = Shader.PropertyToID("_FullnessOfColor");
@@ -22,13 +25,26 @@ public class WorldEventManager : MonoBehaviour
 
     private Material shaderMaterial;
 
+    private void Awake()
+    {
+        UiEntitiesReferenceManager.worldEventManager = this;
+    }
+
     private void Start()
     {
-        // Get the material from the Renderer component
         shaderMaterial = GetComponent<Renderer>().material;
-
-        // Start the coroutine to animate shader properties
         StartCoroutine(AnimateShaderPropertiesCoroutine());
+    }
+
+    private void OnEnable()
+    {
+        if (DojoEntitiesDataManager.currentWorldEvent == null) {
+            this.transform.gameObject.SetActive(false);
+            if (UiEntitiesReferenceManager.warningSystemUiComponent != null)
+            {
+                UiEntitiesReferenceManager.warningSystemUiComponent.transform.gameObject.SetActive(false);
+            }
+        }
     }
 
     private IEnumerator AnimateShaderPropertiesCoroutine()
@@ -42,7 +58,6 @@ public class WorldEventManager : MonoBehaviour
             yield return StartCoroutine(ChangeShaderProperties(0.7f, 0.3f, 0.3f, -0.2f, false));
         }
     }
-
     private IEnumerator ChangeShaderProperties(float sizeStart, float sizeEnd, float fullnessStart, float fullnessEnd, bool increasing)
     {
         float duration = 2.0f; // Duration of the animation in seconds
@@ -51,107 +66,105 @@ public class WorldEventManager : MonoBehaviour
         while (time < duration)
         {
             time += Time.deltaTime;
-            float normalizedTime = time / duration; // 0 to 1 over the duration
+            float normalizedTime = time / duration; 
 
-            // Lerp the properties based on normalizedTime
             float sizeOfCircle = Mathf.Lerp(sizeStart, sizeEnd, normalizedTime);
             float fullnessOfColor = Mathf.Lerp(fullnessStart, fullnessEnd, normalizedTime);
 
-            // Apply the lerped values to the shader
             shaderMaterial.SetFloat(SizeOfCircle, sizeOfCircle);
             shaderMaterial.SetFloat(FullnessOfColor, fullnessOfColor);
 
             // Optionally change the base color gradually
-            if (increasing)
-            {
-                shaderMaterial.SetColor(BaseColor, Color.Lerp(Color.blue, Color.red, normalizedTime));
-            }
-            else
-            {
-                shaderMaterial.SetColor(BaseColor, Color.Lerp(Color.red, Color.blue, normalizedTime));
-            }
+            //if (increasing)
+            //{
+            //    shaderMaterial.SetColor(BaseColor, Color.Lerp(Color.blue, Color.red, normalizedTime));
+            //}
+            //else
+            //{
+            //    shaderMaterial.SetColor(BaseColor, Color.Lerp(Color.red, Color.blue, normalizedTime));
+            //}
 
             yield return null; // Wait until the next frame to continue
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    private void OnEnable()
-    {
-        DojoEntitiesDataManager.OnWorldEventAdded += HandleWorldEventAdded;
-
-        var lastWorldEnt = DojoEntitiesDataManager.GetLatestEvent();
-        if (lastWorldEnt != null)
-        {
-            LoadLastWorldEventData(lastWorldEnt);
-        }
-        //sub to when a world event gets added
-    }
-
-    private void OnDisable()
-    {
-
-        DojoEntitiesDataManager.OnWorldEventAdded -= HandleWorldEventAdded;
-    }
-
-
-    private void HandleWorldEventAdded(WorldEvent worldEvent)
-    {
-        if (DojoEntitiesDataManager.gameEntityCounterInstance != null)
-        {
-            if (DojoEntitiesDataManager.gameEntityCounterInstance.eventCount == RisingRevenantUtils.FieldElementToInt(worldEvent.entityId))
-            {
-                LoadLastWorldEventData(worldEvent);
-            }
-        }
-    }
-
     private void OnMouseDown()
     {
+        if (EventSystem.current.IsPointerOverGameObject() && UiEntitiesReferenceManager.gamePhaseManager.objectsAreVisible)
+        {
+            return;
+        }
+
         if (menuManager.currentlyOpened == null)
         {
-            Debug.Log("this got clicked on");
+            UiEntitiesReferenceManager.gamePhaseManager.CheckForMenuPages();
             menuManager.OpenMenu(eventMenu);
         }
     }
 
-    private void LoadLastWorldEventData(WorldEvent lastWorldEvent) {
+    public void LoadLastWorldEventData(CurrentWorldEvent lastWorldEvent) 
+    {
+        if (UiEntitiesReferenceManager.warningSystemUiComponent != null)
+        {
+            if (UiEntitiesReferenceManager.warningSystemUiComponent.transform.gameObject.activeSelf == false)
+            {
+                UiEntitiesReferenceManager.warningSystemUiComponent.transform.gameObject.SetActive(true);
+            }
+        }
 
-        Debug.Log("I am loading in new data");
+        //UnsubAllOutposts();
 
-        gameObject.transform.position = new Vector3(lastWorldEvent.xPosition, 0.01f, lastWorldEvent.yPosition);
-        float scaleFactor = MathF.Sqrt(lastWorldEvent.radius);
+        gameObject.transform.position = new Vector3(lastWorldEvent.position.x, 0.01f, lastWorldEvent.position.y);
+        //what??
+        float scaleFactor = MathF.Sqrt(lastWorldEvent.radius*2) *2;
 
         gameObject.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
-
-        foreach (var item in DojoEntitiesDataManager.outpostDictInstance)
+        
+        foreach (var outpost in DojoEntitiesDataManager.outpostDictInstance.Values)
         {
-
-            var outpost = item.Value;
-
-            if (RisingRevenantUtils.IsPointInsideCircle(new Vector2(lastWorldEvent.xPosition,lastWorldEvent.yPosition), lastWorldEvent.radius, new Vector2(outpost.xPosition, outpost.yPosition)))
+            if (RisingRevenantUtils.IsPointInsideCircle(new Vector2(lastWorldEvent.position.x,lastWorldEvent.position.y), lastWorldEvent.radius, new Vector2(outpost.position.x, outpost.position.y)))
             {
                 outpost.SetAttackState(true);
-                Debug.Log("I am calling for the hit reg");
+                Debug.Log($"I have attacked one outpost, the outpost is at {outpost.position.x} {outpost.position.y}");
+
+                //var outpostModel = new dojo.KeysClause[]
+                //{ new() { model_ = CString.FromString("Outpost"), keys = new[] { DojoEntitiesDataManager.currentGameId.ToString(),outpost.position.x.ToString("x").ToLower() , outpost.position.y.ToString("x").ToLower() } } };
+
+                //outpost.isSubbed = true;
+
+                //worldManager.toriiClient.AddModelsToSync(outpostModel);
             }
             else
             {
                 outpost.SetAttackState(false);
                 outpost.SetOutpostTexture();
             }
-
         }
 
+        //call minimap
+        if (UiEntitiesReferenceManager.minimapComp != null)
+        {
+            UiEntitiesReferenceManager.minimapComp.SpawnEventOnMinimap(lastWorldEvent);
+        }
+
+        //call revj
+        if (UiEntitiesReferenceManager.revJournalCompBehaviour != null)
+        {
+            UiEntitiesReferenceManager.revJournalCompBehaviour.HandleWorldEventAdded(lastWorldEvent);
+        }
+    }
+    private void UnsubAllOutposts()
+    {
+        foreach (var outpost in DojoEntitiesDataManager.outpostDictInstance.Values)
+        {
+            if (outpost.isSubbed)
+            {
+                var outpostModel = new dojo.KeysClause[]
+                { new() { model_ = CString.FromString("Outpost"), keys = new[] { DojoEntitiesDataManager.currentGameId.ToString(), outpost.position.x.ToString("x").ToLower(), outpost.position.y.ToString("x").ToLower() } } };
+
+                outpost.isSubbed = false;
+                worldManager.toriiClient.RemoveModelsToSync(outpostModel);
+            }
+        }
     }
 }

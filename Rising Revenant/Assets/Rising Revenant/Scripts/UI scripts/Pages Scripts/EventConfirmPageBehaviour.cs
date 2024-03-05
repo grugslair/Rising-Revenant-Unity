@@ -16,26 +16,13 @@ public class EventConfirmPageBehaviour : Menu
     private bool hideOwnOutposts = false;
     private bool hideOthersOutposts = false;
 
-
     private void OnEnable()
     {
-        DojoEntitiesDataManager.OnWorldEventAdded += LoadLastEventData;
-
-        var worldEvent = DojoEntitiesDataManager.GetLatestEvent();
-
-        if (worldEvent != null)
-        {
-            LoadLastEventData(worldEvent);
-        }
+        LoadLastEventData();
     }
 
-    private void OnDisable()
-    {
-        DojoEntitiesDataManager.OnWorldEventAdded += LoadLastEventData;
-    }
-
-
-    private void LoadLastEventData(WorldEvent worldEvent)
+    //possible call this when a new event hits form the manager if its enabled
+    public void LoadLastEventData()
     {
         foreach (Transform child in parentPrefab.transform)
         {
@@ -44,22 +31,22 @@ public class EventConfirmPageBehaviour : Menu
 
         foreach (var outpost in DojoEntitiesDataManager.outpostDictInstance.Values)
         {
-            if (RisingRevenantUtils.IsPointInsideCircle(new Vector2(worldEvent.xPosition, worldEvent.yPosition), worldEvent.radius, new Vector2(outpost.xPosition, outpost.yPosition)))
+            if (outpost.isAttacked && outpost.life> 0)
             {
+                 GameObject newItem = Instantiate(elementPrefab);
 
-                if (worldEvent.entityId != outpost.lastAffectEventId)
-                {
-                    GameObject newItem = Instantiate(elementPrefab);
+                 newItem.transform.SetParent(parentPrefab.transform, false);
 
-                    newItem.transform.SetParent(parentPrefab.transform, false);
-
-                    newItem.GetComponent<EventPageDataContainerBehaviour>().Initialize(RisingRevenantUtils.FieldElementToInt(outpost.entityId));
-                }
+                 newItem.GetComponent<EventPageDataContainerBehaviour>().Initialize(outpost.position);   
             }
         }
     }
 
-   
+    private void Update()
+    {
+        
+    }
+
     public void ToggleSortingMenu()
     {
         toggleSortingMenu = !toggleSortingMenu;
@@ -86,8 +73,6 @@ public class EventConfirmPageBehaviour : Menu
         sortingButton.transform.localScale = targetScaleVector;
     }
 
-
-
     public void ToggleHideOwnValue()
     {
         hideOwnOutposts = !hideOwnOutposts;
@@ -102,8 +87,6 @@ public class EventConfirmPageBehaviour : Menu
 
     public void SortResults()
     {
-        Debug.Log("Called for sorting");
-
         foreach (Transform child in parentPrefab.transform)
         {
             var comp = child.GetComponent<EventPageDataContainerBehaviour>();
@@ -132,8 +115,4 @@ public class EventConfirmPageBehaviour : Menu
             }
         }
     }
-
-
-
-
 }

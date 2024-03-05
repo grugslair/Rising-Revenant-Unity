@@ -11,14 +11,14 @@ using UnityEngine.UI;
 
 public class ChatManager : MonoBehaviour
 {
-    public GameManager gameManager;
-
     public bool chatOpen = false;
 
     public WorldManager worldManager;
 
     private Transform chatScrollView;
     private TMPro.TMP_InputField chatInput;
+
+    [SerializeField] GameManagerData gameManagerData; 
 
     // Start is called before the first frame update
     async void Start()
@@ -67,8 +67,6 @@ public class ChatManager : MonoBehaviour
         // add to scroll view
         var message = System.Text.Encoding.UTF8.GetString(data.Skip(32).ToArray());
 
-        Debug.Log($"Received message: {message}");
-
         var text = chatScrollView.GetComponent<TMPro.TextMeshProUGUI>();
         // format the message
         // author: message
@@ -89,7 +87,7 @@ public class ChatManager : MonoBehaviour
         var bytes = System.Text.Encoding.UTF8.GetBytes(message);
         // first 32 bytes are the wallet address of the author
         // remaining bytes is the message content
-        var authorAddressBytes = new FieldElement(gameManager.masterAddress).Inner().data.ToArray().ToList();
+        var authorAddressBytes = new FieldElement(gameManagerData.masterAddress).Inner().data.ToArray().ToList();
         var messageBytes = authorAddressBytes.Concat(bytes).ToArray();
         await worldManager.Publish(topic, messageBytes);
     }

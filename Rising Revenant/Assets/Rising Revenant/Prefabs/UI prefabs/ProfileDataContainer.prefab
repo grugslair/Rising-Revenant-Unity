@@ -63,6 +63,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   profilePicRev: {fileID: 904009763547629315}
   profilePicOut: {fileID: 2296199118284098439}
+  goHereButton: {fileID: 8291798767125707475}
   parentShields: {fileID: 4733800994520384486}
   outpostIdText: {fileID: 1459659746493401100}
   coordinatesText: {fileID: 4588169480467945130}
@@ -1828,6 +1829,11 @@ PrefabInstance:
 --- !u!224 &6030006520250223798 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3657001846121384467, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
+  m_PrefabInstance: {fileID: 7020730524587951781}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8291798767125707475 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1332157555262241910, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
   m_PrefabInstance: {fileID: 7020730524587951781}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7648136392423525506

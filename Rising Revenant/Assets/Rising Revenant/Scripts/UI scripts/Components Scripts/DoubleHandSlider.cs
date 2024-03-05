@@ -12,8 +12,8 @@ public class DoubleHandSlider : MonoBehaviour, IDragHandler, IBeginDragHandler
     public float minValue = 1f;
     public float maxValue = 20f;
 
-    public float currentMinValue;
-    public float currentMaxValue;
+    public float currentMinValue = 1f;
+    public float currentMaxValue = 20f;
 
     public bool useWholeNumbers = true;
     public int decimalPlaces = 2; 
@@ -106,8 +106,6 @@ public class DoubleHandSlider : MonoBehaviour, IDragHandler, IBeginDragHandler
             draggingMinHandle = false;
             draggingMaxHandle = false;
         }
-
-
 
         Debug.Log(currentMinValue);
         Debug.Log(currentMaxValue);

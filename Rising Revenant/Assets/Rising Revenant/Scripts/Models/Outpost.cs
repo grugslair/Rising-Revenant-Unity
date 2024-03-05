@@ -4,43 +4,48 @@ using Dojo;
 using Dojo.Starknet;
 using Dojo.Torii;
 using UnityEngine;
-using static UnityEditor.Progress;
-
 
 public class Outpost : ModelInstance
 {
 
     public event Action OnValueChange;
 
+
     [ModelField("game_id")]
-    public UInt32 gameId;
-    [ModelField("entity_id")]
-    public FieldElement entityId;
+    public FieldElement gameId;
+
+    [ModelField("position")]
+    public RisingRevenantUtils.Vec2 position;
+
     [ModelField("owner")]
     public FieldElement ownerAddress;
-    [ModelField("name_outpost")]
-    public FieldElement nameOutpost;
-    [ModelField("x")]
-    public UInt32 xPosition;
-    [ModelField("y")]
-    public UInt32 yPosition;
-    [ModelField("lifes")]
-    public UInt32 lifes;
-    [ModelField("shield")]
-    public byte shield; 
-    [ModelField("reinforcement_count")]
-    public UInt32 reinforcementCount;
+
+    [ModelField("life")]
+    public UInt32 life;
+
+    [ModelField("reinforces_remaining")]
+    public UInt32 reinforcesRemaining;
+
     [ModelField("status")]
-    public UInt32 status;
-    [ModelField("last_affect_event_id")]
-    public FieldElement lastAffectEventId;
+    public byte status;
 
     public bool selected = false;
     public bool isAttacked = false;
+    public bool isSubbed = false;
+    private FieldElement initalOwner;
 
     private void Start()
     {
-        DojoEntitiesDataManager.outpostDictInstance.Add(RisingRevenantUtils.FieldElementToInt(entityId), this);
+        DojoEntitiesDataManager.outpostDictInstance.Add(position, this);
+        initalOwner = ownerAddress;
+
+        if (DojoEntitiesDataManager.currentAccount != null)
+        {
+            if (DojoEntitiesDataManager.currentAccount.Address.Hex() == ownerAddress.Hex())
+            {
+                DojoEntitiesDataManager.ownOutpostIndex.Add(position);
+            }
+        }
 
         MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
         if (meshFilter == null)
@@ -55,14 +60,13 @@ public class Outpost : ModelInstance
         }
 
         meshFilter.mesh = CreatePlaneMesh();
-
         gameObject.layer = 6;
-
-        gameObject.transform.position = new Vector3(xPosition, 0.1f, yPosition);
-
-        SetOutpostTexture();
+        gameObject.transform.position = new Vector3(position.x, 0.1f, position.y);
 
         gameObject.AddComponent<BoxCollider>();
+        gameObject.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+
+        SetOutpostTexture();
     }
 
     Mesh CreatePlaneMesh()
@@ -70,7 +74,7 @@ public class Outpost : ModelInstance
         GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
         Mesh mesh = plane.GetComponent<MeshFilter>().mesh;
 
-        plane.transform.localScale = new Vector3(4,4,4);
+        plane.transform.localScale = new Vector3(4, 4, 4);
 
         Destroy(plane);
 
@@ -97,7 +101,7 @@ public class Outpost : ModelInstance
         }
 
         //check if dead
-        if (lifes == 0)
+        if (life == 0)
         {
             outpostTexture = Resources.Load<Texture>(AssetsManager.ToTextureOutputString(AssetsManager.OutpostColorOption.DEAD_OUTPOST));
             renderer.material.mainTexture = outpostTexture;
@@ -107,26 +111,18 @@ public class Outpost : ModelInstance
             return;
         }
 
-
-        //get event
-        //if (DojoEntitiesDataManager.gameEntityCounterInstance.eventCount != 0)
-        //{
-        //    var currentEvent = DojoEntitiesDataManager.worldEventDictInstance[(int)DojoEntitiesDataManager.gameEntityCounterInstance.eventCount];
-
-        //    if (RisingRevenantUtils.IsPointInsideCircle(new Vector2(currentEvent.xPosition, currentEvent.yPosition), currentEvent.radius, new Vector2(xPosition, yPosition)))
-        //    {
-        //        outpostTexture = Resources.Load<Texture>(AssetsManager.ToTextureOutputString(AssetsManager.OutpostColorOption.ATTACKED_OUTPOST));
-        //        renderer.material.mainTexture = outpostTexture;
-
-        //        outpostMat = Resources.Load<Material>(AssetsManager.ToMaterialOutputString(AssetsManager.OutpostColorOption.ATTACKED_OUTPOST));
-        //        renderer.material = outpostMat;
-        //        return;
-        //    }
-        //}
-
         //check if mine
         //check if your
 
+        if (DojoEntitiesDataManager.currentAccount == null)
+        {
+            outpostTexture = Resources.Load<Texture>(AssetsManager.ToTextureOutputString(AssetsManager.OutpostColorOption.ENEMY_OUTPOST));
+            renderer.material.mainTexture = outpostTexture;
+
+            outpostMat = Resources.Load<Material>(AssetsManager.ToMaterialOutputString(AssetsManager.OutpostColorOption.ENEMY_OUTPOST));
+            renderer.material = outpostMat;
+            return;
+        }
 
 
         if (DojoEntitiesDataManager.currentAccount.Address.Hex() == ownerAddress.Hex())
@@ -138,7 +134,7 @@ public class Outpost : ModelInstance
             renderer.material = outpostMat;
             return;
         }
-        else
+        else 
         {
             outpostTexture = Resources.Load<Texture>(AssetsManager.ToTextureOutputString(AssetsManager.OutpostColorOption.ENEMY_OUTPOST));
             renderer.material.mainTexture = outpostTexture;
@@ -151,18 +147,14 @@ public class Outpost : ModelInstance
     }
 
 
-    
-
     public void SetAttackState(bool attacked)
     {
         isAttacked = attacked;
 
-        if (attacked == true && lifes > 0)
+        if (attacked == true && life > 0)
         {
             var renderer = gameObject.GetComponent<Renderer>();
             if (renderer == null) { return; }
-
-            Material outpostMat;
 
             renderer.material.mainTexture = Resources.Load<Texture>(AssetsManager.ToTextureOutputString(AssetsManager.OutpostColorOption.ATTACKED_OUTPOST)); ;
 
@@ -173,13 +165,34 @@ public class Outpost : ModelInstance
             SetOutpostTexture();
         }
 
-
         OnValueChange?.Invoke();
     }
 
     public override void OnUpdate(Model model)
     {
         base.OnUpdate(model);
+
+        if (initalOwner != null)
+        {
+            if (initalOwner.Hex() != ownerAddress.Hex())
+            {
+                initalOwner = ownerAddress;
+                Debug.Log("something chaged");
+
+                if (DojoEntitiesDataManager.ownOutpostIndex.Contains(position))
+                {
+                    DojoEntitiesDataManager.ownOutpostIndex.Remove(position);
+                }
+                else
+                {
+                    DojoEntitiesDataManager.ownOutpostIndex.Add(position);
+                }
+
+                SetOutpostTexture();
+            }
+        }
+       
+
         OnValueChange?.Invoke();
     }
 }

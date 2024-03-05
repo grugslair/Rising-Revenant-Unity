@@ -9,46 +9,32 @@ using System.Threading.Tasks;
 namespace Dojo
 {
     public class WorldManager : MonoBehaviour
-    {
-        [Header("RPC")]
-        public string toriiUrl = "http://localhost:8080";
-        public string rpcUrl = "http://localhost:5050";
-        public string relayUrl = "/ip4/127.0.0.1/tcp/9090";
-        public string relayWebrtcUrl;
-        [Header("World")]
-        public string worldAddress;
+    {   
         public SynchronizationMaster synchronizationMaster;
         public ToriiClient toriiClient;
         public ToriiWasmClient wasmClient;
+        [SerializeField] WorldManagerData dojoConfig;
 
         async void Awake()
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            wasmClient = new ToriiWasmClient(toriiUrl, rpcUrl, relayWebrtcUrl, worldAddress);
+            wasmClient = new ToriiWasmClient(dojoConfig.toriiUrl, dojoConfig.rpcUrl,
+                                                dojoConfig.relayWebrtcUrl, dojoConfig.worldAddress);
             await wasmClient.CreateClient();
 #else
-            toriiClient = new ToriiClient(toriiUrl, rpcUrl, relayUrl, worldAddress);
+            toriiClient = new ToriiClient(dojoConfig.toriiUrl, dojoConfig.rpcUrl,
+                                            dojoConfig.relayUrl, dojoConfig.worldAddress);
 #endif
-
-
-            // fetch entities from the world
-            // TODO: maybe do in the start function of the SynchronizationMaster?
-            // problem is when to start the subscription service
-#if UNITY_WEBGL && !UNITY_EDITOR
+            
+            /*  fetch entities from the world
+                TODO: maybe do in the start function of the SynchronizationMaster?
+                problem is when to start the subscription service
+            */
             await synchronizationMaster.SynchronizeEntities();
-#else
-            synchronizationMaster.SynchronizeEntities();
-#endif
 
             // listen for entity updates
             synchronizationMaster.RegisterEntityCallbacks();
         }
-
-        // Update is called once per frame
-        void Update()
-        {
-        }
-
 
         // #if UNITY_WEBGL && !UNITY_EDITOR
         //         // internal callback to be called for when the client is created
@@ -69,14 +55,15 @@ namespace Dojo
         //         }
         // #endif
 
-        // Get a child entity from the WorldManager game object.
-        // Name is usually the hashed_keys of the entity as a hex string.
+        /*  Get a child entity from the WorldManager game object.
+            Name is usually the hashed_keys of the entity as a hex string.
+        */
         public GameObject Entity(string name)
         {
             var entity = transform.Find(name);
             if (entity == null)
             {
-                //Debug.LogError($"Entity {name} not found");
+                Debug.LogError($"Entity {name} not found");
                 return null;
             }
 
@@ -123,7 +110,7 @@ namespace Dojo
 #if UNITY_WEBGL && !UNITY_EDITOR
             return await wasmClient.SubscribeTopic(topic);
 #else
-            return toriiClient.SubscribeTopic(topic);
+            return await Task.Run(() => toriiClient.SubscribeTopic(topic));
 #endif
         }
 
@@ -132,7 +119,7 @@ namespace Dojo
 #if UNITY_WEBGL && !UNITY_EDITOR
             return await wasmClient.UnsubscribeTopic(topic);
 #else
-            return toriiClient.UnsubscribeTopic(topic);
+            return await Task.Run(() => toriiClient.UnsubscribeTopic(topic));
 #endif
         }
 
@@ -141,7 +128,7 @@ namespace Dojo
 #if UNITY_WEBGL && !UNITY_EDITOR
             return await wasmClient.PublishMessage(topic, data);
 #else
-            return toriiClient.PublishMessage(topic, data).ToArray();
+            return await Task.Run(() => toriiClient.PublishMessage(topic, data).ToArray());
 #endif
         }
     }

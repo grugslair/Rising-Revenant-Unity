@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Menu : MonoBehaviour
 {
-    public string menuName;// pretty sure this is to delete
     public bool open;
 
     public virtual void Open()

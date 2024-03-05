@@ -16,14 +16,18 @@ public class ProfilePageBehaviour : Menu
 
     private void OnEnable()
     {
-        foreach (var item in DojoEntitiesDataManager.ownOutpostIndex)
+        for (int i = 0; i < DojoEntitiesDataManager.ownOutpostIndex.Count; i++)
         {
+            var item = DojoEntitiesDataManager.ownOutpostIndex[i];
             GameObject newItem = Instantiate(UiPrefabListItem);
             newItem.transform.SetParent(parentObject.transform, false);
-            newItem.GetComponent<OutpostDataProfilePageListElement>().InitiateData(item,phase );
+            newItem.GetComponent<OutpostDataProfilePageListElement>().InitiateData(item, phase);
 
-            GameObject div = Instantiate(UiPrefabDiv);
-            div.transform.SetParent(parentObject.transform, false);
+            if (i < DojoEntitiesDataManager.ownOutpostIndex.Count - 1)
+            {
+                GameObject div = Instantiate(UiPrefabDiv);
+                div.transform.SetParent(parentObject.transform, false);
+            }
         }
     }
 

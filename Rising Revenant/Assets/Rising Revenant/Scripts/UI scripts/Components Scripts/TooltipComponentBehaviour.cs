@@ -19,24 +19,19 @@ public class TooltipComponentBehaviour : MonoBehaviour
 
     public GameObject shieldsParent;
 
-    private List<int> savedIds = new List<int>();
+    private List<RisingRevenantUtils.Vec2> savedIds = new List<RisingRevenantUtils.Vec2>();
     private int currentIndex = 0;
 
     public GameObject parentObject;
 
+    private void Awake()
+    {
+        UiEntitiesReferenceManager.tooltipCompBehaviour = this;
+    }
+
     private void Start()
     {
         CloseTooltip();
-    }
-
-    void OnEnable()
-    {
-        CameraController.Instance.OnRaycastHits += HandleRaycastHits;
-    }
-
-    void OnDisable()
-    {
-        CameraController.Instance.OnRaycastHits -= HandleRaycastHits;
     }
 
     public void CloseTooltip()
@@ -61,7 +56,6 @@ public class TooltipComponentBehaviour : MonoBehaviour
         }
         if (currentIndex + id < 1)
         {
-
             return;
         }
 
@@ -78,10 +72,9 @@ public class TooltipComponentBehaviour : MonoBehaviour
 
     void LoadData()
     {
-        Revenant revData = DojoEntitiesDataManager.revDictInstance[savedIds[currentIndex]];
         Outpost outpostData = DojoEntitiesDataManager.outpostDictInstance[savedIds[currentIndex]];
        
-        outpostDataText.text = $"{RisingRevenantUtils.FieldElementToInt(revData.entityId)} ID - X:{outpostData.xPosition} || Y:{outpostData.yPosition}\nReinforcements: {outpostData.lifes}\nState: ";
+        outpostDataText.text = $"{-1} ID - X:{outpostData.position.x} || Y:{outpostData.position.y}\nReinforcements: {outpostData.life}\nState: ";
 
         var state = CalcState( outpostData);
 
@@ -97,7 +90,7 @@ public class TooltipComponentBehaviour : MonoBehaviour
         int i = 0;
         foreach (Transform child in shieldsParent.transform)
         {
-            if (i >= outpostData.shield)
+            if (i >= RisingRevenantUtils.CalculateShields(outpostData.life))
             {
                 RawImage image = child.GetComponent<RawImage>();
                 image.color = new Color(1, 1, 1, 0);
@@ -106,28 +99,23 @@ public class TooltipComponentBehaviour : MonoBehaviour
             i++;
         }
 
-        revenantDataText.text = $"Owner: {revData.ownerAddress.Hex().Substring(0,6)}\nName {RisingRevenantUtils.GetFullRevenantName(RisingRevenantUtils.FieldElementToInt(revData.entityId))}";
+        revenantDataText.text = $"Owner: {outpostData.ownerAddress.Hex().Substring(0,6)}\nName {RisingRevenantUtils.GetFullRevenantName(outpostData.position)}";
     }
 
     int CalcState( Outpost outpost)
     {
-        var latestEvent = DojoEntitiesDataManager.GetLatestEvent();
-
-        if (outpost.lifes <= 0)
+        if (outpost.life <= 0)
         {
             stateText.text = "Dead";
             stateText.color = Color.grey;
             return 0;
         }
 
-        if (latestEvent != null)
+        if (outpost.isAttacked)
         {
-            if (RisingRevenantUtils.IsPointInsideCircle(new Vector2(latestEvent.xPosition, latestEvent.yPosition), latestEvent.radius, new Vector2(outpost.xPosition, outpost.yPosition)))
-            {
-                stateText.text = "Hit";
-                stateText.color = Color.blue;
-                return 1;
-            }
+            stateText.text = "Hit";
+            stateText.color = Color.blue;
+            return 1;
         }
 
         stateText.text = "Healthy";
@@ -135,10 +123,12 @@ public class TooltipComponentBehaviour : MonoBehaviour
         return 2;
     }
 
-    void HandleRaycastHits(List<int> hitIds)
+    public void HandleRaycastHits(List<RisingRevenantUtils.Vec2> hitIds)
     {
         if (hitIds.Count > 0)
         {
+            Debug.Log("Waht is gionuibefuibe");
+
             parentObject.SetActive(true);
             savedIds.Clear();
             currentIndex = 0;
@@ -150,5 +140,24 @@ public class TooltipComponentBehaviour : MonoBehaviour
 
             LoadData();
         }
+    }
+
+    public void ConfirmOutpost()
+    {
+        var structCall = new DojoCallsManager.DamageOutpostStruct
+        {
+            gameId = DojoEntitiesDataManager.currentGameId,
+            outpostId = DojoEntitiesDataManager.outpostDictInstance[savedIds[currentIndex]].position
+        };
+
+        var endpoint = new DojoCallsManager.EndpointDojoCallStruct
+        {
+            account = DojoEntitiesDataManager.currentAccount,
+            addressOfSystem = DojoCallsManager.outpostActionsAddress,
+            functionName = "verify"
+        };
+
+        var transaction = DojoCallsManager.DamageOutpostDojoCall(structCall, endpoint);
+
     }
 }

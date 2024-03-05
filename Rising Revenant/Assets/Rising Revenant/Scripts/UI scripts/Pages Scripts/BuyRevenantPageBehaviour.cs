@@ -84,27 +84,25 @@ public class BuyRevenantPageBehaviour : Menu
 
     public void CalcNewTotal()
     {
-        var revenantCost = RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.gameDataInstance.revenantInitPrice);
-
-        confirmBuyText.text = "Summon (Tot: " + (revenantCost * counterUiElement.currentValue).ToString() + " $LORDS)";
+        confirmBuyText.text = "Summon (Tot: " + (DojoEntitiesDataManager.outpostMarketData.pricePerOutpost * counterUiElement.currentValue).ToString() + " $LORDS)";
     }
 
     public async void CallDojoSummonRevFunc()
     {
-        var createRevenantsProps = new DojoCallsManager.CreateRevenantsStruct
+        var createRevenantsProps = new DojoCallsManager.SummonRevenantStruct
         {
-            gameId = 1,
+            gameId = DojoEntitiesDataManager.currentGameId,
             count = (uint)counterUiElement.currentValue,
         };
 
         var endpoint = new DojoCallsManager.EndpointDojoCallStruct
         {
-            functionName = "create",
-            addressOfSystem = DojoCallsManager.revenantActionsAddress,
+            functionName = "purchase",
+            addressOfSystem = DojoCallsManager.outpostActionsAddress,
             account = DojoEntitiesDataManager.currentAccount,
         };
 
-        var transaction = await DojoCallsManager.CreateRevenantsDojoCall(createRevenantsProps, endpoint);
+        var transaction = await DojoCallsManager.SummonRevenantsDojoCall(createRevenantsProps, endpoint);
     }
 
     private void OnDisable()
@@ -117,7 +115,7 @@ public class BuyRevenantPageBehaviour : Menu
         CalcNewTotal();
         StartCoroutine(ChangeTextPeriodically());
 
-        staticPriceText.text = "1 Revenant = " + RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.gameDataInstance.revenantInitPrice) + " $LORDS";
+        staticPriceText.text = "1 Revenant = " + DojoEntitiesDataManager.outpostMarketData.pricePerOutpost + " $LORDS";
 
 
         int randomNum = Random.Range(1, 30);

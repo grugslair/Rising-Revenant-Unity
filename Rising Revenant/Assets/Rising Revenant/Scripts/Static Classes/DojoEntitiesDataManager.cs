@@ -1,3 +1,4 @@
+using Dojo;
 using Dojo.Starknet;
 using System;
 using System.Collections;
@@ -6,46 +7,30 @@ using UnityEngine;
 
 public static class DojoEntitiesDataManager
 {
-
     public static InitializeDojoEntities dojoEntInitializer { get; set; }
-
     public static Account currentAccount { get; set; }
-    public static GameEntityCounter gameEntityCounterInstance { get; set; }
-    public static Game gameDataInstance { get; set; }
-    public static GameCountTracker gameCounterInstance { get; set; }
-    public static PlayerInfo playerSpecificData { get; set; }
 
- 
-    public static Dictionary<int, Outpost> outpostDictInstance = new Dictionary<int, Outpost>();
-    public static Dictionary<int, Revenant> revDictInstance = new Dictionary<int, Revenant>();
-
-    public static List<int> ownOutpostIndex = new List<int>();
-
-    public static Dictionary<int, WorldEvent> worldEventDictInstance = new Dictionary<int, WorldEvent>();
-
-    public static WorldEvent GetLatestEvent()
-    {
-        if (gameEntityCounterInstance == null)
-        {
-            return null;
-        }
-
-        if (gameEntityCounterInstance.eventCount == 0)
-        {
-            return null;
-        }
-
-        return worldEventDictInstance[(int)gameEntityCounterInstance.eventCount];
-    }
+    #region Overall game data
+    public static FieldElement currentGameId { get; set; }
+    public static GamePot gamePot { get; set; }
+    public static GameState gameEntCounter { get; set; }
+    public static OutpostMarket outpostMarketData { get; set; }
+    #endregion
 
 
-    public delegate void WorldEventAddedHandler(WorldEvent worldEvent);
-    public static event WorldEventAddedHandler OnWorldEventAdded;
+    #region Specific Player Data
+    public static PlayerInfo playerInfo { get; set; }
+    public static DevWallet currentDevWallet { get; set; }
+    public static PlayerContribution playerContrib { get; set; }
+    #endregion
 
-    public static void AddEvent(int eventId, WorldEvent worldEvent)
-    {
-        Debug.Log("adding " + eventId);
-        worldEventDictInstance.Add(eventId, worldEvent);
-        OnWorldEventAdded?.Invoke(worldEvent);
-    }
+
+    public static Dictionary<RisingRevenantUtils.Vec2, Outpost> outpostDictInstance = new Dictionary<RisingRevenantUtils.Vec2, Outpost>();
+    public static List<RisingRevenantUtils.Vec2> ownOutpostIndex = new List<RisingRevenantUtils.Vec2>();
+
+
+    #region event data region
+    public static Dictionary<UInt32, WorldEvent> worldEventDictInstance = new Dictionary<UInt32, WorldEvent>();
+    public static CurrentWorldEvent currentWorldEvent { get; set; }
+    #endregion
 }

@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Jackpot: 999 $LORDS'
+  m_text: 'Jackpot: 0 $LORDS'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: df42b8b1ba75ede458145b83d77b335d, type: 2}
   m_sharedMaterial: {fileID: 7672003761425889706, guid: df42b8b1ba75ede458145b83d77b335d, type: 2}
@@ -271,9 +271,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Revenants Summoned  2137/8000
+  m_text: 'Revenants Summoned  0/0
 
-    Reinforcements in game: 347'
+    Reinforcements in game: 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: df42b8b1ba75ede458145b83d77b335d, type: 2}
   m_sharedMaterial: {fileID: 7672003761425889706, guid: df42b8b1ba75ede458145b83d77b335d, type: 2}
@@ -879,6 +879,7 @@ GameObject:
   - component: {fileID: 6011209987403836281}
   - component: {fileID: 3958495711209664492}
   - component: {fileID: 7245622973213181951}
+  - component: {fileID: 7321357183425120435}
   m_Layer: 5
   m_Name: ContribText
   m_TagString: Untagged
@@ -1002,6 +1003,24 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7321357183425120435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8442069587376584351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bac9b6052a146048815e36612a6ace4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  message: T
+  position: 1
+  margin: 10
+  follow: 0
+  tooltipPrefab: {fileID: 9019773305316235809, guid: 4a5cdf72c88687345a64be50c2a794af, type: 3}
+  enable: 1
 --- !u!1 &9072072984740884302
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,22 +21,24 @@ public class OutpostDataProfilePageListElement : MonoBehaviour
 
     public CounterUiElement counterUiElement;
 
-    private int entityId;
-    private Revenant revData;
+    private RisingRevenantUtils.Vec2 entityId;
     private Outpost outpostData;
     
 
     public void LoadData()
     {
         //var randomPP = RisingRevenantUtils.GenerateRandomNumber(entityId, 25);
-        outpostIdText.text = RisingRevenantUtils.FieldElementToInt(outpostData.entityId).ToString();
-        coordinatesText.text = $"X:{outpostData.xPosition}, Y:{outpostData.yPosition}";
-        reinforcementText.text = outpostData.lifes.ToString();
+        outpostIdText.text = RisingRevenantUtils.FieldElementToInt(outpostData.gameId).ToString();
+        coordinatesText.text = $"X:{outpostData.position.x}, Y:{outpostData.position.y}";
+        reinforcementText.text = outpostData.life.ToString();
+
+        Texture2D revImage = Resources.Load<Texture2D>($"Revenants_Pics/{RisingRevenantUtils.GetConsistentRandomNumber((int)(outpostData.position.x * outpostData.position.y), RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId), 1, 24)}");
+        profilePicRev.texture = revImage;
 
         int i = 1;
         foreach (Transform child in parentShields.transform)
         {
-            if (i >= outpostData.shield)
+            if (i >= RisingRevenantUtils.CalculateShields(outpostData.life))
             {
                 RawImage image = child.GetComponent<RawImage>();
                 image.color = new Color(1, 1, 1, 0);
@@ -48,9 +51,8 @@ public class OutpostDataProfilePageListElement : MonoBehaviour
     }
 
 
-    public void InitiateData(int entityId, int phase)
+    public void InitiateData(RisingRevenantUtils.Vec2 entityId, int phase)
     {
-
         if (phase == 1)
         {
             goHereButton.SetActive(false);
@@ -58,14 +60,12 @@ public class OutpostDataProfilePageListElement : MonoBehaviour
 
         this.entityId = entityId;
 
-        revData = DojoEntitiesDataManager.revDictInstance[entityId];
         outpostData = DojoEntitiesDataManager.outpostDictInstance[entityId];
 
         LoadData();
 
         outpostData.OnValueChange += LoadData;
     }
-
 
     private void OnDestroy()
     {
@@ -77,7 +77,6 @@ public class OutpostDataProfilePageListElement : MonoBehaviour
         outpostData.OnValueChange -= LoadData;
     }
 
-
     public void GoHere()
     {
         Debug.Log("call to move cam");
@@ -85,8 +84,13 @@ public class OutpostDataProfilePageListElement : MonoBehaviour
 
     public async void ReinforceOutpost()
     {
-        DojoCallsManager.ReinforceOutpostStruct callStructure = new DojoCallsManager.ReinforceOutpostStruct { count = (UInt32)counterUiElement.currentValue, gameId = 1, outpostId = new Dojo.Starknet.FieldElement(entityId) };
-        DojoCallsManager.EndpointDojoCallStruct endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.revenantActionsAddress, functionName = "reinforce_outpost" };
+        DojoCallsManager.ReinforceOutpostStruct callStructure = new DojoCallsManager.ReinforceOutpostStruct { 
+            count = (UInt32)counterUiElement.currentValue, 
+            gameId = DojoEntitiesDataManager.currentGameId, 
+            outpostId = outpostData.position 
+        };
+
+        DojoCallsManager.EndpointDojoCallStruct endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.outpostActionsAddress, functionName = "reinforce" };
 
         var transaction = await DojoCallsManager.ReinforceOutpostDojoCall(callStructure, endpoint);
     }

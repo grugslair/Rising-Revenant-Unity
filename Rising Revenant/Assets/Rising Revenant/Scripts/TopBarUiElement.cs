@@ -22,18 +22,13 @@ public class TopBarUiElement : MonoBehaviour
 
     public TMP_Text walletAmount;
 
-    private PlayerInfo playerInfo = null;
-
-
-    private void Update()
-    {
-        if (playerInfo == null && DojoEntitiesDataManager.playerSpecificData != null)
-        {
-            playerInfo = DojoEntitiesDataManager.playerSpecificData;
-            playerInfo.OnValueChange += ChangeInPlayerSpecificData;
-            ChangeInPlayerSpecificData();
-        }
-    }
+    /*
+        GameState 
+        outpostMarketData
+        gamepot
+        devwallet
+        playerocntub
+     */
 
     void OnEnable()
     {
@@ -49,97 +44,82 @@ public class TopBarUiElement : MonoBehaviour
             loggedIn.gameObject.SetActive(false);
         }
 
+        UiEntitiesReferenceManager.topBarUiElement = this;
 
-        if (DojoEntitiesDataManager.gameEntityCounterInstance != null)
-        {
-            ChangeInGameEntCounter();
-            DojoEntitiesDataManager.gameEntityCounterInstance.OnValueChange += ChangeInGameEntCounter;
-        }
-        if (DojoEntitiesDataManager.gameDataInstance != null)
-        {
-            ChangeInGameData();
-            DojoEntitiesDataManager.gameDataInstance.OnValueChange += ChangeInGameData;
-        }
+        ChangeInGameEntCounter();
+        CalcContrib();
+        ChangeInPlayerSpecificData();
+        CalcContrib();
+        ChangeInGameEntCounter();
+        ChangeInGameData();
     }
 
-
-    void OnDisable()
-    {
-        if (DojoEntitiesDataManager.gameEntityCounterInstance != null)
-        {
-            DojoEntitiesDataManager.gameEntityCounterInstance.OnValueChange -= ChangeInGameEntCounter;
-        }
-
-        if (DojoEntitiesDataManager.gameDataInstance != null)
-        {
-            DojoEntitiesDataManager.gameDataInstance.OnValueChange -= ChangeInGameData;
-        }
-
-        if (playerInfo != null)
-        {
-            playerInfo.OnValueChange -= ChangeInPlayerSpecificData;
-        }
-    }
-
+    //GameState
+    //outpostMarketData
     public void ChangeInGameEntCounter()
     {
-        // Code to execute when any value changes in GameEntityCounter
-        
-        if (phase == 1)
+        if (DojoEntitiesDataManager.gameEntCounter != null && DojoEntitiesDataManager.outpostMarketData != null) 
         {
-            entGameDataText.text = "Revenants Summoned: " + DojoEntitiesDataManager.gameEntityCounterInstance.revenantCount + "/" + DojoEntitiesDataManager.gameDataInstance.maxAmountOfRevenants + "\nReinforcements in game: " + (DojoEntitiesDataManager.gameEntityCounterInstance.reinforcementCount + DojoEntitiesDataManager.gameEntityCounterInstance.remainLifeCount);
+            if (phase == 1)
+            {
+                entGameDataText.text = "Revenants Summoned: " + DojoEntitiesDataManager.gameEntCounter.outpostCreatedCount + "/" + ( DojoEntitiesDataManager.gameEntCounter.outpostCreatedCount + DojoEntitiesDataManager.outpostMarketData.maxAmountOfOutposts ) + "\nReinforcements in game: " + (DojoEntitiesDataManager.gameEntCounter.reinforcementCount + DojoEntitiesDataManager.gameEntCounter.remainLifeCount);
+            }
+            else
+            {
+                entGameDataText.text = "Revenants Alive: " + DojoEntitiesDataManager.gameEntCounter.outpostRemainingCount + "/" + DojoEntitiesDataManager.gameEntCounter.outpostCreatedCount + "\nReinforcements in game: " + (DojoEntitiesDataManager.gameEntCounter.reinforcementCount + DojoEntitiesDataManager.gameEntCounter.remainLifeCount);
+            }
         }
-        else
-        {
-            entGameDataText.text = "Revenants Alive: " + DojoEntitiesDataManager.gameEntityCounterInstance.outpostExistsCount + "/" + DojoEntitiesDataManager.gameDataInstance.maxAmountOfRevenants + "\nReinforcements in game: " + (DojoEntitiesDataManager.gameEntityCounterInstance.reinforcementCount + DojoEntitiesDataManager.gameEntityCounterInstance.remainLifeCount);
-        }
-
-        CalcContrib(); 
     }
 
+    //gamepot
     public void ChangeInGameData()
     {
-
-        if (phase == 1)
+        if (DojoEntitiesDataManager.gamePot != null)
         {
-            jackpotText.text = "Jackpot: " + RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.gameDataInstance.jackpot).ToString();
-        }
-        else
-        {
-            jackpotText.text = "Jackpot: " + RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.gameDataInstance.jackpot).ToString();
+            jackpotText.text = "Jackpot: " + ((float)DojoEntitiesDataManager.gamePot.totalPot).ToString();
         }
     }
 
+    //devWallet
     public void ChangeInPlayerSpecificData()
     {
-        if (playerInfo == null)
+        if (DojoEntitiesDataManager.currentDevWallet == null)
         {
-            walletAmount.text = "0";
+            walletAmount.text = "150";
         }
         else
         {
-            walletAmount.text = RisingRevenantUtils.FieldElementToInt(playerInfo.playerWalletAmount).ToString();
+            walletAmount.text = ((float)DojoEntitiesDataManager.currentDevWallet.balance).ToString();
         }
-
-        CalcContrib();
     }
 
 
-    private void CalcContrib()
+    //PlayerContribution
+    //GameState
+    public void CalcContrib()
     {
-        if (playerInfo != null && DojoEntitiesDataManager.gameEntityCounterInstance != null)
+        if (DojoEntitiesDataManager.playerContrib != null && DojoEntitiesDataManager.gameEntCounter != null)
         {
-            // Check if scoreCount is greater than 0 to avoid divide-by-zero error
-            if (DojoEntitiesDataManager.gameEntityCounterInstance.scoreCount > 0)
+            if (DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal > 0)
             {
-                // Cast score and scoreCount to a larger floating-point type to handle division correctly
-                float percOfContrib = (float)playerInfo.score / DojoEntitiesDataManager.gameEntityCounterInstance.scoreCount * 100; // Multiply by 100 to get percentage
+                if (contribText.transform.gameObject.activeSelf == false)
+                {
+                    contribText.transform.gameObject.SetActive(true);
+                }
+
+                float percOfContrib = (float)DojoEntitiesDataManager.playerContrib.score / (float)DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal * 100; // Multiply by 100 to get percentage
                 contribText.text = $"Contribution: {percOfContrib}%";
             }
             else
             {
-                // Handle the case where scoreCount is 0, e.g., by setting contribution to 0% or displaying a message
-                contribText.text = "Contribution: 0%";
+                if (contribText.transform.gameObject.activeSelf == true)
+                {
+                    contribText.transform.gameObject.SetActive(false);
+                    //return;
+                }
+
+                return;
+                //contribText.text = "Contribution: 0%";
             }
         }
     }

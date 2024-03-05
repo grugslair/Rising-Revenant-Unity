@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class PlayerReinforcementBalanceUiComponents : MonoBehaviour
 {
-    
+
     /*
-     * This will only get the most up to date value of the users amount of reinforcement it currently has
+     This will only get the most up to date value of the users amount of reinforcement it currently has
+
+     PlayerInfo
      */
 
     [SerializeField]
@@ -15,9 +17,9 @@ public class PlayerReinforcementBalanceUiComponents : MonoBehaviour
 
     private void OnEnable()
     {
-        if (DojoEntitiesDataManager.playerSpecificData != null)
+        if (DojoEntitiesDataManager.playerInfo != null)
         {
-            DojoEntitiesDataManager.playerSpecificData.OnValueChange += SetTextValue;  //subscribe to the event that listens to the change of the entity
+           
             SetTextValue();  
         }
         else
@@ -25,19 +27,25 @@ public class PlayerReinforcementBalanceUiComponents : MonoBehaviour
             reinforcementText.text = "0";
             reinforcementAmount = -1;
         }
-    }
 
-    private void SetTextValue()
-    {
-        reinforcementText.text = DojoEntitiesDataManager.playerSpecificData.reinforcementAvailableCount.ToString();
-        reinforcementAmount = (int)DojoEntitiesDataManager.playerSpecificData.reinforcementAvailableCount;
+        UiEntitiesReferenceManager.reinforcementCounterElement = this;
     }
-
     private void OnDisable()
     {
-        if (DojoEntitiesDataManager.playerSpecificData != null)
+
+    }
+
+    public void SetTextValue(PlayerInfo playerInfo = null)
+    {
+        if (playerInfo == null)
         {
-            DojoEntitiesDataManager.playerSpecificData.OnValueChange -= SetTextValue;
+            reinforcementText.text = DojoEntitiesDataManager.playerInfo.reinforcementsAvailableCount.ToString();
+            reinforcementAmount = (int)DojoEntitiesDataManager.playerInfo.reinforcementsAvailableCount;
+        }
+        else
+        {
+            reinforcementText.text = playerInfo.reinforcementsAvailableCount.ToString();
+            reinforcementAmount = (int)playerInfo.reinforcementsAvailableCount;
         }
     }
 }

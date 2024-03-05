@@ -72,4 +72,23 @@ public class LoginScreenBehaviour : Menu
         uiStateManager.SetUiState(1);
     }
 
+    public async void StartGame()
+    {
+        if (DojoEntitiesDataManager.currentAccount == null) { return; }
+
+        var createGameProps = new DojoCallsManager.CreateGameStruct
+        {
+            startBlock = 209,
+            preparationBlock = 10
+        };
+
+        var endpoint = new DojoCallsManager.EndpointDojoCallStruct
+        {
+            functionName = "create",
+            addressOfSystem = DojoCallsManager.gameActionsAddress,
+            account = DojoEntitiesDataManager.currentAccount,
+        };
+
+        var transaction = await DojoCallsManager.CreateGameDojoCall(createGameProps, endpoint);
+    }
 }

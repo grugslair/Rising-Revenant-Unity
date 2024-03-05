@@ -27,12 +27,8 @@ public class CounterUiElement : MonoBehaviour
         valueText.text = currentValue.ToString();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    
+    // why two functions tho?
     public void AddToCounter()
     {
         currentValue++;

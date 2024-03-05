@@ -2,41 +2,30 @@ using Dojo;
 using Dojo.Starknet;
 using Dojo.Torii;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public class PlayerInfo : ModelInstance
 {
-    public event Action OnValueChange;
-
     [ModelField("game_id")]
-    public UInt32 gameId;
-    [ModelField("owner")]
-    public FieldElement ownerAddress;
-    [ModelField("score")]
-    public UInt32 score;
-    [ModelField("player_wallet_amount")]
-    public FieldElement playerWalletAmount;
-    [ModelField("earned_prize")]
-    public FieldElement earnedPrize;
-    [ModelField("revenant_count")]
-    public UInt32 revenantCount;
+    public FieldElement gameId;
+
+    [ModelField("player_id")]
+    public FieldElement playerId;
+
     [ModelField("outpost_count")]
     public UInt32 outpostCount;
+
     [ModelField("reinforcements_available_count")]
-    public UInt32 reinforcementAvailableCount;
-    [ModelField("score_claim_status")]
-    public Boolean scoreClaimStatus;
+    public UInt32 reinforcementsAvailableCount;
 
+    [ModelField("init")]
+    public bool init;
 
-    private void Start()
+    // Start is called before the first frame update
+    void Start()
     {
-        var currentAddress = DojoEntitiesDataManager.currentAccount.Address.Hex();
-
-        if (ownerAddress.Hex() == currentAddress)
+        if (playerId.Hex() == DojoEntitiesDataManager.currentAccount.Address.Hex())
         {
-            DojoEntitiesDataManager.playerSpecificData = this;
+            DojoEntitiesDataManager.playerInfo = this;
         }
         else
         {
@@ -47,6 +36,9 @@ public class PlayerInfo : ModelInstance
     public override void OnUpdate(Model model)
     {
         base.OnUpdate(model);
-        OnValueChange?.Invoke();
+        if (UiEntitiesReferenceManager.reinforcementCounterElement != null)
+        {
+            UiEntitiesReferenceManager.reinforcementCounterElement.SetTextValue(this);
+        }
     }
 }

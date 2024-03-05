@@ -60,22 +60,21 @@ public class BuyReinforcementsPageBehaviour : Menu
 
     public void CalcNewTotal()
     {
-        var revenantCost = RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.gameDataInstance.revenantInitPrice);
-        confirmBuyText.text = "Purchase (Tot: " + (revenantCost * counterUiElement.currentValue).ToString() + " $LORDS)";
+        confirmBuyText.text = "Purchase (Tot: " + (DojoEntitiesDataManager.outpostMarketData.pricePerOutpost * counterUiElement.currentValue).ToString() + " $LORDS)";
     }
 
     public async void CallDojoBuyReinforcementsFunc()
     {
         var createRevenantsProps = new DojoCallsManager.PurchaseReinforcementsStruct
         {
-            gameId = 1,
+            gameId = DojoEntitiesDataManager.currentGameId,
             count = (uint)counterUiElement.currentValue,
         };
 
         var endpoint = new DojoCallsManager.EndpointDojoCallStruct
         {
-            functionName = "purchase_reinforcement",
-            addressOfSystem = DojoCallsManager.revenantActionsAddress,
+            functionName = "purchase",
+            addressOfSystem = DojoCallsManager.reinforcementActionsAddress,
             account = DojoEntitiesDataManager.currentAccount,
         };
 
@@ -91,7 +90,7 @@ public class BuyReinforcementsPageBehaviour : Menu
         CalcNewTotal();
         StartCoroutine(ChangeTextPeriodically());
 
-        staticPriceText.text = "1 Reinforcement = " + RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.gameDataInstance.revenantInitPrice) + " $LORDS";
+        staticPriceText.text = "1 Reinforcement = " + "VRGDA goes here" + " $LORDS";
     }
 }
 

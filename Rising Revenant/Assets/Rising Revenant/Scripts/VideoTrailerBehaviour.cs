@@ -17,9 +17,11 @@ public class VideoTrailerBehaviour : MonoBehaviour
 
     public float seconds = 5;
 
+    public BackgroundMusicManager backgroundMusicManager;
 
     private void OnVideoStarted(VideoPlayer source)
     {
+        backgroundMusicManager.TogglePauseBackgroundMusic();
         StartCoroutine(StartCountdown(seconds));
     }
 
@@ -31,7 +33,8 @@ public class VideoTrailerBehaviour : MonoBehaviour
 
     private void OnVideoEnded(VideoPlayer source)
     {
-        uIStateManager.SetUiState(3); 
+        uIStateManager.SetUiState(3);
+        backgroundMusicManager.TogglePauseBackgroundMusic();
     }
 
     private void OnEnable()

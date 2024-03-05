@@ -7,7 +7,7 @@ public class UIStateManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject[] UIScreenObjs = new GameObject[4];
- 
+
     public enum UIState
     {
         LOGIN = 0,
@@ -17,12 +17,10 @@ public class UIStateManager : MonoBehaviour
         GAME
     }
 
-
     public UIState currentUiState = UIState.LOGIN;
 
     private void Update()
     {
-        
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {
             SetUiState(0);
@@ -35,7 +33,6 @@ public class UIStateManager : MonoBehaviour
         {
             SetUiState(2);
         }
-
         if (Input.GetKeyUp(KeyCode.Alpha4))
         {
             SetUiState(3);
@@ -43,6 +40,11 @@ public class UIStateManager : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Alpha5))
         {
             SetUiState(4);
+        }
+
+        if (Input.GetKeyUp(KeyCode.P))
+        {
+            UiEntitiesReferenceManager.notificationManager.CreateNotification("Test", null, 5);
         }
     }
 

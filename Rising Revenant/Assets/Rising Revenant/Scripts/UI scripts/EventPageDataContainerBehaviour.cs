@@ -1,6 +1,7 @@
 
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EventPageDataContainerBehaviour : Menu
 {
@@ -9,16 +10,17 @@ public class EventPageDataContainerBehaviour : Menu
     public TMP_Text reinforcementsText;
     public TMP_Text nameText;
 
+    public RawImage profilePicRev;
+
     public Outpost outpost;
 
-    public void Initialize(int id)
+    public void Initialize(RisingRevenantUtils.Vec2 id)
     {
         outpost = DojoEntitiesDataManager.outpostDictInstance[id];
 
         outpost.OnValueChange += LoadData;
         LoadData();
     }
-
 
     private void OnDestroy()
     {
@@ -27,21 +29,31 @@ public class EventPageDataContainerBehaviour : Menu
 
     public void LoadData()
     {
-        DojoEntitiesDataManager.GetLatestEvent();
+        idText.text = $"Outpost Id: {-1}";
+        coordinatesText.text = $"Coordinates: X:{outpost.position.x}, Y:{outpost.position.y}";
+        reinforcementsText.text = $"Reinforcements: {outpost.life}";
 
-        idText.text = $"Outpost Id: {RisingRevenantUtils.FieldElementToInt(outpost.entityId)}";
-        coordinatesText.text = $"Coordinates: X:{outpost.xPosition}, Y:{outpost.yPosition}";
-        reinforcementsText.text = $"Reinforcements: {outpost.lifes}";
+        Texture2D revImage = Resources.Load<Texture2D>($"Revenants_Pics/{RisingRevenantUtils.GetConsistentRandomNumber((int)(outpost.position.x * outpost.position.y), RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId), 1, 24)}");
+        profilePicRev.texture = revImage;
 
-        nameText.text = RisingRevenantUtils.GetFullRevenantName(RisingRevenantUtils.FieldElementToInt(outpost.entityId));
+        nameText.text = RisingRevenantUtils.GetFullRevenantName(outpost.position);
     }
 
     public async void ValidateOutpost()
     {
-        var validateStruct = new DojoCallsManager.DamageOutpostStruct { eventId = DojoEntitiesDataManager.GetLatestEvent().entityId, gameId = 1, outpostId = outpost.entityId };
-        var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.eventActionsAddress, functionName = "destroy_outpost" };
+        Debug.Log("called on valid");
 
+        var endpoint = new DojoCallsManager.EndpointDojoCallStruct
+        {
+            account = DojoEntitiesDataManager.currentAccount,
+            addressOfSystem = DojoCallsManager.outpostActionsAddress,
+            functionName = "verify"
+        };
+        var validateStruct = new DojoCallsManager.DamageOutpostStruct {  gameId = DojoEntitiesDataManager.currentGameId, outpostId = outpost.position };
+       
         var transaction = await DojoCallsManager.DamageOutpostDojoCall(validateStruct, endpoint);
+
+        Destroy(gameObject);
     }
 
     //sub to the ent

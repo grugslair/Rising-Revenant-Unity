@@ -87,7 +87,6 @@ GameObject:
   - component: {fileID: 2889502250057429251}
   - component: {fileID: 5023453154521554990}
   - component: {fileID: 3920233319461745970}
-  - component: {fileID: 6559824665763960157}
   m_Layer: 5
   m_Name: MinusButtonForCounter
   m_TagString: Untagged
@@ -206,30 +205,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6559824665763960157
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2373642822365893214}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3da5652a6ff1db4087dfd94f7190afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pictureOfPointer: {fileID: 2800000, guid: 9036378d330c0794e93ecac99c1d4a24, type: 3}
-  text: {fileID: 0}
-  backgroundColor: {fileID: 0}
-  borderImage: {fileID: 0}
-  startBackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  endBackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  startTextColor: {r: 0, g: 0, b: 0, a: 0}
-  endTextColor: {r: 0, g: 0, b: 0, a: 0}
-  startImageColor: {r: 0, g: 0, b: 0, a: 0}
-  endImageColor: {r: 0, g: 0, b: 0, a: 0}
-  transitionSpeed: 1
-  disabled: 0
 --- !u!1 &3600722470325120087
 GameObject:
   m_ObjectHideFlags: 0
@@ -241,7 +216,7 @@ GameObject:
   - component: {fileID: 1196456409010105134}
   - component: {fileID: 2590272801931473694}
   - component: {fileID: 8318812208368279291}
-  - component: {fileID: 6255178615889882937}
+  - component: {fileID: 5891363815124570825}
   m_Layer: 5
   m_Name: PlusButtonForCounter
   m_TagString: Untagged
@@ -304,7 +279,7 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
---- !u!114 &6255178615889882937
+--- !u!114 &5891363815124570825
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -323,7 +298,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}

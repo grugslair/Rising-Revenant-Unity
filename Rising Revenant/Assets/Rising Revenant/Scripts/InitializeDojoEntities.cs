@@ -6,25 +6,17 @@ using Random = UnityEngine.Random;
 
 public class InitializeDojoEntities : MonoBehaviour
 {
-    public string masterPrivateKey;
-    public string masterAddress;
 
     public WorldManager worldManager;
-
-    public string gameActionsAddress;
-    public string eventActionsAddress;
-    public string revenantActionsAddress;
-    public string tradeReinfActionsAddress;
-    public string tradeRevsActionsAddress;
 
     public BurnerManager burnerManager;
     private Dictionary<FieldElement, string> spawnedBurners = new();
 
     void Awake()
     {
-        var provider = new JsonRpcClient(worldManager.rpcUrl);
-        var signer = new SigningKey(masterPrivateKey);
-        var account = new Account(provider, signer, new FieldElement(masterAddress));
+        var provider = new JsonRpcClient(DojoCallsManager.katanaEndpoint);
+        var signer = new SigningKey(DojoCallsManager.masterPrivateKey);
+        var account = new Account(provider, signer, new FieldElement(DojoCallsManager.masterAddress));
 
         burnerManager = new BurnerManager(provider, account);
     }

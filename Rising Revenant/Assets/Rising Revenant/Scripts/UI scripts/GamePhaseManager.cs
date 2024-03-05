@@ -1,35 +1,60 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GamePhaseManager : MonoBehaviour
 {
     public MenuManager menuManager;
-    public GameObject componentsParents;
+    public CanvasGroup componentsParents;
     public GameObject winningPopUp;
     public GameObject worldEventManager;
 
     public TopBarUiElement PopUpUiElement;
 
+    public bool objectsAreVisible = true;
+
+    private void Start()
+    {
+        UiEntitiesReferenceManager.gamePhaseManager = this;
+    }
 
     private void OnEnable()
     {
         winningPopUp.SetActive(false);
-        DojoEntitiesDataManager.gameEntityCounterInstance.OnValueChange += CheckForWin;
-        worldEventManager.SetActive(true);
+        CameraController.Instance.active = true;
+
+        if (DojoEntitiesDataManager.currentWorldEvent == null)
+        {
+            worldEventManager.SetActive(false);
+        }
+        else
+        {
+            worldEventManager.GetComponent<WorldEventManager>().LoadLastWorldEventData(DojoEntitiesDataManager.currentWorldEvent);
+            worldEventManager.SetActive(true);
+        }
 
         CheckForWin();
     }
 
+
+    void Update()
+    {
+        // Check if the H key was pressed
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            // Toggle visibility
+            objectsAreVisible = !objectsAreVisible;
+            componentsParents.alpha = componentsParents.alpha == 0.2f ? 1f : 0.2f ;
+        }
+    }
+
     private void OnDisable()
     {
-        DojoEntitiesDataManager.gameEntityCounterInstance.OnValueChange -= CheckForWin;
         worldEventManager.SetActive(false);
+        CameraController.Instance.active = false;
     }
 
     public void CheckForWin()
     {
-        if (DojoEntitiesDataManager.gameEntityCounterInstance.outpostExistsCount == 1)
+        if (DojoEntitiesDataManager.gameEntCounter.outpostRemainingCount <= 1)
         {
             winningPopUp.SetActive(true);
         }
@@ -39,14 +64,15 @@ public class GamePhaseManager : MonoBehaviour
     {
         if (menuManager.currentlyOpened != null)
         {
-            componentsParents.SetActive(false);
+            componentsParents.alpha = 0f;
             CameraController.Instance.active = false;
+            objectsAreVisible = false;
         }
         else
         {
             CameraController.Instance.active = true;
-            componentsParents.SetActive(true);
+            componentsParents.alpha = 1f;
+            objectsAreVisible = true;
         }
     }
-
 }

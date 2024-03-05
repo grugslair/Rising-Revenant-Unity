@@ -6,9 +6,21 @@ using System.Numerics;
 using Dojo.Starknet;
 using Vector2 = UnityEngine.Vector2;
 using Random = System.Random;
+using SimpleGraphQL;
+using Unity.VisualScripting;
+using UnityEngine.UIElements;
+using System.Threading.Tasks;
 
 public static class RisingRevenantUtils
 {
+
+    [Serializable]
+    public struct Vec2
+    {
+        public UInt32 x;
+        public UInt32 y;
+    }
+
     public static float MAP_WIDHT = 10240;
     public static float MAP_HEIGHT = 5124;
     public static float SCALE = 2;
@@ -98,8 +110,10 @@ public static class RisingRevenantUtils
         return distance <= radius;
     }
 
-    public static string GetFullRevenantName(int id) {
-        return $"{NamesArray[DojoEntitiesDataManager.revDictInstance[id].firstNameIndex]} {SurnamesArray[DojoEntitiesDataManager.revDictInstance[id].lastNameIndex]}";
+    public static string GetFullRevenantName(RisingRevenantUtils.Vec2 id) {
+        var randomNum = DojoEntitiesDataManager.outpostDictInstance[id].position.x * DojoEntitiesDataManager.outpostDictInstance[id].position.y;
+
+        return $"{NamesArray[GetConsistentRandomNumber((int)randomNum, (int)DojoEntitiesDataManager.outpostDictInstance[id].position.x, 0,49)] } {SurnamesArray[GetConsistentRandomNumber((int)randomNum, (int)DojoEntitiesDataManager.outpostDictInstance[id].position.y, 0, 49)]}";
     }
 
     public static int GeneralHexToInt(string hexString)
@@ -114,6 +128,12 @@ public static class RisingRevenantUtils
         return intValue;
     }
 
+    /// <summary>
+    /// do this when the string is a literal otherwise replace doesnt work
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="replacements"></param>
+    /// <returns></returns>
     public static string ReplaceWords(string input, Dictionary<string, string> replacements)
     {
         foreach (var pair in replacements)
@@ -122,4 +142,17 @@ public static class RisingRevenantUtils
         }
         return input;
     }
+
+    public static int CalculateShields(uint lifes)
+    {
+        if (lifes >= 1 && lifes <= 2) return 0; 
+        if (lifes >= 3 && lifes <= 5) return 1;
+        if (lifes >= 6 && lifes <= 9) return 2; 
+        if (lifes >= 10 && lifes <= 13) return 3; 
+        if (lifes >= 14 && lifes <= 19) return 4; 
+        if (lifes >= 20) return 5; 
+        return 0;
+    }
+
+
 }

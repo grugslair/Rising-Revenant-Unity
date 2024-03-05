@@ -53,8 +53,8 @@ public class TradeReinforcementsUiElement : MonoBehaviour
     public async void RevokeTrade() {
         if (owner)
         {
-            var revokeStruct = new DojoCallsManager.RevokeTradeReinforcementStruct { gameId = DojoEntitiesDataManager.gameDataInstance.gameId, tradeId = (uint)int.Parse(tradeId) };
-            var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.tradeReinfActionsAddress, functionName = "revoke" };
+            var revokeStruct = new DojoCallsManager.RevokeTradeReinforcementStruct { gameId = DojoEntitiesDataManager.currentGameId, tradeId = new Dojo.Starknet.FieldElement(tradeId) };
+            var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.tradeReinforcementActionsAddress, functionName = "revoke" };
 
             await DojoCallsManager.RevokeTradeReinforcementDojoCall(revokeStruct,endpoint);
         }
@@ -64,8 +64,8 @@ public class TradeReinforcementsUiElement : MonoBehaviour
     {
         if (owner)
         {
-            var changeTradePriceStruct = new DojoCallsManager.ModifyTradeReinforcementStruct { gameId = 1, price = new Dojo.Starknet.FieldElement(20), tradeId = (uint)int.Parse(tradeId) };
-            var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.tradeReinfActionsAddress, functionName = "revoke" };
+            var changeTradePriceStruct = new DojoCallsManager.ModifyTradeReinforcementStruct { gameId = DojoEntitiesDataManager.currentGameId, price = new Dojo.Starknet.FieldElement(20), tradeId = new Dojo.Starknet.FieldElement(tradeId) };
+            var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.tradeReinforcementActionsAddress, functionName = "revoke" };
 
             await DojoCallsManager.ModifyTradeReinforcementDojoCall(changeTradePriceStruct, endpoint);
         }
@@ -75,8 +75,8 @@ public class TradeReinforcementsUiElement : MonoBehaviour
     public async void PurchaseTrade() { 
         if (!owner)
         {
-            var purchaseStruct = new DojoCallsManager.PurchaseTradeReinforcementStruct { gameId = DojoEntitiesDataManager.gameDataInstance.gameId, tradeId = (uint)int.Parse(tradeId) };
-            var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.tradeReinfActionsAddress, functionName = "purchase" };
+            var purchaseStruct = new DojoCallsManager.PurchaseTradeReinforcementStruct { gameId = DojoEntitiesDataManager.currentGameId, tradeId = new Dojo.Starknet.FieldElement(tradeId) };
+            var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.tradeReinforcementActionsAddress, functionName = "purchase" };
 
             await DojoCallsManager.PurchaseTradeReinforcementDojoCall(purchaseStruct, endpoint);
         }

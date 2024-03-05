@@ -46,7 +46,7 @@ namespace Dojo
 
                 var modelField = (ModelField)attribute[0];
                 var value = model.Members[modelField.Name];
-               
+
                 HandleField(this, field, value);
             }
         }
@@ -56,19 +56,10 @@ namespace Dojo
         // to the value of the model member.
         private static void HandleField(object instance, System.Reflection.FieldInfo field, object value)
         {
-
             // if the field is an enum, we need to convert the value to the enum type
             if (field.FieldType.IsEnum)
             {
-                Debug.Log("break here");
                 field.SetValue(instance, Enum.ToObject(field.FieldType, value));
-               
-            }
-
-            //HERE this is my manual change to the lib
-            else if (field.FieldType == typeof(Boolean))
-            {
-                field.SetValue(instance, bottlenoselabs.C2CS.Runtime.CBool.ToBoolean((bottlenoselabs.C2CS.Runtime.CBool)value)); 
             }
             // if the field is a primitive, we can just set it
             // fieldelement is included as a primitive because its a class

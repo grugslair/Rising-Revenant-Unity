@@ -1,9 +1,6 @@
 using System.Linq;
-using dojo_bindings;
 using UnityEngine;
 using Dojo.Torii;
-using System;
-using Dojo.Starknet;
 using System.Threading.Tasks;
 
 namespace Dojo

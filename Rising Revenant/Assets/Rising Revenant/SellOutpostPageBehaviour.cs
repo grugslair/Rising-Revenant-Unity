@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,35 +24,76 @@ public class SellOutpostPageBehaviour : Menu
     private Outpost currentlySelectedOutpost;
     
     private int currentOutpostIndex;
+    private List<RisingRevenantUtils.Vec2> listOfSellableOutposts = new List<RisingRevenantUtils.Vec2>();
 
+    [SerializeField]
+    private RectTransform mapView;
+    [SerializeField]
+    private RectTransform outpostMarker;
+
+    public bool loaded = false;
 
     private void OnEnable()
     {
-        // get the first owned outpost data
-        // if there are no outposts, return
-
-        if (DojoEntitiesDataManager.ownOutpostIndex.Count == 0) {
+        if (DojoEntitiesDataManager.ownOutpostIndex.Count == 0)
+        {
             currentOutpostIndex = -1;
-            return; 
+            return;
         }
 
+        StartCoroutine(LoadSellableOutposts());
+    }
+
+    /// <summary>
+    /// here we check if the outposts are on sale and if they are not we add them to the list of sellable outposts
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator LoadSellableOutposts()
+    {
+        loaded = false;
+
+        foreach (var item in DojoEntitiesDataManager.ownOutpostIndex)
+        {
+            var outpost = DojoEntitiesDataManager.outpostDictInstance[item];
+
+            if (outpost.life > 0)
+            {
+                Task<bool> isOnSaleTask = RisingRevenantUtils.IsOutpostOnSale(outpost.position, RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId));
+                yield return new WaitUntil(() => isOnSaleTask.IsCompleted); 
+
+                if (!isOnSaleTask.Result) 
+                {
+                    listOfSellableOutposts.Add(outpost.position);
+                }
+            }
+        }
+
+        loaded = true;
         SetTextsAndData(0);
         currentOutpostIndex = 0;
     }
 
+    /// <summary>
+    /// called from the UI to cycle through the outposts
+    /// </summary>
+    /// <param name="dir"></param>
     public void CycleThroughOutposts(int dir)
     {
         var newIdx = currentOutpostIndex + dir;
 
-        if (newIdx < 0 || newIdx >= DojoEntitiesDataManager.ownOutpostIndex.Count) { return; }
+        if (newIdx < 0 || newIdx >= listOfSellableOutposts.Count) { return; }
 
         SetTextsAndData(newIdx);
     }
 
+    /// <summary>
+    /// sets the texts and data for the currently selected outpost, takes in the idx of the array where all the outposts are saved 
+    /// </summary>
+    /// <param name="idx"></param>
     private void SetTextsAndData(int idx)
     {
         currentOutpostIndex = idx;
-        currentlySelectedOutpost = DojoEntitiesDataManager.outpostDictInstance[DojoEntitiesDataManager.ownOutpostIndex[idx]];
+        currentlySelectedOutpost = DojoEntitiesDataManager.outpostDictInstance[listOfSellableOutposts[idx]];
 
         outpostDataText.text = $"Outpost Id: {-1} \n" +
                              $"Lifes: {currentlySelectedOutpost.life} \n" +
@@ -57,8 +101,24 @@ public class SellOutpostPageBehaviour : Menu
                              $"Rev name: {RisingRevenantUtils.GetFullRevenantName(currentlySelectedOutpost.position)}";
 
         outpostPositionText.text = $"Position:\nX: {currentlySelectedOutpost.position.x} Y: {currentlySelectedOutpost.position.y}";
-    }
 
+        SetUpOutpostPic(new Vector2(currentlySelectedOutpost.position.x, currentlySelectedOutpost.position.y));
+    }
+    
+    private void SetUpOutpostPic(Vector2 pos)
+    {
+        var compHeight = mapView.rect.height;
+        var compWidth = mapView.rect.width;
+
+        float scaledX = compWidth - (pos.x / RisingRevenantUtils.MAP_WIDHT) * compWidth;
+        float scaledY = (pos.y / RisingRevenantUtils.MAP_HEIGHT) * compHeight;
+
+        outpostMarker.anchoredPosition = new Vector2(scaledX, scaledY);
+    }
+    
+    /// <summary>
+    /// function to call on sell of the outpost
+    /// </summary>
     public async void SellOutpost()
     {
         if (costInputField.text == "") { return; }

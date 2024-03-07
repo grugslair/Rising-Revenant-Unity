@@ -3,6 +3,7 @@ using Dojo;
 using dojo_bindings;
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -102,37 +103,43 @@ public class WorldEventManager : MonoBehaviour
         }
     }
 
-    public void LoadLastWorldEventData(CurrentWorldEvent lastWorldEvent) 
+    public void LoadLastWorldEventData(CurrentWorldEvent lastWorldEvent)
     {
         if (UiEntitiesReferenceManager.warningSystemUiComponent != null)
         {
-            if (UiEntitiesReferenceManager.warningSystemUiComponent.transform.gameObject.activeSelf == false)
+            if (!UiEntitiesReferenceManager.warningSystemUiComponent.transform.gameObject.activeSelf)
             {
                 UiEntitiesReferenceManager.warningSystemUiComponent.transform.gameObject.SetActive(true);
             }
         }
 
-        //UnsubAllOutposts();
-
         gameObject.transform.position = new Vector3(lastWorldEvent.position.x, 0.01f, lastWorldEvent.position.y);
-        //what??
-        float scaleFactor = MathF.Sqrt(lastWorldEvent.radius*2) *2;
-
+        float scaleFactor = MathF.Sqrt(lastWorldEvent.radius * 2) * 2;
         gameObject.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
-        
+
+        StartCoroutine(CheckOutpostsAffectedByEvent(lastWorldEvent));
+    }
+
+    private IEnumerator CheckOutpostsAffectedByEvent(CurrentWorldEvent lastWorldEvent)
+    {
         foreach (var outpost in DojoEntitiesDataManager.outpostDictInstance.Values)
         {
-            if (RisingRevenantUtils.IsPointInsideCircle(new Vector2(lastWorldEvent.position.x,lastWorldEvent.position.y), lastWorldEvent.radius, new Vector2(outpost.position.x, outpost.position.y)))
+            if (RisingRevenantUtils.IsPointInsideCircle(new Vector2(lastWorldEvent.position.x, lastWorldEvent.position.y), lastWorldEvent.radius, new Vector2(outpost.position.x, outpost.position.y)))
             {
-                outpost.SetAttackState(true);
-                Debug.Log($"I have attacked one outpost, the outpost is at {outpost.position.x} {outpost.position.y}");
+                var isOutpostEventConfirmedTask = RisingRevenantUtils.IsOutpostEventConfirmed(outpost.position, (int)lastWorldEvent.number, RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId));
+               
+                yield return new WaitUntil(() => isOutpostEventConfirmedTask.IsCompleted);
 
-                //var outpostModel = new dojo.KeysClause[]
-                //{ new() { model_ = CString.FromString("Outpost"), keys = new[] { DojoEntitiesDataManager.currentGameId.ToString(),outpost.position.x.ToString("x").ToLower() , outpost.position.y.ToString("x").ToLower() } } };
-
-                //outpost.isSubbed = true;
-
-                //worldManager.toriiClient.AddModelsToSync(outpostModel);
+                if (isOutpostEventConfirmedTask.Result)
+                {
+                    outpost.SetAttackState(false);
+                    outpost.SetOutpostTexture();
+                }
+                else
+                {
+                    outpost.SetAttackState(true);
+                    Debug.Log($"I have attacked one outpost, the outpost is at {outpost.position.x} {outpost.position.y}");
+                }
             }
             else
             {
@@ -141,18 +148,18 @@ public class WorldEventManager : MonoBehaviour
             }
         }
 
-        //call minimap
+        // Additional logic here, like updating the minimap and rev journal
         if (UiEntitiesReferenceManager.minimapComp != null)
         {
-            UiEntitiesReferenceManager.minimapComp.SpawnEventOnMinimap(lastWorldEvent);
+            UiEntitiesReferenceManager.minimapComp.SpawnEventOnMinimap(new Vector2(lastWorldEvent.position.x, lastWorldEvent.position.y));
         }
 
-        //call revj
         if (UiEntitiesReferenceManager.revJournalCompBehaviour != null)
         {
             UiEntitiesReferenceManager.revJournalCompBehaviour.HandleWorldEventAdded(lastWorldEvent);
         }
     }
+
     private void UnsubAllOutposts()
     {
         foreach (var outpost in DojoEntitiesDataManager.outpostDictInstance.Values)

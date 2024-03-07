@@ -18,6 +18,9 @@ public class BuyReinforcementsPageBehaviour : Menu
     [SerializeField]
     private TMP_Text staticPriceText;
 
+    [SerializeField]
+    private AudioClip[] soundEffects;
+
     private string[] explanation = new string[2] {
         "Reinforcements provide an additional extra life to your outpost, enhancing the player's ability to withstand hostile attacks",
         "An outpost can only have a maximum of 20 reinforcements applied during its existance"};
@@ -60,11 +63,13 @@ public class BuyReinforcementsPageBehaviour : Menu
 
     public void CalcNewTotal()
     {
-        confirmBuyText.text = "Purchase (Tot: " + (DojoEntitiesDataManager.outpostMarketData.pricePerOutpost * counterUiElement.currentValue).ToString() + " $LORDS)";
+        confirmBuyText.text = "Purchase (Tot: " + RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost, 2) + " $LORDS)";
     }
 
     public async void CallDojoBuyReinforcementsFunc()
     {
+        SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
+
         var createRevenantsProps = new DojoCallsManager.PurchaseReinforcementsStruct
         {
             gameId = DojoEntitiesDataManager.currentGameId,

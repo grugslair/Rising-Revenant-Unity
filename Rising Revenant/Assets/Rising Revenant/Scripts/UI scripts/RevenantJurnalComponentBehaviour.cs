@@ -23,10 +23,10 @@ public class RevenantJurnalComponentBehaviour : MonoBehaviour
     {
         //eventNumText.text = $"Event Data #{RisingRevenantUtils.FieldElementToInt(worldEvent)}";
         //on call queyr to tot count?
-        eventNumText.text = $"Event Data #wrong";
-        eventDataText.text = $"Radius: {worldEvent.radius}km\n" +
+        eventNumText.text = $"Event Data {DojoEntitiesDataManager.worldEventDictInstance.Count -1}";
+        eventDataText.text = $"Radius: {worldEvent.radius} km\n" +
                              $"Position: X:{worldEvent.position.x} || Y:{worldEvent.position.y}\n" +
-                             $"Next Attack IDK";
+                             $"Next Attack: IDK";
 
         //kill all children
         foreach (Transform child in parentList.transform)

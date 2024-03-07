@@ -2,9 +2,10 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems; 
+using UnityEngine.EventSystems;
+using Unity.VisualScripting;
 
-public class ButtonInteractionScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ButtonInteractionScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     public Texture2D pictureOfPointer; 
 
@@ -23,8 +24,10 @@ public class ButtonInteractionScript : MonoBehaviour, IPointerEnterHandler, IPoi
 
     public float transitionSpeed = 1.0f;
 
-    public bool disabled = false; 
-    //disabled only works on initial start
+    public bool disabled = false;
+
+    public bool makeSounds = true;
+    public AudioClip[] soundEffects;
 
     private Coroutine backgroundTransitionCoroutine;
     private Coroutine textTransitionCoroutine;
@@ -49,6 +52,16 @@ public class ButtonInteractionScript : MonoBehaviour, IPointerEnterHandler, IPoi
 
         StartTransition(endBackGroundColor, endTextColor, endImageColor);
         //Cursor.SetCursor(pictureOfPointer, Vector2.zero, CursorMode.Auto);
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (disabled) return; 
+
+        if (makeSounds)
+        {
+            SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], false);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -106,6 +119,8 @@ public class ButtonInteractionScript : MonoBehaviour, IPointerEnterHandler, IPoi
         this.text.color = new Color(textColor.r, textColor.g, textColor.b, opacity);
         this.borderImage.color = new Color(imageColor.r, imageColor.g, imageColor.b, opacity);
     }
+
+    
 
     private void ResetColors()
     {

@@ -234,6 +234,9 @@ MonoBehaviour:
   endImageColor: {r: 0.009433985, g: 0.009433985, b: 0.009433985, a: 1}
   transitionSpeed: 0.3
   disabled: 0
+  makeSounds: 1
+  soundEffects:
+  - {fileID: 8300000, guid: bb0f05e0d86392949a945cdf6765d9bc, type: 3}
 --- !u!1 &4359865584750175255
 GameObject:
   m_ObjectHideFlags: 0

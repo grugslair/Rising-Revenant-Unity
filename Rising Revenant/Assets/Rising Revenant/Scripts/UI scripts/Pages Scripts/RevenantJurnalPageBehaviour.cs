@@ -23,6 +23,9 @@ public class RevenantJurnalPageBehaviour : Menu
     private int currentEventNumber;
     private UInt32 maxNumOfEvents;
 
+    [SerializeField]
+    private AudioClip openingPageSFX;
+
     public struct WorldEventStruct
     {
         public FieldElement gameId;
@@ -65,6 +68,8 @@ public class RevenantJurnalPageBehaviour : Menu
 
     void OnEnable()
     {
+        SoundEffectManager.Instance.PlaySoundEffect(openingPageSFX,true);
+
         if (DojoEntitiesDataManager.currentWorldEvent == null) { return; }
 
         var currentWorldEvent = new WorldEventStruct

@@ -33,8 +33,8 @@ public class VideoTrailerBehaviour : MonoBehaviour
 
     private void OnVideoEnded(VideoPlayer source)
     {
-        uIStateManager.SetUiState(3);
         backgroundMusicManager.TogglePauseBackgroundMusic();
+        uIStateManager.SetUiState(3);
     }
 
     private void OnEnable()

@@ -33,8 +33,8 @@ public class DojoToriiLoader : MonoBehaviour
               entity {
                 keys
                 models {
-                  __typename
                   ... on GameState {
+                    __typename
                	    game_id
                   }
                 }
@@ -95,7 +95,7 @@ public class DojoToriiLoader : MonoBehaviour
             }
 
             var gameId = await latestGameId();  // this shuold also set the dojo currentgmae id
-            Debug.Log(gameId);
+            Debug.Log(gameId);                  // no it shoudlnt what yu on abut
             //SubscribeToGameData(gameId);
 
             LoadingHasCompleted = true;

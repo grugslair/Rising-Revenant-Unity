@@ -128,6 +128,21 @@ public static class RisingRevenantUtils
         return intValue;
     }
 
+    public static string ConvertLargeNumberToString(BigInteger largeNumber, int roundTo = -1)
+    {
+        decimal scaleFactor = 1e18m; 
+        decimal result = (decimal)largeNumber / scaleFactor;
+
+        if (roundTo >= 0)
+        {
+            result = decimal.Round(result, roundTo, MidpointRounding.AwayFromZero);
+        }
+
+        string resultString = result.ToString("G29");
+
+        return resultString;
+    }
+
     /// <summary>
     /// do this when the string is a literal otherwise replace doesnt work
     /// </summary>
@@ -155,4 +170,212 @@ public static class RisingRevenantUtils
     }
 
 
+
+    public async static Task<bool> IsOutpostOnSale(Vec2 outpostId, int gameId)
+    {
+
+        return false;
+
+        var dict = new Dictionary<string, string>
+        {
+            { "GAME_ID", gameId.ToString() }
+        };
+
+        string query = @"
+        query {
+            outpostTradeModels(where: { game_id: ""0""}) {
+              edges {
+                node {
+                  entity {
+                    keys
+                    models {
+                      __typename
+                      ... on OutpostTrade {
+                        game_id
+                        offer {
+                          x
+                          y
+                        }
+                        status
+                        price
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }";
+
+        //var query = RisingRevenantUtils.ReplaceWords(lastSavedGraphqlQueryStructure, dict);
+        //var client = new GraphQLClient(DojoCallsManager.graphlQLEndpoint);
+
+        var client = new GraphQLClient("https://api.cartridge.gg/x/rr/torii/graphql");
+        var tradesRequest = new Request
+        {
+            Query = query,
+        };
+
+        var responseType = new
+        {
+            outpostTradeModels = new
+            {
+                edges = new[]
+                {
+                   new
+                   {
+                        node = new
+                        {
+                            entity = new
+                            {
+                                keys = new[]
+                                {
+                                   ""
+                                },
+                                models = new[]
+                                {
+                                    new
+                                    {
+                                        __typename = "",
+                                        game_id = "",
+                                        trade_id = "",
+                                        status = "",
+                                        offer = new
+                                        {
+                                            x= "",
+                                            y = "",
+                                        },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        var response = await client.Send(() => responseType, tradesRequest);
+
+        for (int i = 0; i < response.Data.outpostTradeModels.edges.Length; i++)
+        {
+            var edge = response.Data.outpostTradeModels.edges[i];
+
+            for (int x = 0; x < edge.node.entity.models.Length; x++)
+            {
+                if (edge.node.entity.models[x].__typename == "OutpostTrade")
+                {
+                    //need to loop throuhg them to find if there is one that status is selling
+                    if (edge.node.entity.models[x].status == "1")
+                    {
+                        Debug.Log("there is something selling");
+                        return true;
+                    }
+                }
+            }
+        }
+
+        Debug.Log("nothing is selling");
+        return false;
+    }
+
+    public async static Task<bool> IsOutpostEventConfirmed(Vec2 outpostId, int eventId, int gameId)
+    {
+        return false;
+
+        var dict = new Dictionary<string, string>
+        {
+            { "GAME_ID", gameId.ToString() },
+        };
+
+        string query = @"
+        query {
+            outpostVerifiedModels(where: { game_id: ""0"", event_id: ""2""}) {
+              edges {
+                node {
+                  entity {
+                    keys
+                    models {
+                      __typename
+                      ... on OutpostVerified {
+                        game_id
+                        verified
+                        outpost_id{
+                          x
+                          y
+                        }
+                        event_id
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }";
+
+        //var query = RisingRevenantUtils.ReplaceWords(lastSavedGraphqlQueryStructure, dict);
+
+        //var client = new GraphQLClient(DojoCallsManager.graphlQLEndpoint);
+        var client = new GraphQLClient("https://api.cartridge.gg/x/rr/torii/graphql");
+        var tradesRequest = new Request
+        {
+            Query = query,
+        };
+
+        var responseType = new
+        {
+            outpostTradeModels = new
+            {
+                edges = new[]
+                {
+                   new
+                   {
+                        node = new
+                        {
+                            entity = new
+                            {
+                                keys = new[]
+                                {
+                                   ""
+                                },
+                                models = new[]
+                                {
+                                    new
+                                    {
+                                        __typename = "",
+                                        game_id = "",
+                                        verified = "",
+                                        event_id = "",
+                                        outpost_id = new
+                                        {
+                                            x= "",
+                                            y = "",
+                                        },
+                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        var response = await client.Send(() => responseType, tradesRequest);
+
+        for (int i = 0; i < response.Data.outpostTradeModels.edges.Length; i++)
+        {
+            var edge = response.Data.outpostTradeModels.edges[i];
+
+            for (int x = 0; x < edge.node.entity.models.Length; x++)
+            {
+                if (edge.node.entity.models[x].__typename == "OutpostVerified")
+                {
+                    //if there is one that should mean that it is verified
+                    Debug.Log("given id is verified");
+                    return true;
+                }
+            }
+        }
+
+        Debug.Log("given id is not verified");
+        return false;
+    }
 }

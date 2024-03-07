@@ -570,7 +570,7 @@ MonoBehaviour:
   sellerText: {fileID: 4873408646990826649}
   reinforcementCountText: {fileID: 4049882123072678695}
   priceText: {fileID: 8857692940090043024}
-  interactButton: {fileID: 0}
+  interactButton: {fileID: 8315133985751862411}
   sellerWholeHex: 
 --- !u!1001 &4474604558569964501
 PrefabInstance:
@@ -692,3 +692,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3657001846121384467, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
   m_PrefabInstance: {fileID: 4474604558569964501}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8315133985751862411 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5583820798489825118, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
+  m_PrefabInstance: {fileID: 4474604558569964501}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

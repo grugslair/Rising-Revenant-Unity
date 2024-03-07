@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,132 @@ public class TradeOutpostPageBehaviour : Menu
     private bool hidingOthersTrades;
     public RawImage hidingOthersTradesImg;
 
+    [Space(30)]
+    [Header("For Cost Sorting")]
+    public TMP_InputField priceSortingMinInput;
+    public TMP_InputField priceSortingMaxInput;
+
+    [Space(30)]
+    [Header("For Address Sorting ")]
+    public TMP_InputField addressInputField;
+
+    [Space(50)]
+    public TMP_Dropdown dropdown;
+
+    private string[] graphqlQueryStructure = new string[3]
+    {
+        @"query {
+            outpostTradeModels(
+                where: { 
+                    game_id: GAME_ID,
+                    status: 1,
+                    LTE_VAR: MAX_VAL,
+                    GTE_VAR: MIN_VAL
+                }
+                last: NUM_DATA
+                order: { direction: DESC, field: FIELD_NAME }
+            ) {
+                edges {
+                    node {
+                        entity {
+                            keys
+                            models {
+                                ... on OutpostTrade {
+                                    __typename
+                                    game_id
+                                    trade_id
+                                    price
+                                    seller
+                                    status
+                                    offer {
+                                      x
+                                      y
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }",
+
+        @"query {
+            outpostTradeModels(
+                where: { 
+                    game_id: GAME_ID,
+                    status: 1,
+                    seller: SELLER
+                }
+            ) {
+                edges {
+                    node {
+                        entity {
+                            keys
+                            models {
+                                ... on OutpostTrade {
+                                    __typename
+                                    game_id
+                                    trade_id
+                                    price
+                                    seller
+                                    status
+                                    offer {
+                                      x
+                                      y
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }",
+
+        @"query {
+            outpostTradeModels(
+                where: { 
+                    game_id: GAME_ID, 
+                    status: 1 
+                } 
+                last: NUM_DATA
+            ) {
+                edges {
+                    node {
+                        entity {
+                            keys
+                            models {
+                                ... on OutpostTrade {
+                                     __typename
+                                    game_id
+                                    trade_id
+                                    price
+                                    seller
+                                    status
+                                    offer {
+                                      x
+                                      y
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }"
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private string lastSavedGraphqlQueryStructure = @"
       query {
@@ -30,12 +157,10 @@ public class TradeOutpostPageBehaviour : Menu
               entity {
                 keys
                 models {
-                  __typename
-                  ... on OutpostTrade {
+                  ... on OutpostTrade { 
+                    __typename
                     game_id
                     trade_id
-                    trade_type
-                    buyer
                     price
                     seller
                     status
@@ -51,11 +176,27 @@ public class TradeOutpostPageBehaviour : Menu
         }
       }";
 
+    IEnumerator CallRefreshTradesPeriodically()
+    {
+        while (true)
+        {
+            RefreshTrades();
+            yield return new WaitForSeconds(60f);
+        }
+    }
 
     private void OnEnable()
     {
-        RefreshTrades();
+        lastSavedGraphqlQueryStructure = RisingRevenantUtils.ReplaceWords(lastSavedGraphqlQueryStructure, new Dictionary<string, string> { { "GAME_ID", RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() } });
+        StartCoroutine(CallRefreshTradesPeriodically());
     }
+
+    private void OnDisable()
+    {
+        StopCoroutine(CallRefreshTradesPeriodically());
+    }
+
+
 
     public void HideYourTrades()
     {
@@ -97,6 +238,81 @@ public class TradeOutpostPageBehaviour : Menu
     }
 
 
+
+
+
+
+    public void CallForSort()
+    {
+        var queryStruct = "";
+        var dictOfWordChanges = new Dictionary<string, string>();
+
+        dictOfWordChanges.Add("GAME_ID", '"' + RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() + '"');
+        dictOfWordChanges.Add("NUM_DATA", "25");  //this needs to be a variable
+
+        switch (currentSortingMethod)
+        {
+            case 0: //latest
+                queryStruct = graphqlQueryStructure[2];
+                break;
+
+            case 1: //price
+
+                queryStruct = graphqlQueryStructure[0];
+
+                if (priceSortingMaxInput.text == "" && priceSortingMinInput.text == "") { return; }  // if both are empty then return
+
+                int number;
+                bool isNumeric;
+
+                if (priceSortingMaxInput.text != "")  // if price is somehting then check what it is
+                {
+                    isNumeric = int.TryParse(priceSortingMaxInput.text, out number);
+                    if (!isNumeric) { return; }  // if it is not a valide number 
+                    if (number < 0) { return; }
+                    dictOfWordChanges.Add("MAX_VAL", '"' + number.ToString() + '"');
+                    dictOfWordChanges.Add("LTE_VAR", "priceLTE");
+                }
+                else
+                {
+                    dictOfWordChanges.Add("LTE_VAR: MAX_VAL,", "");
+                }
+
+                if (priceSortingMinInput.text != "")
+                {
+                    isNumeric = int.TryParse(priceSortingMinInput.text, out number);
+                    if (!isNumeric) { return; }
+                    if (number < 0) { return; }
+                    dictOfWordChanges.Add("MIN_VAL", '"' + number.ToString() + '"');
+                    dictOfWordChanges.Add("GTE_VAR", "priceGTE");
+                }
+                else
+                {
+                    dictOfWordChanges.Add("GTE_VAR: MIN_VAL", "");
+                }
+
+                dictOfWordChanges.Add("FIELD_NAME", "PRICE");
+
+                break;
+
+            case 2: 
+
+                queryStruct = graphqlQueryStructure[1];
+
+                dictOfWordChanges.Add("SELLER", '"' + addressInputField.text + '"');
+                break;
+        }
+
+        queryStruct = RisingRevenantUtils.ReplaceWords(queryStruct, dictOfWordChanges);
+    
+        if (queryStruct.Length > 0)
+        {
+            lastSavedGraphqlQueryStructure = queryStruct;
+
+            RefreshTrades();
+        }
+    }
+
     public async void RefreshTrades()
     {
         foreach (Transform child in tradesParent.transform)
@@ -104,17 +320,12 @@ public class TradeOutpostPageBehaviour : Menu
             Destroy(child.gameObject);
         }
 
-        var dict = new Dictionary<string, string>
-        {
-            { "GAME_ID", "0" }
-        };
-
-        var query = RisingRevenantUtils.ReplaceWords(lastSavedGraphqlQueryStructure, dict);
+        Debug.Log(lastSavedGraphqlQueryStructure);
 
         var client = new GraphQLClient(DojoCallsManager.graphlQLEndpoint);
         var tradesRequest = new Request
         {
-            Query = query,
+            Query = lastSavedGraphqlQueryStructure,
         };
 
         var responseType = new
@@ -122,35 +333,35 @@ public class TradeOutpostPageBehaviour : Menu
             outpostTradeModels = new
             {
                 edges = new[]
-            {
-               new
-               {
-                    node = new
-                    {
-                        entity = new
+                {
+                   new
+                   {
+                        node = new
                         {
-                            keys = new[]
+                            entity = new
                             {
-                               ""
-                            },
-                            models = new[]
-                            {
-                                new
+                                keys = new[]
                                 {
-                                    __typename = "",
-                                    game_id = "",
-                                    trade_id = "",
-                                    trade_type = "",
-                                    buyer = "",
-                                    price = "",
-                                    seller = "",
-                                    status = "",
-                                    offer = new
+                                   ""
+                                },
+                                models = new[]
+                                {
+                                    new
                                     {
-                                        x= "",
-                                        y = "",
-                                    },
-                                }
+                                        __typename = "",
+                                        game_id = "",
+                                        trade_id = "",
+                                        trade_type = "",
+                                        buyer = "",
+                                        price = "",
+                                        seller = "",
+                                        status = "",
+                                        offer = new
+                                        {
+                                            x= "",
+                                            y = "",
+                                        },
+                                    }
                                 }
                             }
                         }
@@ -187,6 +398,26 @@ public class TradeOutpostPageBehaviour : Menu
                 }
             }
         }
+    }
+
+
+    public void CallForSortMenuSelection()
+    {
+        int selectedSort = dropdown.value;
+
+        for (int i = 0; i < sortingAlgos.Length; i++)
+        {
+            if (i == selectedSort)
+            {
+                sortingAlgos[i].SetActive(true);
+            }
+            else
+            {
+                sortingAlgos[i].SetActive(false);
+            }
+        }
+
+        currentSortingMethod = selectedSort;
     }
 
 }

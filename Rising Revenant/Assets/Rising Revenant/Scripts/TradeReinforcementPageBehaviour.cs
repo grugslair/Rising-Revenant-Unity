@@ -1,6 +1,7 @@
-
+using SimpleGraphQL;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,11 +57,10 @@ public class TradeReinforcementPageBehaviour : Menu
                     entity {
                         keys
                         models {
-                            ... on TradeReinforcement {
-                                 game_id
+                            ... on ReinforcementTrade {
+                               __typename
+                                game_id
                                 trade_id
-                                trade_type
-                                buyer
                                 price
                                 seller
                                 offer
@@ -86,11 +86,10 @@ public class TradeReinforcementPageBehaviour : Menu
                     entity {
                         keys
                         models {
-                            ... on TradeReinforcement {
-                                 game_id
+                            ... on ReinforcementTrade {
+                        __typename
+                                game_id
                                 trade_id
-                                trade_type
-                                buyer
                                 price
                                 seller
                                 offer
@@ -116,11 +115,10 @@ public class TradeReinforcementPageBehaviour : Menu
                     entity {
                         keys
                         models {
-                            ... on TradeReinforcement {
-                                 game_id
+                            ... on ReinforcementTrade {
+                        __typename
+                                game_id
                                 trade_id
-                                trade_type
-                                buyer
                                 price
                                 seller
                                 offer
@@ -132,51 +130,54 @@ public class TradeReinforcementPageBehaviour : Menu
             }
         }
     }"
-};
+    };
 
 
 
 
     private string lastSavedGraphqlQueryStructure = @"
-       query {
-    reinforcementTradeModels(where: {status : 1, game_id: 1}) {
-      edges {
-        node {
-          entity {
-            keys
-            models {
-              __typename
-              ... on ReinforcementTrade {
-                game_id
-                trade_id
-                trade_type
-                buyer
-                price
-                seller
-                offer
-                status
+         query {
+             reinforcementTradeModels(where: {status : 1, game_id: ""GAME_ID""}) {
+              edges {
+                node {
+                  entity {
+                    keys
+                    models {
+                      __typename
+                      ... on ReinforcementTrade {
+                        __typename
+                        game_id
+                        trade_id
+                        price
+                        seller
+                        offer
+                        status
+                      }
+                    }
+                  }
+                }
               }
             }
-          }
+          }";
+
+    IEnumerator CallRefreshTradesPeriodically()
+    {
+        while (true)
+        { 
+            RefreshTrades(); 
+            yield return new WaitForSeconds(60f);
         }
-      }
     }
-  }";
-
-    // might need some testing because we dont know if the string can just work without the whole query thing 
-    //add a timer every 5 seconds to refresh
-
-
 
     private void OnEnable()
     {
-        //InvokeRepeating("NewLoad", 0f, 5f);
-        // this needs to get the value of the bools and set the correct image
+        lastSavedGraphqlQueryStructure = RisingRevenantUtils.ReplaceWords(lastSavedGraphqlQueryStructure, new Dictionary<string, string> { { "GAME_ID", RisingRevenantUtils.FieldElementToInt( DojoEntitiesDataManager.currentGameId).ToString() } });
+        StartCoroutine(CallRefreshTradesPeriodically()); 
     }
 
     private void OnDisable()
     {
-       // CancelInvoke("NewLoad");
+        StopCoroutine(CallRefreshTradesPeriodically());
     }
 
 
@@ -237,12 +238,8 @@ public class TradeReinforcementPageBehaviour : Menu
         var queryStruct = "";
         var dictOfWordChanges = new Dictionary<string, string>();
 
-        //dictOfWordChanges.Add("GAME_ID", DojoEntitiesDataManager.currentGameId.ToString());
-        dictOfWordChanges.Add("GAME_ID", "1");
-
-        dictOfWordChanges.Add("NUM_DATA", "25");
-
-        Debug.Log("is this getting called");
+        dictOfWordChanges.Add("GAME_ID", '"' + RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() + '"' );
+        dictOfWordChanges.Add("NUM_DATA", "25");  //this needs to be a variable
 
         switch (currentSortingMethod)
         {
@@ -257,11 +254,10 @@ public class TradeReinforcementPageBehaviour : Menu
                 dictOfWordChanges.Add("MAX_VAL", sliderForCountSorting.currentMaxValue.ToString());
                 dictOfWordChanges.Add("MIN_VAL", sliderForCountSorting.currentMinValue.ToString());
 
+                dictOfWordChanges.Add("LTE_VAR", "offerLTE");
+                dictOfWordChanges.Add("GTE_VAR", "offerGTE");
 
-                dictOfWordChanges.Add("LTE_VAR", "countLTE");
-                dictOfWordChanges.Add("GTE_VAR", "countGTE");
-
-                dictOfWordChanges.Add("FIELD_NAME", "COUNT");
+                dictOfWordChanges.Add("FIELD_NAME", "OFFER");
 
                 break;
 
@@ -279,7 +275,7 @@ public class TradeReinforcementPageBehaviour : Menu
                     isNumeric = int.TryParse(priceSortingMaxInput.text, out number);
                     if (!isNumeric) { return; }  // if it is not a valide number 
                     if (number < 0) { return; }
-                    dictOfWordChanges.Add("MAX_VAL", number.ToString());
+                    dictOfWordChanges.Add("MAX_VAL", '"' + number.ToString() + '"');
                     dictOfWordChanges.Add("LTE_VAR", "priceLTE");
                 }
                 else
@@ -292,7 +288,7 @@ public class TradeReinforcementPageBehaviour : Menu
                     isNumeric = int.TryParse(priceSortingMinInput.text, out number);
                     if (!isNumeric) { return; }
                     if (number < 0) { return; }
-                    dictOfWordChanges.Add("MIN_VAL", number.ToString());
+                    dictOfWordChanges.Add("MIN_VAL", '"' + number.ToString() + '"');
                     dictOfWordChanges.Add("GTE_VAR", "priceGTE");
                 }
                 else
@@ -310,104 +306,104 @@ public class TradeReinforcementPageBehaviour : Menu
 
                 queryStruct = graphqlQueryStructure[1];
 
-                dictOfWordChanges.Add("SELLER", addressInputField.text);
+                dictOfWordChanges.Add("SELLER", '"' + addressInputField.text + '"');
                 break;
         }
-
 
         queryStruct = RisingRevenantUtils.ReplaceWords(queryStruct, dictOfWordChanges);
         Debug.Log(queryStruct);
 
         if (queryStruct.Length > 0)
         {
+            Debug.Log("this is getting called");
             lastSavedGraphqlQueryStructure = queryStruct;
 
             Debug.Log(queryStruct);
+            RefreshTrades();
         }
     }
 
+    public async void RefreshTrades()
+    {
+        foreach (Transform child in tradesParent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+           
+        Debug.Log(lastSavedGraphqlQueryStructure);
 
-    
-    //public async void RefreshTrades()
-    //{
-    //    var client = new GraphQLClient(DojoCallsManager.graphlQLEndpoint);
-    //    var request = new Request
-    //    {
-    //        Query = lastSavedGraphqlQueryStructure,
-    //    };
+        var client = new GraphQLClient(DojoCallsManager.graphlQLEndpoint);
+        var tradesRequest = new Request
+        {
+            Query = lastSavedGraphqlQueryStructure,
+        };
 
-    //    var responseType = new
-    //    {
-    //        reinforcementTradeModels = new
-    //        {
-    //            edges = new[]
-    //        {
-    //           new
-    //           {
-    //                node = new
-    //                {
-    //                    entity = new
-    //                    {
-    //                        keys = new[]
-    //                        {
-    //                           ""
-    //                        },
-    //                        models = new[]
-    //                        {
-    //                            new
-    //                            {
-    //                                __typename = "",
-    //                                game_id = "",
-    //                                trade_id = "",
-    //                                trade_type = "",
-    //                                buyer = "",
-    //                                seller = "",
-    //                                price = "",
-    //                                count = "",
-    //                                offer = "",
-    //                                status = "",
-    //                            }
-    //                            }
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    };
+        var responseType = new
+        {
+            reinforcementTradeModels = new
+            {
+                edges = new[]
+                {
+                   new
+                   {
+                        node = new
+                        {
+                            entity = new
+                            {
+                                keys = new[]
+                                {
+                                   ""
+                                },
+                                models = new[]
+                                {
+                                    new
+                                    {
+                                        __typename = "",
+                                        game_id = "",
+                                        trade_id = "",
+                                        seller = "",
+                                        price = "",
+                                        status = "",
+                                        offer = ""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
 
-    //    var response = await client.Send(() => responseType, request);
+        var response = await client.Send(() => responseType, tradesRequest);
 
-    //    for (int i = 0; i < response.Data.reinforcementTradeModels.edges.Length; i++)
-    //    {
-    //        var edge = response.Data.reinforcementTradeModels.edges[i];
+        Debug.Log(response.Data.reinforcementTradeModels.edges.Length);
 
-    //        for (int x = 0; x < edge.node.entity.keys.Length; x++)
-    //        {
-    //            Debug.Log("key: " + edge.node.entity.keys[x]);
-    //        }
 
-    //        for (int x = 0; x < edge.node.entity.models.Length; x++)
-    //        {
+        for (int i = 0; i < response.Data.reinforcementTradeModels.edges.Length; i++)
+        {
 
-    //            if (edge.node.entity.models[x].__typename == "TradeReinforcement")
-    //            {
-    //                GameObject instance = Instantiate(reinfTradePrefab, transform.position, Quaternion.identity);
+            var edge = response.Data.reinforcementTradeModels.edges[i];
 
-    //                instance.transform.parent = tradesParent.transform;
-    //                instance.GetComponent<TradeReinforcementsUiElement>().Initialize(
-    //                    edge.node.entity.models[x].price,
-    //                    edge.node.entity.models[x].count,
-    //                    edge.node.entity.models[x].seller.ToString(),
-    //                    edge.node.entity.models[x].trade_id);
-    //            }
-    //        }
-    //    }
-    //}
+            for (int x = 0; x < edge.node.entity.models.Length; x++)
+            {
+                if (edge.node.entity.models[x].__typename == "ReinforcementTrade")
+                {
+                    GameObject instance = Instantiate(reinfTradePrefab, transform.position, Quaternion.identity);
+
+                    instance.transform.parent = tradesParent.transform;
+                    instance.GetComponent<TradeReinforcementsUiElement>().Initialize(
+                        edge.node.entity.models[x].price,
+                        edge.node.entity.models[x].offer,
+                        edge.node.entity.models[x].seller.ToString(),
+                        edge.node.entity.models[x].trade_id);
+                }
+            }
+        }
+    }
 
     public void CallForSortMenuSelection()
     {
         int selectedSort = dropdown.value;
-        // this needs to reset the sorint g direction
 
         for (int i = 0; i < sortingAlgos.Length; i++)
         {

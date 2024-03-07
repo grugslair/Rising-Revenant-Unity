@@ -21,28 +21,28 @@ public class UIStateManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Alpha1))
+        if (Input.GetKeyUp(KeyCode.Y))
         {
             SetUiState(0);
         }
-        if (Input.GetKeyUp(KeyCode.Alpha2))
+        if (Input.GetKeyUp(KeyCode.U))
         {
             SetUiState(1);
         }
-        if (Input.GetKeyUp(KeyCode.Alpha3))
+        if (Input.GetKeyUp(KeyCode.I))
         {
             SetUiState(2);
         }
-        if (Input.GetKeyUp(KeyCode.Alpha4))
+        if (Input.GetKeyUp(KeyCode.O))
         {
             SetUiState(3);
         }
-        if (Input.GetKeyUp(KeyCode.Alpha5))
+        if (Input.GetKeyUp(KeyCode.P))
         {
             SetUiState(4);
         }
 
-        if (Input.GetKeyUp(KeyCode.P))
+        if (Input.GetKeyUp(KeyCode.H))
         {
             UiEntitiesReferenceManager.notificationManager.CreateNotification("Test", null, 5);
         }

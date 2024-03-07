@@ -21,26 +21,13 @@ public class BuyRevenantPageBehaviour : Menu
     [SerializeField]
     private TMP_Text staticPriceText;
 
+    [SerializeField]
+    private AudioClip[] soundEffects;
+
     private string[] explanation = new string[2] { 
         "Summoning a Revenant will allow you to call forth a powerful ally from the realm of the undead",
         "This Revenant, after being summoned successfully, will settle and be responsible for protecting an outpost with the goal of being the last one alive" };
 
-    //private void Start()
-    //{
-    //    int randomNum = Random.Range(1, 30);
-    //    string path = "RandomBuyRevPics/" + randomNum;
-
-    //    Texture2D image = Resources.Load<Texture2D>(path);
-
-    //    if (image != null)
-    //    {
-    //        backgroundImage.texture = image;
-    //    }
-    //    else
-    //    {
-    //        Debug.LogWarning("Failed to load image at path: " + path);
-    //    }
-    //}
 
     private IEnumerator ChangeTextPeriodically()
     {
@@ -84,11 +71,13 @@ public class BuyRevenantPageBehaviour : Menu
 
     public void CalcNewTotal()
     {
-        confirmBuyText.text = "Summon (Tot: " + (DojoEntitiesDataManager.outpostMarketData.pricePerOutpost * counterUiElement.currentValue).ToString() + " $LORDS)";
+        confirmBuyText.text = "Summon (Tot: " + (RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost * counterUiElement.currentValue, 2)) + " $LORDS)";
     }
 
     public async void CallDojoSummonRevFunc()
     {
+        SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
+
         var createRevenantsProps = new DojoCallsManager.SummonRevenantStruct
         {
             gameId = DojoEntitiesDataManager.currentGameId,
@@ -115,8 +104,7 @@ public class BuyRevenantPageBehaviour : Menu
         CalcNewTotal();
         StartCoroutine(ChangeTextPeriodically());
 
-        staticPriceText.text = "1 Revenant = " + DojoEntitiesDataManager.outpostMarketData.pricePerOutpost + " $LORDS";
-
+        staticPriceText.text = "1 Revenant = " + RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost, 2) + " $LORDS";
 
         int randomNum = Random.Range(1, 30);
         string path = "RandomBuyRevPics/" + randomNum;
@@ -132,5 +120,4 @@ public class BuyRevenantPageBehaviour : Menu
             Debug.LogWarning("Failed to load image at path: " + path);
         }
     }
-
 }

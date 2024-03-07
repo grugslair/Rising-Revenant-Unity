@@ -144,9 +144,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   message: test
   position: 2
-  margin: 10
+  margin: -60
   follow: 1
   tooltipPrefab: {fileID: 9019773305316235809, guid: 4a5cdf72c88687345a64be50c2a794af, type: 3}
+  enable: 1
 --- !u!1 &1239278785820399024
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,9 +292,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   message: PROFILE
   position: 2
-  margin: 10
+  margin: -60
   follow: 1
   tooltipPrefab: {fileID: 9019773305316235809, guid: 4a5cdf72c88687345a64be50c2a794af, type: 3}
+  enable: 1
 --- !u!1 &4179469869888779812
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,9 +440,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   message: TRADES
   position: 2
-  margin: 10
+  margin: -60
   follow: 1
   tooltipPrefab: {fileID: 9019773305316235809, guid: 4a5cdf72c88687345a64be50c2a794af, type: 3}
+  enable: 1
 --- !u!1 &4435723121179413260
 GameObject:
   m_ObjectHideFlags: 0
@@ -585,9 +588,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   message: test
   position: 2
-  margin: 10
+  margin: -60
   follow: 1
   tooltipPrefab: {fileID: 9019773305316235809, guid: 4a5cdf72c88687345a64be50c2a794af, type: 3}
+  enable: 1
 --- !u!1 &6325525071928121798
 GameObject:
   m_ObjectHideFlags: 0
@@ -732,9 +736,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   message: test
   position: 2
-  margin: 10
+  margin: -60
   follow: 1
   tooltipPrefab: {fileID: 9019773305316235809, guid: 4a5cdf72c88687345a64be50c2a794af, type: 3}
+  enable: 1
 --- !u!1 &7601143650834958361
 GameObject:
   m_ObjectHideFlags: 0

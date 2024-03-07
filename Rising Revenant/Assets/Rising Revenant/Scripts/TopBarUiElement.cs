@@ -76,7 +76,7 @@ public class TopBarUiElement : MonoBehaviour
     {
         if (DojoEntitiesDataManager.gamePot != null)
         {
-            jackpotText.text = "Jackpot: " + ((float)DojoEntitiesDataManager.gamePot.totalPot).ToString();
+            jackpotText.text = "Jackpot: " + RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.gamePot.winnersPot,2);
         }
     }
 
@@ -89,7 +89,7 @@ public class TopBarUiElement : MonoBehaviour
         }
         else
         {
-            walletAmount.text = ((float)DojoEntitiesDataManager.currentDevWallet.balance).ToString();
+            walletAmount.text = RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.currentDevWallet.balance,2);
         }
     }
 
@@ -100,6 +100,9 @@ public class TopBarUiElement : MonoBehaviour
     {
         if (DojoEntitiesDataManager.playerContrib != null && DojoEntitiesDataManager.gameEntCounter != null)
         {
+            Debug.Log("DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal: " + DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal);
+            Debug.Log("DojoEntitiesDataManager.playerContrib.score: " + DojoEntitiesDataManager.playerContrib.score);
+
             if (DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal > 0)
             {
                 if (contribText.transform.gameObject.activeSelf == false)

@@ -36,6 +36,11 @@ public class DoubleHandSlider : MonoBehaviour, IDragHandler, IBeginDragHandler
         }
     }
 
+    private void Start()
+    {
+        currentMaxValue = maxValue;
+    }
+
     public void OnDrag(PointerEventData eventData)
     {
         if (draggingMinHandle)
@@ -56,7 +61,6 @@ public class DoubleHandSlider : MonoBehaviour, IDragHandler, IBeginDragHandler
         float percent = Mathf.Clamp01((localPoint.x - sliderTrack.rect.min.x) / sliderTrack.rect.width );
         float value = percent * (maxValue - minValue) + minValue;
 
-        // Apply whole number or decimal precision
         value = AdjustValuePrecision(value);
 
         if (isMinHandle)
@@ -98,7 +102,6 @@ public class DoubleHandSlider : MonoBehaviour, IDragHandler, IBeginDragHandler
         }
     }
 
-
     private void Update()
     {
         if (!Input.GetMouseButton(0))
@@ -106,8 +109,5 @@ public class DoubleHandSlider : MonoBehaviour, IDragHandler, IBeginDragHandler
             draggingMinHandle = false;
             draggingMaxHandle = false;
         }
-
-        Debug.Log(currentMinValue);
-        Debug.Log(currentMaxValue);
     }
 }

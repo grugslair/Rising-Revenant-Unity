@@ -5,24 +5,26 @@ using UnityEngine;
 
 public class ReinforcementMarket : ModelInstance
 {
-
     [ModelField("game_id")]
     public FieldElement gameId;
 
     [ModelField("target_price")]
     public FieldElement targetPrice;
 
-    [ModelField("start_block_number")]
-    public UInt64 startTimestamp;
-
-    [ModelField("decay_constant")]
+    [ModelField("decay_constant_mag")]
     public FieldElement decayConstant;
 
     [ModelField("max_sellable")]
     public UInt32 maxSellable;
 
-    [ModelField("count")]
-    public UInt32 count;
+    [ModelField("time_scale_mag")]
+    public FieldElement timeScaleMag;
+
+    [ModelField("start_block_number")]
+    public UInt64 startBlockNumber;
+
+    [ModelField("sold")]
+    public UInt32 sold;
 
 
     // Start is called before the first frame update

@@ -9,4 +9,7 @@
     its ok for now to have all this events but they are for sure not necessary, alot of things are singular therefore not necessary
     to subscribe, just have a main public class for all the UI main scripts and use the on enalble and disable to switch them if necessary
 
+
+both the trades page need more oopenisss
+
  */

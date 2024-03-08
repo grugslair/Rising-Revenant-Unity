@@ -34,6 +34,7 @@ public class GameState : ModelInstance
         if (UiEntitiesReferenceManager.topBarUiElement != null)
         {
             UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
+            UiEntitiesReferenceManager.topBarUiElement.CalcContrib();
         }
     }
 
@@ -54,8 +55,10 @@ public class GameState : ModelInstance
         if (UiEntitiesReferenceManager.topBarUiElement != null)
         {
             UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
+            UiEntitiesReferenceManager.topBarUiElement.CalcContrib();
         }
 
+      
         OnValueChange?.Invoke();
     }
 }

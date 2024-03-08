@@ -1,7 +1,6 @@
 using SimpleGraphQL;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,7 +30,7 @@ public class TradeReinforcementPageBehaviour : Menu
     public TMP_InputField priceSortingMaxInput;
 
     [Space(30)]
-    [Header("For Address Sorting ")]
+    [Header("For Address Sorting")]
     public TMP_InputField addressInputField;
 
     [Space(50)]

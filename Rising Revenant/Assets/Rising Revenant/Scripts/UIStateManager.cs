@@ -21,6 +21,12 @@ public class UIStateManager : MonoBehaviour
 
     private void Update()
     {
+
+        if (Input.GetKeyUp(KeyCode.T))
+        {
+            TestFunction();
+        }
+
         if (Input.GetKeyUp(KeyCode.Y))
         {
             SetUiState(0);
@@ -46,6 +52,26 @@ public class UIStateManager : MonoBehaviour
         {
             UiEntitiesReferenceManager.notificationManager.CreateNotification("Test", null, 5);
         }
+    }
+
+
+    private void TestFunction() 
+    {
+        Debug.Log("847  943");
+        Debug.Log(RisingRevenantUtils.CantonPair(847, 943));
+        Debug.Log(RisingRevenantUtils.CantonUnpair(RisingRevenantUtils.CantonPair(847, 943)));
+
+        Debug.Log("8428 9128");
+        Debug.Log(RisingRevenantUtils.CantonPair(8428, 9128));
+        Debug.Log(RisingRevenantUtils.CantonUnpair(RisingRevenantUtils.CantonPair(8428, 9128)));
+
+        Debug.Log("0 0");   
+        Debug.Log(RisingRevenantUtils.CantonPair(0, 0));
+        Debug.Log(RisingRevenantUtils.CantonUnpair(RisingRevenantUtils.CantonPair(0, 0)));
+
+        Debug.Log("943 847");
+        Debug.Log(RisingRevenantUtils.CantonPair(943, 847));
+        Debug.Log(RisingRevenantUtils.CantonUnpair(RisingRevenantUtils.CantonPair(943, 847)));
     }
 
     /// <summary>

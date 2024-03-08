@@ -168,7 +168,7 @@ public class WholeGameDataPageBehaviour : Menu
 
         var responseType = new
         {
-            tradeReinforcementModels = new
+            reinforcementTradeModels = new
             {
                 edges = new[]
               {
@@ -202,12 +202,12 @@ public class WholeGameDataPageBehaviour : Menu
             var response = await client.Send(() => responseType, tradesRequest);
 
 
-            if (response.Data.tradeReinforcementModels.edges.Length == 0)
+            if (response.Data.reinforcementTradeModels.edges.Length == 0)
             {
                 return 0;
             }
 
-            if (response.Data != null && response.Data.tradeReinforcementModels != null && int.TryParse(response.Data.tradeReinforcementModels.totalCount, out int totalCount))
+            if (response.Data != null && response.Data.reinforcementTradeModels != null && int.TryParse(response.Data.reinforcementTradeModels.totalCount, out int totalCount))
             {
                 return totalCount;
             }
@@ -259,7 +259,7 @@ public class WholeGameDataPageBehaviour : Menu
 
         var responseType = new
         {
-            tradeOutpostModels = new
+            outpostTradeModels = new
             {
                 edges = new[]
               {
@@ -292,12 +292,12 @@ public class WholeGameDataPageBehaviour : Menu
         {
             var response = await client.Send(() => responseType, tradesRequest);
 
-            if (response.Data.tradeOutpostModels.edges.Length == 0)
+            if (response.Data.outpostTradeModels.edges.Length == 0)
             {
                 return 0;
             }
 
-            if (response.Data != null && response.Data.tradeOutpostModels != null && int.TryParse(response.Data.tradeOutpostModels.totalCount, out int totalCount))
+            if (response.Data != null && response.Data.outpostTradeModels != null && int.TryParse(response.Data.outpostTradeModels.totalCount, out int totalCount))
             {
                 return totalCount;
             }

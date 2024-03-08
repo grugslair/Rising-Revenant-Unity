@@ -5,7 +5,6 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public class OutpostSellingContainer : MonoBehaviour
 {
@@ -35,7 +34,7 @@ public class OutpostSellingContainer : MonoBehaviour
 
         Outpost outpost = DojoEntitiesDataManager.outpostDictInstance[id];
 
-        outpostIDText.text = "ID: -1";
+        outpostIDText.text = $"ID: {RisingRevenantUtils.CantonPair((int)outpost.position.x, (int)outpost.position.y)}";
         outpostDataText.text = $"Reinforcements: {outpost.life}\nReinf left: {outpost.reinforcesRemaining}\nOwner: {outpost.ownerAddress.Hex().Substring(0,7)}";
         outpostPriceText.text = RisingRevenantUtils.GeneralHexToInt(price) + " $LORDS";
 
@@ -86,7 +85,7 @@ public class OutpostSellingContainer : MonoBehaviour
 
     public void GoHereWithCam()
     {
-        //CameraController.Instance.MoveCameraTo(new Vector3(outpostID.x,))
+        CameraController.Instance.transform.position = new Vector3(outpostID.x, 0f, outpostID.y);
     }
 
     public async void RevokeTrade()

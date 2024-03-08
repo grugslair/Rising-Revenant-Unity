@@ -29,7 +29,7 @@ public class EventPageDataContainerBehaviour : Menu
 
     public void LoadData()
     {
-        idText.text = $"Outpost Id: {-1}";
+        idText.text = $"Outpost Id: {RisingRevenantUtils.CantonPair((int)outpost.position.x, (int)outpost.position.y)}";
         coordinatesText.text = $"Coordinates: X:{outpost.position.x}, Y:{outpost.position.y}";
         reinforcementsText.text = $"Reinforcements: {outpost.life}";
 

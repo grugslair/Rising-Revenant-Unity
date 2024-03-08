@@ -46,7 +46,7 @@ public class RevenantJurnalComponentBehaviour : MonoBehaviour
 
                     newItem.transform.SetParent(parentList.transform, false);
 
-                    newItem.GetComponentInChildren<TMP_Text>().text = $"Outpost ID: {-1}  ||  X:{outpost.position.x}, Y:{outpost.position.y}";
+                    newItem.GetComponentInChildren<TMP_Text>().text = $"Outpost ID: {RisingRevenantUtils.CantonPair((int)outpost.position.x, (int)outpost.position.y)}  ||  X:{outpost.position.x}, Y:{outpost.position.y}";
                 }
             }
         }

@@ -224,7 +224,7 @@ public class RevenantJurnalPageBehaviour : Menu
 
                 comp.OutpostCoordsText.text = $"X:{outpost.position.x}\nY:{outpost.position.y}";
                 comp.OutpostNameText.text = $"Owner: {RisingRevenantUtils.GetFullRevenantName(outpost.position)}";
-                comp.OutpostIdText.text = $"Outpost Id: {-1}";
+                comp.OutpostIdText.text = $"Outpost Id: {RisingRevenantUtils.CantonPair((int)outpost.position.x, (int)outpost.position.y)}";
             }
         }
     }

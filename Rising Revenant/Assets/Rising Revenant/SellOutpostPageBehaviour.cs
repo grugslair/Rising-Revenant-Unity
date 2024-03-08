@@ -95,7 +95,7 @@ public class SellOutpostPageBehaviour : Menu
         currentOutpostIndex = idx;
         currentlySelectedOutpost = DojoEntitiesDataManager.outpostDictInstance[listOfSellableOutposts[idx]];
 
-        outpostDataText.text = $"Outpost Id: {-1} \n" +
+        outpostDataText.text = $"Outpost Id: {RisingRevenantUtils.CantonPair((int)currentlySelectedOutpost.position.x, (int)currentlySelectedOutpost.position.y)} \n" +
                              $"Lifes: {currentlySelectedOutpost.life} \n" +
                              $"Reinf Left: {currentlySelectedOutpost.reinforcesRemaining} \n" +
                              $"Rev name: {RisingRevenantUtils.GetFullRevenantName(currentlySelectedOutpost.position)}";

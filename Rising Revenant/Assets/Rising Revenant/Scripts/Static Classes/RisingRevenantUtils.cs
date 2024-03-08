@@ -169,7 +169,19 @@ public static class RisingRevenantUtils
         return 0;
     }
 
+    public static long CantonPair(int x, int y)
+    {
+        return ((long)x + y) * ((long)x + y + 1) / 2 + y;
+    }
 
+    public static (int, int) CantonUnpair(long z)
+    {
+        long w = (long)Math.Floor((Math.Sqrt(8 * z + 1) - 1) / 2);
+        long t = (w * w + w) / 2;
+        long y = z - t;
+        long x = w - y;
+        return ((int)x, (int)y);
+    }
 
     public async static Task<bool> IsOutpostOnSale(Vec2 outpostId, int gameId)
     {

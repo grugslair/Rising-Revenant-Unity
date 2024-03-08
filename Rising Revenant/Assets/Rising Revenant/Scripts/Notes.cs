@@ -12,4 +12,8 @@
 
 both the trades page need more oopenisss
 
+
+lots of things have many texta nd images would be interesting to makea  global class for those
+
+there really needs to be some sort of clean in this shit show
  */

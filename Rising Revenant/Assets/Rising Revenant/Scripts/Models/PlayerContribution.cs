@@ -1,8 +1,12 @@
 using Dojo;
 using Dojo.Starknet;
 using Dojo.Torii;
+using SimpleGraphQL;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
+using UnityEngine;
 
 public class PlayerContribution : ModelInstance
 {
@@ -46,4 +50,6 @@ public class PlayerContribution : ModelInstance
             UiEntitiesReferenceManager.topBarUiElement.CalcContrib();
         }
     }
+
+    
 }

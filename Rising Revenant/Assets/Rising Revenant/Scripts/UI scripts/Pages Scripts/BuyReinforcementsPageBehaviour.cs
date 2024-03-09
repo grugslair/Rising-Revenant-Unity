@@ -63,6 +63,7 @@ public class BuyReinforcementsPageBehaviour : Menu
 
     public void CalcNewTotal()
     {
+        //confirmBuyText.text = "Purchase (Tot: " + RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost, 2) + " $LORDS)";
         confirmBuyText.text = "Purchase (Tot: " + RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost, 2) + " $LORDS)";
     }
 

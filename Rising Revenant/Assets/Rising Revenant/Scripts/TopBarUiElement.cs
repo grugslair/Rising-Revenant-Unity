@@ -72,16 +72,17 @@ public class TopBarUiElement : MonoBehaviour
     }
 
     //gamepot
-    public void ChangeInGameData()
+    public async void ChangeInGameData()
     {
         if (DojoEntitiesDataManager.gamePot != null)
         {
-            jackpotText.text = "Jackpot: " + RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.gamePot.winnersPot,2);
+            var gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
+            jackpotText.text = "Jackpot: " + RisingRevenantUtils.HexToFloat(gamePot[1]);
         }
     }
 
     //devWallet
-    public void ChangeInPlayerSpecificData()
+    public async void ChangeInPlayerSpecificData()
     {
         if (DojoEntitiesDataManager.currentDevWallet == null)
         {
@@ -89,14 +90,15 @@ public class TopBarUiElement : MonoBehaviour
         }
         else
         {
-            walletAmount.text = RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.currentDevWallet.balance,2);
+            var devWallet = await RisingRevenantUtils.devWalletInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() , DojoEntitiesDataManager.currentAccount.Address.Hex());
+            walletAmount.text = RisingRevenantUtils.HexToFloat(devWallet).ToString();
         }
     }
 
 
     //PlayerContribution
     //GameState
-    public void CalcContrib()
+    public async void CalcContrib()
     {
         if (DojoEntitiesDataManager.playerContrib != null && DojoEntitiesDataManager.gameEntCounter != null)
         {
@@ -110,8 +112,16 @@ public class TopBarUiElement : MonoBehaviour
                     contribText.transform.gameObject.SetActive(true);
                 }
 
-                float percOfContrib = (float)DojoEntitiesDataManager.playerContrib.score / (float)DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal * 100; // Multiply by 100 to get percentage
-                contribText.text = $"Contribution: {percOfContrib}%";
+                var playerContrib = await RisingRevenantUtils.playerContributionInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString(), DojoEntitiesDataManager.currentAccount.Address.Hex());
+                Debug.Log("playerContrib: " + playerContrib);
+                Debug.Log("this si after the hex thing " + RisingRevenantUtils.HexToFloat(playerContrib) );
+
+                var totContrib = await RisingRevenantUtils.gameStateInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
+                Debug.Log("totContrib: " + totContrib);
+                Debug.Log("this si after the hex thing " + RisingRevenantUtils.HexToFloat(totContrib) );
+
+                //float percOfContrib = RisingRevenantUtils.HexToFloat(DojoEntitiesDataManager.playerContrib.scoreString, 3) / RisingRevenantUtils.HexToFloat(DojoEntitiesDataManager.gameEntCounter.contributionScoreTotalString, 3) * 100; // Multiply by 100 to get percentage
+                contribText.text = $"Contribution: {0}%";
             }
             else
             {

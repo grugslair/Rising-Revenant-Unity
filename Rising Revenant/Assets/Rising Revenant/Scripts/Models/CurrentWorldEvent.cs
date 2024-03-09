@@ -19,8 +19,8 @@ public class CurrentWorldEvent : ModelInstance
     [ModelField("radius")]
     public UInt32 radius;
 
-    [ModelField("event_type")]
-    public RisingRevenantUtils.EventType eventType;
+    //[ModelField("event_type")]
+    //public RisingRevenantUtils.EventType eventType;
 
     [ModelField("number")]
     public UInt32 number;
@@ -56,16 +56,13 @@ public class CurrentWorldEvent : ModelInstance
 
         if (UiEntitiesReferenceManager.worldEventManager != null)
         {
-            Debug.Log("this is here");
             if (UiEntitiesReferenceManager.worldEventManager.transform.gameObject.activeSelf == false)
             {
-                Debug.Log("the world event manager is false");
                 UiEntitiesReferenceManager.worldEventManager.transform.gameObject.SetActive(true);
             }
 
             UiEntitiesReferenceManager.worldEventManager.LoadLastWorldEventData(this);
         }
 
-        //OnValueChange?.Invoke(RisingRevenantUtils.FieldElementToInt(eventId));
     }
 }

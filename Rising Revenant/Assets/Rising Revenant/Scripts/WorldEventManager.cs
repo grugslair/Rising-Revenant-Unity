@@ -15,11 +15,6 @@ public class WorldEventManager : MonoBehaviour
 
     private bool loaded = false;
 
-    // world ebent manager shoudl dod that amange
-    // on new event check whicih outpost have been hit, call an update by sending the event to the rev journal and minimap
-
-    // this should be called all only when the game is game phase prob just disable and then actiove
-
     private static readonly int SizeOfCircle = Shader.PropertyToID("_SizeOfCircle");
     private static readonly int FullnessOfColor = Shader.PropertyToID("_FullnessOfColor");
     private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
@@ -117,20 +112,25 @@ public class WorldEventManager : MonoBehaviour
         float scaleFactor = MathF.Sqrt(lastWorldEvent.radius * 2) * 2;
         gameObject.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
-        StartCoroutine(CheckOutpostsAffectedByEvent(lastWorldEvent));
+        CheckOutpostsAffectedByEvent(lastWorldEvent);
     }
 
-    private IEnumerator CheckOutpostsAffectedByEvent(CurrentWorldEvent lastWorldEvent)
+    private async void CheckOutpostsAffectedByEvent(CurrentWorldEvent lastWorldEvent)
     {
+
+        //get list of already fucked outposts
+        var allOutpostsAlreadyConfirmed = await RisingRevenantUtils.GetOutpostVerifiedInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() , (int)lastWorldEvent.number);
+
+
         foreach (var outpost in DojoEntitiesDataManager.outpostDictInstance.Values)
         {
             if (RisingRevenantUtils.IsPointInsideCircle(new Vector2(lastWorldEvent.position.x, lastWorldEvent.position.y), lastWorldEvent.radius, new Vector2(outpost.position.x, outpost.position.y)))
             {
-                var isOutpostEventConfirmedTask = RisingRevenantUtils.IsOutpostEventConfirmed(outpost.position, (int)lastWorldEvent.number, RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId));
+                //var isOutpostEventConfirmedTask = RisingRevenantUtils.IsOutpostEventConfirmed(outpost.position, (int)lastWorldEvent.number, RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId));
                
-                yield return new WaitUntil(() => isOutpostEventConfirmedTask.IsCompleted);
+                ////yield return new WaitUntil(() => isOutpostEventConfirmedTask.IsCompleted);
 
-                if (isOutpostEventConfirmedTask.Result)
+                if (allOutpostsAlreadyConfirmed.Contains(outpost.position))
                 {
                     outpost.SetAttackState(false);
                     outpost.SetOutpostTexture();

@@ -1,7 +1,9 @@
  using Dojo; using Dojo.Starknet; using Dojo.Torii;
+using SimpleGraphQL;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class GamePot : ModelInstance
@@ -29,7 +31,6 @@ public class GamePot : ModelInstance
     [ModelField("claimed")]
     public bool claimed;
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -41,13 +42,6 @@ public class GamePot : ModelInstance
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
     public override void OnUpdate(Model model)
     {
         base.OnUpdate(model);
@@ -55,4 +49,6 @@ public class GamePot : ModelInstance
 
         UiEntitiesReferenceManager.topBarUiElement.ChangeInGameData();
     }
+
+    
 }

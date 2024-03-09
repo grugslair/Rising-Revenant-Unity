@@ -1,7 +1,9 @@
 using Dojo; using Dojo.Starknet; using Dojo.Torii;
+using SimpleGraphQL;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class OutpostMarket : ModelInstance
@@ -17,6 +19,7 @@ public class OutpostMarket : ModelInstance
     [ModelField("available")]
     public UInt32 maxAmountOfOutposts;
 
+
     void Start()
     {
         DojoEntitiesDataManager.outpostMarketData = this;
@@ -27,20 +30,15 @@ public class OutpostMarket : ModelInstance
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public override void OnUpdate(Model model)
     {
         base.OnUpdate(model);
-        OnValueChange?.Invoke();
 
         if (UiEntitiesReferenceManager.topBarUiElement != null)
         {
             UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
         }
     }
+
+  
 }

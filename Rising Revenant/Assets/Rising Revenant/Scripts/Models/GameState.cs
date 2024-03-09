@@ -1,12 +1,16 @@
 using Dojo; 
 using Dojo.Starknet; 
 using Dojo.Torii;
+using SimpleGraphQL;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
+using UnityEngine;
+using static GraphQLTypes;
 
 public class GameState : ModelInstance
 {
-    public event Action OnValueChange;
 
     [ModelField("game_id")]
     public FieldElement gameId;
@@ -26,6 +30,7 @@ public class GameState : ModelInstance
     [ModelField("contribution_score_total")]
     public BigInteger contributionScoreTotal;
 
+
     void Start()
     {
         DojoEntitiesDataManager.gameEntCounter = this;
@@ -38,10 +43,6 @@ public class GameState : ModelInstance
         }
     }
 
-    void Update()
-    {
-        
-    }
 
     public override void OnUpdate(Model model)
     {
@@ -57,8 +58,7 @@ public class GameState : ModelInstance
             UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
             UiEntitiesReferenceManager.topBarUiElement.CalcContrib();
         }
-
-      
-        OnValueChange?.Invoke();
     }
+
+
 }

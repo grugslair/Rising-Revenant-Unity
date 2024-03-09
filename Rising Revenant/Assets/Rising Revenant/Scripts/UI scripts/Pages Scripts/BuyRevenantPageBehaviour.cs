@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Numerics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -69,9 +70,14 @@ public class BuyRevenantPageBehaviour : Menu
         }
     }
 
-    public void CalcNewTotal()
+    public async void CalcNewTotal()
     {
-        confirmBuyText.text = "Summon (Tot: " + (RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost * counterUiElement.currentValue, 2)) + " $LORDS)";
+        var value = await RisingRevenantUtils.outpostMarketInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
+        Debug.Log("This si for the price of revs " + value);
+        Debug.Log("this is whay it would be in non hex " + RisingRevenantUtils.HexToFloat(value));
+
+        confirmBuyText.text = "Summon (Tot: " + (10 * counterUiElement.currentValue) + " $LORDS)";
+        //confirmBuyText.text = "Summon (Tot: " + (RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost * counterUiElement.currentValue, 2)) + " $LORDS)";
     }
 
     public async void CallDojoSummonRevFunc()
@@ -104,7 +110,8 @@ public class BuyRevenantPageBehaviour : Menu
         CalcNewTotal();
         StartCoroutine(ChangeTextPeriodically());
 
-        staticPriceText.text = "1 Revenant = " + RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost, 2) + " $LORDS";
+        //staticPriceText.text = "1 Revenant = " + RisingRevenantUtils.HexToFloat(DojoEntitiesDataManager.outpostMarketData.pricePerOutpostString, 4) + " $LORDS";
+        staticPriceText.text = "1 Revenant = " + 10 + " $LORDS";
 
         int randomNum = Random.Range(1, 30);
         string path = "RandomBuyRevPics/" + randomNum;

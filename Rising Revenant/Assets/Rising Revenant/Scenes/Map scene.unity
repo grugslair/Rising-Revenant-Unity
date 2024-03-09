@@ -39224,7 +39224,6 @@ GameObject:
   - component: {fileID: 2032793003}
   - component: {fileID: 2032793006}
   - component: {fileID: 2032793007}
-  - component: {fileID: 2032793008}
   m_Layer: 0
   m_Name: InitEntities
   m_TagString: Untagged
@@ -39299,18 +39298,6 @@ MonoBehaviour:
     count                 game_id                 }                            }            
     }                   }         }       }     }'
   run: 1
---- !u!114 &2032793008
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2032793002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ba41f68895c4994bbeb22e8ba463541, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2034812125
 GameObject:
   m_ObjectHideFlags: 0

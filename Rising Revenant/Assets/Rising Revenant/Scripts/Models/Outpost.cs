@@ -26,8 +26,8 @@ public class Outpost : ModelInstance
     [ModelField("reinforces_remaining")]
     public UInt32 reinforcesRemaining;
 
-    [ModelField("reinforcement_type")]
-    public RisingRevenantUtils.ReinforcementType reinforcementType;
+    //[ModelField("reinforcement_type")]
+    //public RisingRevenantUtils.ReinforcementType reinforcementType;
 
     [ModelField("status")]
     public byte status;

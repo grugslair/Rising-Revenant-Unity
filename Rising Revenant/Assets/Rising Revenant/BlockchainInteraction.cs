@@ -1,22 +1,35 @@
+using System.Collections;
 using UnityEngine;
-using System.Runtime.InteropServices;
-using System;
+using UnityEngine.Networking;
 
 public class BlockchainInteraction : MonoBehaviour
 {
-    // Import the JavaScript function
-    [DllImport("__Internal")]
-    private static extern void FetchCurrentBlockNumber();
-
-    // Method to call the JavaScript function
-    public void Start()
+    // Start is called before the first frame update
+    void Start()
     {
-        FetchCurrentBlockNumber();
+        StartCoroutine(GetRequest("http://172.21.11.12:5000"));
     }
 
-    // Callback method to receive the block number from JavaScript
-    public void OnBlockNumberReceived(string blockNumber)
+    IEnumerator GetRequest(string uri)
     {
-        Debug.Log("Received Block Number: " + blockNumber);
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
+                    break;
+            }
+        }
     }
 }

@@ -1,15 +1,9 @@
 
 using SimpleGraphQL;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEngine.UI.GridLayoutGroup;
-using UnityEngine.UIElements;
-using UnityEditor.VersionControl;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class TableOfEntTypeDataPageBehaviour : Menu
 {

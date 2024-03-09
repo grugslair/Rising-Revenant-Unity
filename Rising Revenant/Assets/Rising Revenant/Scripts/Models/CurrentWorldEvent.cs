@@ -19,6 +19,9 @@ public class CurrentWorldEvent : ModelInstance
     [ModelField("radius")]
     public UInt32 radius;
 
+    [ModelField("event_type")]
+    public RisingRevenantUtils.EventType eventType;
+
     [ModelField("number")]
     public UInt32 number;
 

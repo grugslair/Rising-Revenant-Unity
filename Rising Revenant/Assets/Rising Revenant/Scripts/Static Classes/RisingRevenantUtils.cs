@@ -14,6 +14,32 @@ using System.Threading.Tasks;
 public static class RisingRevenantUtils
 {
 
+
+    [Serializable]
+    public enum EventType
+    {
+        None,
+        Dragon,
+        Goblin,
+        Earthquake,
+    }
+
+    [Serializable]
+    public enum ReinforcementType
+    {
+        None,
+        Wall,
+        Trench,
+        Bunker,
+    }
+
+    [Serializable]
+    public struct U256
+    {
+        public BigInteger high;
+        public BigInteger low;
+    }
+
     [Serializable]
     public struct Vec2
     {

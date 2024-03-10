@@ -1,6 +1,8 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public class SellReinforcementPageBehaviour : Menu
 {
@@ -17,7 +19,7 @@ public class SellReinforcementPageBehaviour : Menu
         {
             count = (UInt32)reinfSellCounter.currentValue,
             gameId = DojoEntitiesDataManager.currentGameId,
-            price = new Dojo.Starknet.FieldElement(int.Parse(reinfSellInputField.text))
+            priceReinforcement = new Dojo.Starknet.FieldElement(int.Parse(reinfSellInputField.text).ToString("X"))
         };
 
         DojoCallsManager.EndpointDojoCallStruct endPoint = new DojoCallsManager.EndpointDojoCallStruct

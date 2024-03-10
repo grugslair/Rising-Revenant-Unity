@@ -9,8 +9,7 @@ public class TooltipManager : MonoBehaviour
     private bool liveDeltaMove = false;
     private RectTransform currentTargetUIElement;
     private TooltipPosition currentPosition;
-    private float currentMargin;
-
+    private Vector2 currentMargin; // Changed to Vector2 to support both X and Y margins
 
     public enum TooltipPosition
     {
@@ -27,33 +26,31 @@ public class TooltipManager : MonoBehaviour
         canvasRectTransform = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
     }
 
-    public void ShowTooltip(GameObject tooltipPrefab, string message, RectTransform targetUIElement, TooltipPosition position, float margin, bool liveDeltaMove)
+    public GameObject ShowTooltip(GameObject tooltipPrefab, string message, RectTransform targetUIElement, TooltipPosition position, Vector2 margin, bool liveDeltaMove)
     {
         this.liveDeltaMove = liveDeltaMove;
         this.currentTargetUIElement = targetUIElement;
         this.currentPosition = position;
-        this.currentMargin = margin;
+        this.currentMargin = margin; // Now a Vector2
 
         if (currentTooltip != null) Destroy(currentTooltip);
 
-        // Use the provided prefab to instantiate the tooltip
         currentTooltip = Instantiate(tooltipPrefab, canvasRectTransform);
         currentTooltip.GetComponentInChildren<TMP_Text>().text = message;
 
-        UpdateTooltipPosition(); // Set initial position
-    }
+        UpdateTooltipPosition(); 
 
-    private void UpdateTooltipPosition()
-    {
-        if (currentTooltip == null || currentTargetUIElement == null) return;
-
-        Vector2 targetPosition = GetTooltipPosition(currentTargetUIElement, currentPosition, currentMargin);
-        currentTooltip.GetComponent<RectTransform>().anchoredPosition = targetPosition;
+        return currentTooltip;
     }
 
     public void HideTooltip()
     {
         if (currentTooltip != null) Destroy(currentTooltip);
+    }
+
+    public void ForceHideTooltip()
+    {
+        HideTooltip(); // Can be called externally to force hide the tooltip
     }
 
     private void Update()
@@ -64,14 +61,21 @@ public class TooltipManager : MonoBehaviour
         }
     }
 
-    private Vector2 GetTooltipPosition(RectTransform targetUIElement, TooltipPosition position, float margin)
+    private void UpdateTooltipPosition()
+    {
+        if (currentTooltip == null || currentTargetUIElement == null) return;
+
+        Vector2 targetPosition = GetTooltipPosition(currentTargetUIElement, currentPosition, currentMargin);
+        currentTooltip.GetComponent<RectTransform>().anchoredPosition = targetPosition;
+    }
+
+    private Vector2 GetTooltipPosition(RectTransform targetUIElement, TooltipPosition position, Vector2 margin)
     {
         Canvas canvas = targetUIElement.GetComponentInParent<Canvas>();
         Vector3[] corners = new Vector3[4];
         targetUIElement.GetWorldCorners(corners);
         Vector3 targetPosition = Vector3.zero;
 
-        // Calculate the midpoint of the target UI element
         foreach (var corner in corners)
         {
             targetPosition += corner;
@@ -79,41 +83,37 @@ public class TooltipManager : MonoBehaviour
         targetPosition /= corners.Length;
 
         Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, targetPosition);
-
-        // No need for screen space adjustment here as we directly work with local position
         Vector2 tooltipSize = currentTooltip.GetComponent<RectTransform>().sizeDelta;
         Vector2 adjustment = Vector2.zero;
 
         switch (position)
         {
             case TooltipPosition.Above:
-                adjustment = new Vector2(0, targetUIElement.rect.height / 2 + tooltipSize.y / 2 + margin);
+                adjustment = new Vector2(margin.x, targetUIElement.rect.height / 2 + tooltipSize.y / 2 + margin.y);
                 break;
             case TooltipPosition.Below:
-                adjustment = new Vector2(0, -(targetUIElement.rect.height / 2 + tooltipSize.y / 2 + margin));
+                adjustment = new Vector2(margin.x, -(targetUIElement.rect.height / 2 + tooltipSize.y / 2 + margin.y));
                 break;
             case TooltipPosition.Left:
-                adjustment = new Vector2(-(targetUIElement.rect.width / 2 + tooltipSize.x / 2 + margin), 0);
+                adjustment = new Vector2(-(targetUIElement.rect.width / 2 + tooltipSize.x / 2 + margin.x), margin.y);
                 break;
             case TooltipPosition.Right:
-                adjustment = new Vector2(targetUIElement.rect.width / 2 + tooltipSize.x / 2 + margin, 0);
+                adjustment = new Vector2(targetUIElement.rect.width / 2 + tooltipSize.x / 2 + margin.x, margin.y);
                 break;
-            // Center position does not use margin but included for completeness
             case TooltipPosition.Center:
+                adjustment = new Vector2(margin.x, margin.y); // Center might not use margin, but added for consistency
                 break;
         }
 
-        // If your canvas is set to Screen Space - Overlay, and you're directly manipulating RectTransforms
-        // Convert the screen position back to local position within the canvas
         if (canvas.renderMode == RenderMode.ScreenSpaceOverlay || (canvas.renderMode == RenderMode.ScreenSpaceCamera && canvas.worldCamera == null))
         {
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.GetComponent<RectTransform>(), screenPoint, canvas.worldCamera, out Vector2 localPoint);
-            adjustment = canvas.GetComponent<RectTransform>().TransformVector(adjustment); // Convert adjustment vector to local space if needed
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, screenPoint, canvas.worldCamera, out Vector2 localPoint);
+            adjustment = canvasRectTransform.TransformVector(adjustment);
             return localPoint + adjustment;
         }
         else
         {
-            return screenPoint + adjustment; // For World Space Canvas, direct addition should suffice
+            return screenPoint + adjustment;
         }
     }
 }

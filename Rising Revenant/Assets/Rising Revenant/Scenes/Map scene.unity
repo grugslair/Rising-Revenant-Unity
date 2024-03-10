@@ -15978,10 +15978,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   message: 
   position: 0
-  margin: 75
+  margin: {x: 0, y: 10}
   follow: 0
   tooltipPrefab: {fileID: 0}
-  enable: 0
+  show: 1
+  keep: 0
+  currentTooltipObj: {fileID: 0}
 --- !u!1 &840631443
 GameObject:
   m_ObjectHideFlags: 0
@@ -20326,10 +20328,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   message: 
   position: 0
-  margin: 75
+  margin: {x: -120, y: 10}
   follow: 0
   tooltipPrefab: {fileID: 0}
-  enable: 1
+  show: 1
+  keep: 0
+  currentTooltipObj: {fileID: 0}
 --- !u!1 &1089133220
 GameObject:
   m_ObjectHideFlags: 0
@@ -23676,6 +23680,7 @@ MonoBehaviour:
   menuManager: {fileID: 1230239962}
   componentsParents: {fileID: 1928674783}
   winningPopUp: {fileID: 518115753}
+  eventObj: {fileID: 178262146}
   worldEventManager: {fileID: 2088580782}
   PopUpUiElement: {fileID: 1805382956}
   objectsAreVisible: 1
@@ -31359,7 +31364,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3657001846121384467, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -95.375
+      value: -102.5
       objectReference: {fileID: 0}
     - target: {fileID: 3657001846121384467, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -37512,10 +37517,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   message: 
   position: 0
-  margin: 75
+  margin: {x: 120, y: 10}
   follow: 0
   tooltipPrefab: {fileID: 0}
-  enable: 0
+  show: 1
+  keep: 0
+  currentTooltipObj: {fileID: 0}
 --- !u!1 &1915851212
 GameObject:
   m_ObjectHideFlags: 0

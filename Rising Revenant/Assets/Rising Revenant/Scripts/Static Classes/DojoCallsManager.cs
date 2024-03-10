@@ -101,7 +101,7 @@ public static class DojoCallsManager
     public struct CreateTradeRevenantStruct
     {
         public FieldElement gameId;
-        public FieldElement price;
+        public FieldElement priceRevenant;
         public RisingRevenantUtils.Vec2 revenantId;
     }
     public struct PurchaseTradeRevenantStruct
@@ -113,7 +113,7 @@ public static class DojoCallsManager
     {
         public FieldElement gameId;
         public FieldElement tradeId;
-        public FieldElement price;
+        public FieldElement priceRevenant;
     }
     public struct RevokeTradeRevenantStruct
     {
@@ -125,7 +125,7 @@ public static class DojoCallsManager
     public struct CreateTradeReinforcementStruct
     {
         public FieldElement gameId;
-        public FieldElement price;
+        public FieldElement priceReinforcement;
         public UInt32 count;
     }
     public struct PurchaseTradeReinforcementStruct
@@ -137,7 +137,7 @@ public static class DojoCallsManager
     {
         public FieldElement gameId;
         public FieldElement tradeId;
-        public FieldElement price;
+        public FieldElement priceReinforcemnt;
     }
     public struct RevokeTradeReinforcementStruct
     {
@@ -291,7 +291,7 @@ public static class DojoCallsManager
             calldata = new dojo.FieldElement[]
             {
                 dataStruct.gameId.Inner(),
-                dataStruct.price.Inner(),
+                dataStruct.priceRevenant.Inner(),
                 new FieldElement(dataStruct.revenantId.x.ToString("X")).Inner(),
                 new FieldElement(dataStruct.revenantId.y.ToString("X")).Inner(),
             },
@@ -311,7 +311,7 @@ public static class DojoCallsManager
             {
                 dataStruct.gameId.Inner(),
                 dataStruct.tradeId.Inner(),
-                dataStruct.price.Inner(),
+                dataStruct.priceRevenant.Inner(),
             },
             selector = endpointData.functionName,
             to = endpointData.addressOfSystem,
@@ -362,7 +362,7 @@ public static class DojoCallsManager
             calldata = new dojo.FieldElement[]
             {
                 dataStruct.gameId.Inner(),
-                dataStruct.price.Inner(),
+                dataStruct.priceReinforcement.Inner(),
                 new FieldElement(dataStruct.count.ToString("X")).Inner(),
             },
             selector = endpointData.functionName,
@@ -381,7 +381,7 @@ public static class DojoCallsManager
             {
                 dataStruct.gameId.Inner(),
                 dataStruct.tradeId.Inner(),
-                dataStruct.price.Inner(),
+                dataStruct.priceReinforcemnt.Inner(),
             },
             selector = endpointData.functionName,
             to = endpointData.addressOfSystem,

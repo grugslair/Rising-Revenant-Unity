@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public class SellOutpostPageBehaviour : Menu
 {
@@ -41,15 +43,22 @@ public class SellOutpostPageBehaviour : Menu
             return;
         }
 
-        StartCoroutine(LoadSellableOutposts());
+       LoadSellableOutposts();
     }
 
     /// <summary>
     /// here we check if the outposts are on sale and if they are not we add them to the list of sellable outposts
     /// </summary>
     /// <returns></returns>
-    private IEnumerator LoadSellableOutposts()
+    private async void LoadSellableOutposts()
     {
+        var listOfOutpostsOnSale = await RisingRevenantUtils.GetAllOutpostSelling(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString(), 1);
+
+        foreach (var item in listOfOutpostsOnSale)
+        {
+            Debug.Log(item);
+        }
+
         loaded = false;
 
         foreach (var item in DojoEntitiesDataManager.ownOutpostIndex)
@@ -58,10 +67,7 @@ public class SellOutpostPageBehaviour : Menu
 
             if (outpost.life > 0)
             {
-                Task<bool> isOnSaleTask = RisingRevenantUtils.IsOutpostOnSale(outpost.position, RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId));
-                yield return new WaitUntil(() => isOnSaleTask.IsCompleted); 
-
-                if (!isOnSaleTask.Result) 
+                if (!listOfOutpostsOnSale.Contains(outpost.position)) 
                 {
                     listOfSellableOutposts.Add(outpost.position);
                 }
@@ -123,23 +129,26 @@ public class SellOutpostPageBehaviour : Menu
     {
         if (costInputField.text == "") { return; }
 
-        DojoCallsManager.CreateTradeRevenantStruct structToSellReinf = new DojoCallsManager.CreateTradeRevenantStruct
+        try
         {
-            revenantId = currentlySelectedOutpost.position,
-            gameId = DojoEntitiesDataManager.currentGameId,
-            price = new Dojo.Starknet.FieldElement(int.Parse(costInputField.text))
-        };
+            DojoCallsManager.CreateTradeRevenantStruct structToSellReinf = new DojoCallsManager.CreateTradeRevenantStruct
+            {
+                revenantId = currentlySelectedOutpost.position,
+                gameId = DojoEntitiesDataManager.currentGameId,
+                priceRevenant = new Dojo.Starknet.FieldElement(int.Parse(costInputField.text).ToString("X"))
+            };
+            DojoCallsManager.EndpointDojoCallStruct endPoint = new DojoCallsManager.EndpointDojoCallStruct
+            {
+                account = DojoEntitiesDataManager.currentAccount,
+                addressOfSystem = DojoCallsManager.tradeOutpostActionsAddress,
+                functionName = "create",
+            };
 
-        DojoCallsManager.EndpointDojoCallStruct endPoint = new DojoCallsManager.EndpointDojoCallStruct
+            await DojoCallsManager.CreateTradeRevenantDojoCall(structToSellReinf, endPoint);
+        }
+        catch (Exception ex) // You can catch more specific exceptions if needed
         {
-            account = DojoEntitiesDataManager.currentAccount,
-            addressOfSystem = DojoCallsManager.tradeOutpostActionsAddress,
-            functionName = "create",
-        };
-
-        await DojoCallsManager.CreateTradeRevenantDojoCall(structToSellReinf, endPoint);
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
     }
-
-
-
 }

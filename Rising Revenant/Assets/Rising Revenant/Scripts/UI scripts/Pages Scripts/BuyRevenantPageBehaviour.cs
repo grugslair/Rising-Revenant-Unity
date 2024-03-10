@@ -73,9 +73,7 @@ public class BuyRevenantPageBehaviour : Menu
     public async void CalcNewTotal()
     {
         var value = await RisingRevenantUtils.outpostMarketInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-        Debug.Log("This si for the price of revs " + value);
-        Debug.Log("this is whay it would be in non hex " + RisingRevenantUtils.HexToFloat(value));
-
+        
         confirmBuyText.text = "Summon (Tot: " + (10 * counterUiElement.currentValue) + " $LORDS)";
         //confirmBuyText.text = "Summon (Tot: " + (RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost * counterUiElement.currentValue, 2)) + " $LORDS)";
     }

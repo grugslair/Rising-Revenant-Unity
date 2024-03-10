@@ -320,7 +320,6 @@ public class TradeOutpostPageBehaviour : Menu
             Destroy(child.gameObject);
         }
 
-        Debug.Log(lastSavedGraphqlQueryStructure);
 
         var client = new GraphQLClient(DojoCallsManager.graphlQLEndpoint);
         var tradesRequest = new Request
@@ -399,7 +398,6 @@ public class TradeOutpostPageBehaviour : Menu
             }
         }
     }
-
 
     public void CallForSortMenuSelection()
     {

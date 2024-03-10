@@ -1,6 +1,5 @@
+using Dojo.Starknet;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +15,10 @@ public class TradeReinforcementsUiElement : MonoBehaviour
     public string sellerWholeHex;
 
     private bool owner;
-    private string tradeId;
+    private FieldElement tradeId;
+
+    [SerializeField]
+    private TooltipAsker tooltipAsker;
 
     public void Initialize(string price, string count, string seller, string tradeId)
     {
@@ -26,17 +28,17 @@ public class TradeReinforcementsUiElement : MonoBehaviour
         reinforcementCountText.text = $"Reinforcements: {count}";
         priceText.text = $"Price: {RisingRevenantUtils.GeneralHexToInt(price)} $LORDS";
 
-        this.tradeId = tradeId;
+        this.tradeId = new FieldElement(tradeId);
 
         TMP_Text buttonText = interactButton.GetComponentInChildren<TMP_Text>();
 
-        Debug.Log($"Seller: {seller} - Current Account: {DojoEntitiesDataManager.currentAccount.Address.Hex()}");
-
-        if (seller == DojoEntitiesDataManager.currentAccount.Address.Hex())
+        if (seller == DojoEntitiesDataManager.currentAccount.Address.Hex().Substring(0, 2) + DojoEntitiesDataManager.currentAccount.Address.Hex().Substring(3) )
         {
             owner = true;
             interactButton.onClick.AddListener(RevokeTrade);
             buttonText.text = "Revoke";
+
+            tooltipAsker.OnTooltipShown += OnTooltipEnable;
         }
         else
         {
@@ -46,6 +48,10 @@ public class TradeReinforcementsUiElement : MonoBehaviour
         }
     }
 
+    private void OnTooltipEnable(GameObject tooltip)
+    {
+        tooltip.GetComponent<ChangePriceTooltip>().Initilize(2, tradeId);
+    }
 
     public async void RevokeTrade()
     {
@@ -53,7 +59,7 @@ public class TradeReinforcementsUiElement : MonoBehaviour
         {
             if (owner)
             {
-                var revokeStruct = new DojoCallsManager.RevokeTradeReinforcementStruct { gameId = DojoEntitiesDataManager.currentGameId, tradeId = new Dojo.Starknet.FieldElement(tradeId) };
+                var revokeStruct = new DojoCallsManager.RevokeTradeReinforcementStruct { gameId = DojoEntitiesDataManager.currentGameId, tradeId = tradeId };
                 var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.tradeReinforcementActionsAddress, functionName = "revoke" };
 
                 await DojoCallsManager.RevokeTradeReinforcementDojoCall(revokeStruct, endpoint);
@@ -66,43 +72,24 @@ public class TradeReinforcementsUiElement : MonoBehaviour
         }
     }
 
-    public async void ChangePrice()
-    {
-        try
-        {
-            if (owner)
-            {
-                var changeTradePriceStruct = new DojoCallsManager.ModifyTradeReinforcementStruct { gameId = DojoEntitiesDataManager.currentGameId, price = new Dojo.Starknet.FieldElement(20), tradeId = new Dojo.Starknet.FieldElement(tradeId) };
-                var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.tradeReinforcementActionsAddress, functionName = "revoke" };
-
-                await DojoCallsManager.ModifyTradeReinforcementDojoCall(changeTradePriceStruct, endpoint);
-
-
-                // need to change the price here
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Failed to change price: {ex.Message}");
-        }
-    }
-
-
     public async void PurchaseTrade()
     {
         try
         {
             if (!owner)
             {
-                var purchaseStruct = new DojoCallsManager.PurchaseTradeReinforcementStruct { gameId = DojoEntitiesDataManager.currentGameId, tradeId = new Dojo.Starknet.FieldElement(tradeId) };
+                var purchaseStruct = new DojoCallsManager.PurchaseTradeReinforcementStruct { gameId = DojoEntitiesDataManager.currentGameId, tradeId = tradeId };
                 var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.tradeReinforcementActionsAddress, functionName = "purchase" };
 
                 await DojoCallsManager.PurchaseTradeReinforcementDojoCall(purchaseStruct, endpoint);
-                Destroy(gameObject); // Assuming 'gameObject' is the context you want to destroy
+                Destroy(gameObject);
+
+                UiEntitiesReferenceManager.notificationManager.CreateNotification("Trade purchased successfully",null, 3);
             }
         }
         catch (Exception ex)
         {
+            UiEntitiesReferenceManager.notificationManager.CreateNotification("Trade purchased successfully", null, 3);
             Debug.LogError($"Failed to purchase trade: {ex.Message}");
         }
     }

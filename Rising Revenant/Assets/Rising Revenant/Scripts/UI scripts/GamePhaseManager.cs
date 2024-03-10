@@ -5,6 +5,7 @@ public class GamePhaseManager : MonoBehaviour
     public MenuManager menuManager;
     public CanvasGroup componentsParents;
     public GameObject winningPopUp;
+    public GameObject eventObj;
     public GameObject worldEventManager;
 
     public TopBarUiElement PopUpUiElement;
@@ -57,6 +58,12 @@ public class GamePhaseManager : MonoBehaviour
         if (DojoEntitiesDataManager.gameEntCounter.outpostRemainingCount <= 1)
         {
             winningPopUp.SetActive(true);
+            winningPopUp.SetActive(false);
+        }
+        else
+        {
+            winningPopUp.SetActive(false);
+            eventObj.SetActive(true);
         }
     }
 

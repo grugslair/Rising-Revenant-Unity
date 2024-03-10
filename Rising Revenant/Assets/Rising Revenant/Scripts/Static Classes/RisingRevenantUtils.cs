@@ -980,4 +980,103 @@ public static class RisingRevenantUtils
 
         return listOfVerifiedOutpost;
     }
+
+
+    public static async Task<HashSet<Vec2>> GetAllOutpostSelling(string gameId, int number)
+    {
+        string query = $@"
+        query {{
+            outpostTradeModels(where: {{ game_id: ""{gameId}"", event_id: {number} }}) {{
+                edges {{
+                    node {{
+                        entity {{
+                            keys
+                            models {{
+                                __typename
+                                ... on OutpostTrade {{
+                                    game_id
+                                    status
+                                    offer {{
+                                      x
+                                      y
+                                    }}
+                                }}
+                            }}
+                        }}
+                    }}
+                }}
+            }}
+        }}";
+
+        var client = new GraphQLClient(DojoCallsManager.graphlQLEndpoint);
+        var request = new Request
+        {
+            Query = query,
+        };
+
+        var responseType = new
+        {
+            outpostTradeModels = new
+            {
+                edges = new[]
+                {
+                new
+                {
+                    node = new
+                    {
+                        entity = new
+                        {
+                            keys = new string[] {},
+                            models = new[]
+                            {
+                                new
+                                {
+                                    __typename = "",
+                                    game_id = "",
+                                    verified = "",
+                                    event_id = "",
+                                    outpost_id = new { x = "", y = "" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            }
+        };
+
+        var listOfCurrentActiveOutpostTrades = new HashSet<Vec2>();
+
+        try
+        {
+            var response = await client.Send(() => responseType, request);
+
+            if (response.Data.outpostTradeModels.edges.Length == 0)
+            {
+                Debug.Log("No verification outpost shits found");
+                return null;
+            }
+
+            if (response.Data != null && response.Data.outpostTradeModels != null)
+            {
+                foreach (var edge in response.Data.outpostTradeModels.edges)
+                {
+                    foreach (var model in edge.node.entity.models)
+                    {
+                        if (model.__typename == "OutpostVerified ")
+                        {
+                            listOfCurrentActiveOutpostTrades.Add(new Vec2 { x = (uint)int.Parse(model.outpost_id.x), y = (uint)int.Parse(model.outpost_id.y) });
+                        }
+                    }
+                }
+            }
+            Debug.LogError("Failed to parse data for OutpostVerified ");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Query failed for OutpostVerified : {ex.Message}");
+        }
+
+        return listOfCurrentActiveOutpostTrades;
+    }
 }

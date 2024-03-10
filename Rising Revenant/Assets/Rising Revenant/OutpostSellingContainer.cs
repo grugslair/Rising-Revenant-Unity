@@ -27,6 +27,10 @@ public class OutpostSellingContainer : MonoBehaviour
     private FieldElement tradeId;
     private bool owner;
 
+    [SerializeField]
+    private TooltipAsker tooltipAsker;
+
+
     //check the owner if it matches the player
     public void Initilize(RisingRevenantUtils.Vec2 id, string price, string tradeId)
     {
@@ -65,10 +69,7 @@ public class OutpostSellingContainer : MonoBehaviour
                 tmproText.text = "REVOKE";
             }
 
-            var tooltipAsker = outpostPriceText.transform.AddComponent<TooltipAsker>();
-            tooltipAsker.message = "Change the price of the outpost";
-            tooltipAsker.position = TooltipManager.TooltipPosition.Below;
-            tooltipAsker.tooltipPrefab = tooltipObj;
+            tooltipAsker.OnTooltipShown += OnTooltipEnable;
         }
         else
         {
@@ -99,15 +100,10 @@ public class OutpostSellingContainer : MonoBehaviour
         }
     }
 
-    public async void ChangePrice()
-    {
-        if (owner)
-        {
-            var changeTradePriceStruct = new DojoCallsManager.ModifyTradeRevenantStruct { gameId = DojoEntitiesDataManager.currentGameId, price = new Dojo.Starknet.FieldElement(20), tradeId = tradeId };
-            var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoCallsManager.tradeOutpostActionsAddress, functionName = "revoke" };
 
-            await DojoCallsManager.ModifyTradeRevenantDojoCall(changeTradePriceStruct, endpoint);
-        }
+    private void OnTooltipEnable(GameObject tooltip)
+    {
+        tooltip.GetComponent<ChangePriceTooltip>().Initilize(1, tradeId);
     }
 
     public async void PurchaseTrade()

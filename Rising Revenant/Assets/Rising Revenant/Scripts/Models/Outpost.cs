@@ -7,9 +7,7 @@ using UnityEngine;
 
 public class Outpost : ModelInstance
 {
-
     public event Action OnValueChange;
-
 
     [ModelField("game_id")]
     public FieldElement gameId;
@@ -26,8 +24,8 @@ public class Outpost : ModelInstance
     [ModelField("reinforces_remaining")]
     public UInt32 reinforcesRemaining;
 
-    //[ModelField("reinforcement_type")]
-    //public RisingRevenantUtils.ReinforcementType reinforcementType;
+    [ModelField("reinforcement_type")]
+    public RisingRevenantUtils.ReinforcementType reinforcementType;
 
     [ModelField("status")]
     public byte status;

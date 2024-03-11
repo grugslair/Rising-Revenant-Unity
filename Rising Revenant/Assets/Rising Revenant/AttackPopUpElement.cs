@@ -30,4 +30,12 @@ public class AttackPopUpElement : MonoBehaviour
         this.attackBackground.texture = attackBackground;
         this.reinforcementIcon.texture = reinforcementIcon;
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            Debug.Log(this.attackName.text);
+        }
+    }
 }

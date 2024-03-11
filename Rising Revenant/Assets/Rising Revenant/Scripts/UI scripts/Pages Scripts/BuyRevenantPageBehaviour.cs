@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Numerics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,8 +6,6 @@ using Random = UnityEngine.Random;
 
 public class BuyRevenantPageBehaviour : Menu
 {
-    // call the function
-
     [SerializeField]
     private CounterUiElement counterUiElement;
 
@@ -21,6 +18,9 @@ public class BuyRevenantPageBehaviour : Menu
     private TMP_Text confirmBuyText;
     [SerializeField]
     private TMP_Text staticPriceText;
+
+    [SerializeField] 
+    private GameObject goToReinfButton;
 
     [SerializeField]
     private AudioClip[] soundEffects;
@@ -123,6 +123,14 @@ public class BuyRevenantPageBehaviour : Menu
         else
         {
             Debug.LogWarning("Failed to load image at path: " + path);
+        }
+    }
+
+    private void Update()
+    {
+        if (DojoEntitiesDataManager.playerInfo != null && !goToReinfButton.activeSelf)
+        {
+            goToReinfButton.SetActive(true);
         }
     }
 }

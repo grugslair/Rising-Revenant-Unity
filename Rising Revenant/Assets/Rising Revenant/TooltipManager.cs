@@ -45,12 +45,10 @@ public class TooltipManager : MonoBehaviour
 
     public void HideTooltip()
     {
-        if (currentTooltip != null) Destroy(currentTooltip);
-    }
-
-    public void ForceHideTooltip()
-    {
-        HideTooltip(); // Can be called externally to force hide the tooltip
+        if (currentTooltip != null) 
+        {
+            Destroy(currentTooltip);
+        }
     }
 
     private void Update()

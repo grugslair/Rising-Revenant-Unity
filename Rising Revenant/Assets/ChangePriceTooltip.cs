@@ -63,7 +63,7 @@ public class ChangePriceTooltip : MonoBehaviour
 
     public void CloseTooltip()
     {
-        UiEntitiesReferenceManager.tooltipCompBehaviour.CloseTooltip();
+        UiEntitiesReferenceManager.tooltipManager.HideTooltip();
     }
 
 }

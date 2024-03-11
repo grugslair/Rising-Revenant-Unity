@@ -10,6 +10,7 @@ public class TooltipAsker : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public bool follow = false;
     public GameObject tooltipPrefab; 
     public bool show = true;
+    public bool allowKeep = false;
     public bool keep = false; 
 
     public GameObject currentTooltipObj;
@@ -34,10 +35,10 @@ public class TooltipAsker : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!show) return;
+        if (!show || !allowKeep) return;
         if (keep) 
         {
-            UiEntitiesReferenceManager.tooltipManager.ForceHideTooltip();
+            UiEntitiesReferenceManager.tooltipManager.HideTooltip();
             keep = false; 
             OnTooltipHidden?.Invoke(currentTooltipObj); 
         }

@@ -86,6 +86,9 @@ public class DojoToriiLoader : MonoBehaviour
 
     private async void OnEnable()
     {
+
+        worldManager.SubToEverything();
+
         LoadingHasCompleted = true;
         if (actuallyLoad)
         {

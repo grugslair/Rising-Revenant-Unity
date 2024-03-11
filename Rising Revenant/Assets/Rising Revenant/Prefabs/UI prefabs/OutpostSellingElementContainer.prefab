@@ -1091,7 +1091,9 @@ MonoBehaviour:
   follow: 0
   tooltipPrefab: {fileID: 6839760935249872255, guid: 6fbc500766bfcc844af63686d48b8c85, type: 3}
   show: 1
-  keep: 1
+  allowKeep: 1
+  keep: 0
+  currentTooltipObj: {fileID: 0}
 --- !u!1 &7377354170259479744
 GameObject:
   m_ObjectHideFlags: 0
@@ -1365,6 +1367,7 @@ MonoBehaviour:
   outpostDataText: {fileID: 6519238652253247158}
   outpostPriceText: {fileID: 3329137450448645989}
   actionButton: {fileID: 3359041719268935868}
+  tooltipAsker: {fileID: 3384183718334258028}
 --- !u!1 &8754289045663611845
 GameObject:
   m_ObjectHideFlags: 0

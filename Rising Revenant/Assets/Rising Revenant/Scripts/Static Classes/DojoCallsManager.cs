@@ -3,6 +3,7 @@ using dojo_bindings;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public static class DojoCallsManager
 {
@@ -83,6 +84,12 @@ public static class DojoCallsManager
     {
         public FieldElement gameId;
         public RisingRevenantUtils.Vec2 outpostId;
+    }
+    public struct SetReinforcementType
+    {
+        public FieldElement gameId;
+        public RisingRevenantUtils.Vec2 outpostId;
+        public RisingRevenantUtils.ReinforcementType type;
     }
 
 
@@ -216,6 +223,29 @@ public static class DojoCallsManager
                 new FieldElement(dataStruct.outpostId.x.ToString("X")).Inner(),
                 new FieldElement(dataStruct.outpostId.y.ToString("X")).Inner(),
                 new FieldElement(dataStruct.count.ToString("X")).Inner(),
+            },
+               selector = endpointData.functionName,
+                to = endpointData.addressOfSystem,
+        }
+        });
+    }
+
+    public static async Task<FieldElement> SetReinforcementTypeCall(SetReinforcementType dataStruct, EndpointDojoCallStruct endpointData)
+    {
+        Debug.Log(dataStruct.type);
+        Debug.Log(endpointData.addressOfSystem);
+        Debug.Log(endpointData.functionName);
+
+        return await endpointData.account.ExecuteRaw(new dojo.Call[]
+        {
+        new dojo.Call
+        {
+            calldata = new dojo.FieldElement[]
+            {
+                dataStruct.gameId.Inner(),
+                new FieldElement(dataStruct.outpostId.x.ToString("X")).Inner(),
+                new FieldElement(dataStruct.outpostId.y.ToString("X")).Inner(),
+                new FieldElement(dataStruct.type).Inner(),
             },
                selector = endpointData.functionName,
                 to = endpointData.addressOfSystem,

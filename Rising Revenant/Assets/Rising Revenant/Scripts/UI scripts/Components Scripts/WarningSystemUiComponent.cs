@@ -18,7 +18,6 @@ public class WarningSystemUiComponent : MonoBehaviour
     { 
         if (DojoEntitiesDataManager.currentWorldEvent == null)
         {
-            Debug.Log("no current event WS");
             WSBackground.color = new Color(0, 0, 0, 0);
             return;
         }
@@ -30,7 +29,6 @@ public class WarningSystemUiComponent : MonoBehaviour
 
             if (dir != lastsavedDir)
             {
-                Debug.Log("event not in view");
                 lastsavedDir = dir;
                 Texture2D image = Resources.Load<Texture2D>("WarningSystem/" + lastsavedDir);
                 WSBackground.texture = image;
@@ -42,32 +40,6 @@ public class WarningSystemUiComponent : MonoBehaviour
             lastsavedDir = "";
             WSBackground.color = new Color(0, 0, 0, 0);
         }
-
-
-        //var dir = GetDirectionRelativeToCamera(mainCamera);
-
-        //Debug.Log(dir);
-        //Debug.Log(lastsavedDir);
-
-        //if (dir != lastsavedDir)
-        //{
-        //    //change in location has been seen
-
-        //    if (!IsTargetInView(targetObject))
-        //    {
-        //        Debug.Log("event not in view");
-        //        lastsavedDir = dir;
-        //        Texture2D image = Resources.Load<Texture2D>("WarningSystem/" + lastsavedDir);
-        //        WSBackground.texture = image;
-        //        WSBackground.color = new Color(1, 1, 1, 1);
-        //    }
-        //    else
-        //    {
-        //       Debug.Log("vent in view");
-        //       lastsavedDir = "";
-        //       WSBackground.color = new Color(0, 0, 0, 0);
-        //    }
-        //}
     }
 
     bool IsTargetInView(GameObject obj)

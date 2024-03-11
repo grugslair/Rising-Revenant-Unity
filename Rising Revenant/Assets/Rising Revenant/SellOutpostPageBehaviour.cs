@@ -52,12 +52,9 @@ public class SellOutpostPageBehaviour : Menu
     /// <returns></returns>
     private async void LoadSellableOutposts()
     {
-        var listOfOutpostsOnSale = await RisingRevenantUtils.GetAllOutpostSelling(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString(), 1);
+        listOfSellableOutposts.Clear();
 
-        foreach (var item in listOfOutpostsOnSale)
-        {
-            Debug.Log(item);
-        }
+        var listOfOutpostsOnSale = await RisingRevenantUtils.GetAllOutpostSelling(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString(), 1);
 
         loaded = false;
 
@@ -86,6 +83,8 @@ public class SellOutpostPageBehaviour : Menu
     public void CycleThroughOutposts(int dir)
     {
         var newIdx = currentOutpostIndex + dir;
+
+
 
         if (newIdx < 0 || newIdx >= listOfSellableOutposts.Count) { return; }
 

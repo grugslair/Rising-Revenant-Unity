@@ -14,7 +14,7 @@ public static class RisingRevenantUtils
     [Serializable]
     public enum EventType
     {
-        None,
+        None = 0,
         Dragon,
         Goblin,
         Earthquake,
@@ -23,10 +23,45 @@ public static class RisingRevenantUtils
     [Serializable]
     public enum ReinforcementType
     {
-        None,
-        Wall,
-        Trench,
-        Bunker,
+        None = 0,
+        Wall_Of_Stone,
+        Trenches,
+        Obsidian,
+    }
+
+
+    public static string ToCustomString(this EventType eventType)
+    {
+        switch (eventType)
+        {
+            case EventType.None:
+                return "No event";
+            case EventType.Dragon:
+                return "Dragon";
+            case EventType.Goblin:
+                return "Goblin";
+            case EventType.Earthquake:
+                return "Earthquake";
+            default:
+                return eventType.ToString();
+        }
+    }
+
+    public static string ToCustomString(this ReinforcementType reinforcementType)
+    {
+        switch (reinforcementType)
+        {
+            case ReinforcementType.None:
+                return "Palisade";
+            case ReinforcementType.Wall_Of_Stone:
+                return "Wall of Stone";
+            case ReinforcementType.Trenches:
+                return "Trenches";
+            case ReinforcementType.Obsidian:
+                return "Obsidian";
+            default:
+                return reinforcementType.ToString();
+        }
     }
 
     [Serializable]
@@ -430,7 +465,14 @@ public static class RisingRevenantUtils
         
         double result = (double)totalValue / Math.Pow(10, 18); 
 
-        return Math.Round(result, 7);
+        if (decimalPlaces == -1 || decimalPlaces >= 7)
+        {
+           return Math.Round(result, 7);
+        }
+        else
+        {
+           return Math.Round(result, decimalPlaces);
+        }
     }
 
 
@@ -954,7 +996,7 @@ public static class RisingRevenantUtils
             if (response.Data.outpostVerifiedModels.edges.Length == 0)
             {
                 Debug.Log("No verification outpost shits found");
-                return null;
+                return listOfVerifiedOutpost;
             }
 
             if (response.Data != null && response.Data.outpostVerifiedModels != null)
@@ -971,7 +1013,6 @@ public static class RisingRevenantUtils
                     }
                 }
             }
-            Debug.LogError("Failed to parse data for OutpostVerified ");
         }
         catch (Exception ex)
         {
@@ -986,14 +1027,15 @@ public static class RisingRevenantUtils
     {
         string query = $@"
         query {{
-            outpostTradeModels(where: {{ game_id: ""{gameId}"", event_id: {number} }}) {{
+            outpostTradeModels(where: {{ game_id: ""{gameId}"", status: {number} }}) {{
                 edges {{
                     node {{
                         entity {{
                             keys
                             models {{
-                                __typename
+                                
                                 ... on OutpostTrade {{
+                                    __typename
                                     game_id
                                     status
                                     offer {{
@@ -1008,6 +1050,8 @@ public static class RisingRevenantUtils
             }}
         }}";
 
+        Debug.Log(query);
+
         var client = new GraphQLClient(DojoCallsManager.graphlQLEndpoint);
         var request = new Request
         {
@@ -1020,28 +1064,27 @@ public static class RisingRevenantUtils
             {
                 edges = new[]
                 {
-                new
-                {
-                    node = new
+                    new
                     {
-                        entity = new
+                        node = new
                         {
-                            keys = new string[] {},
-                            models = new[]
+                            entity = new
                             {
-                                new
+                                keys = new string[] {},
+                                models = new[]
                                 {
-                                    __typename = "",
-                                    game_id = "",
-                                    verified = "",
-                                    event_id = "",
-                                    outpost_id = new { x = "", y = "" }
+                                    new
+                                    {
+                                        __typename = "",
+                                        game_id = "",
+                                        status = "",
+                                        offer = new { x = "", y = "" }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
             }
         };
 
@@ -1054,7 +1097,7 @@ public static class RisingRevenantUtils
             if (response.Data.outpostTradeModels.edges.Length == 0)
             {
                 Debug.Log("No verification outpost shits found");
-                return null;
+                return listOfCurrentActiveOutpostTrades;
             }
 
             if (response.Data != null && response.Data.outpostTradeModels != null)
@@ -1063,18 +1106,17 @@ public static class RisingRevenantUtils
                 {
                     foreach (var model in edge.node.entity.models)
                     {
-                        if (model.__typename == "OutpostVerified ")
+                        if (model.__typename == "OutpostTrade")
                         {
-                            listOfCurrentActiveOutpostTrades.Add(new Vec2 { x = (uint)int.Parse(model.outpost_id.x), y = (uint)int.Parse(model.outpost_id.y) });
+                            listOfCurrentActiveOutpostTrades.Add(new Vec2 { x = (uint)int.Parse(model.offer.x), y = (uint)int.Parse(model.offer.y) });
                         }
                     }
                 }
             }
-            Debug.LogError("Failed to parse data for OutpostVerified ");
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Query failed for OutpostVerified : {ex.Message}");
+            Debug.LogError($"Query failed for OutpostTrade : {ex.Message}");
         }
 
         return listOfCurrentActiveOutpostTrades;

@@ -117,19 +117,14 @@ public class WorldEventManager : MonoBehaviour
 
     private async void CheckOutpostsAffectedByEvent(CurrentWorldEvent lastWorldEvent)
     {
-
-        //get list of already fucked outposts
+        //get list of already fucked outposts for that specific event
         var allOutpostsAlreadyConfirmed = await RisingRevenantUtils.GetOutpostVerifiedInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() , (int)lastWorldEvent.number);
-
 
         foreach (var outpost in DojoEntitiesDataManager.outpostDictInstance.Values)
         {
             if (RisingRevenantUtils.IsPointInsideCircle(new Vector2(lastWorldEvent.position.x, lastWorldEvent.position.y), lastWorldEvent.radius, new Vector2(outpost.position.x, outpost.position.y)))
             {
-                //var isOutpostEventConfirmedTask = RisingRevenantUtils.IsOutpostEventConfirmed(outpost.position, (int)lastWorldEvent.number, RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId));
                
-                ////yield return new WaitUntil(() => isOutpostEventConfirmedTask.IsCompleted);
-
                 if (allOutpostsAlreadyConfirmed.Contains(outpost.position))
                 {
                     outpost.SetAttackState(false);
@@ -157,6 +152,12 @@ public class WorldEventManager : MonoBehaviour
         if (UiEntitiesReferenceManager.revJournalCompBehaviour != null)
         {
             UiEntitiesReferenceManager.revJournalCompBehaviour.HandleWorldEventAdded(lastWorldEvent);
+        }
+
+        if (UiEntitiesReferenceManager.currentAttackIndicatorComponent != null)
+        {
+            UiEntitiesReferenceManager.currentAttackIndicatorComponent.transform.gameObject.SetActive(true);
+            UiEntitiesReferenceManager.currentAttackIndicatorComponent.SetEventType(lastWorldEvent.eventType);
         }
     }
 

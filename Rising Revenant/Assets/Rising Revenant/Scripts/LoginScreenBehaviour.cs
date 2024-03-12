@@ -74,7 +74,6 @@ public class LoginScreenBehaviour : Menu
 
     public async void StartGame()
     {
-        if (DojoEntitiesDataManager.currentAccount == null) { return; }
 
         var createGameProps = new DojoCallsManager.CreateGameStruct
         {
@@ -82,11 +81,15 @@ public class LoginScreenBehaviour : Menu
             preparationBlock = 10
         };
 
+        Debug.Log("wdiojwdiijodwijiwodjawd");
+
+        var acc = initializeDojoEntitiesScript.GenerateAccount();
+
         var endpoint = new DojoCallsManager.EndpointDojoCallStruct
         {
             functionName = "create",
             addressOfSystem = DojoCallsManager.gameActionsAddress,
-            account = DojoEntitiesDataManager.currentAccount,
+            account = acc,
         };
 
         var transaction = await DojoCallsManager.CreateGameDojoCall(createGameProps, endpoint);

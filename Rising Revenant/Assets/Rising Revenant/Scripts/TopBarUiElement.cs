@@ -2,6 +2,7 @@ using Dojo.Torii;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -77,7 +78,7 @@ public class TopBarUiElement : MonoBehaviour
         if (DojoEntitiesDataManager.gamePot != null)
         {
             var gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-            jackpotText.text = "Jackpot: " + RisingRevenantUtils.HexToFloat(gamePot[1]);
+            jackpotText.text = "Jackpot: " +   RisingRevenantUtils.HexToFloat(gamePot[1]);
         }
     }
 

@@ -35,7 +35,7 @@ public static class UiEntitiesReferenceManager
     public static RevenantJurnalComponentBehaviour revJournalCompBehaviour { get; set; }
     public static TooltipComponentBehaviour tooltipCompBehaviour { get; set; }
     public static WarningSystemUiComponent warningSystemUiComponent { get; set; }
-   
+    public static CurrentAttackIndicatorComponent currentAttackIndicatorComponent { get; set; }
 
 
 

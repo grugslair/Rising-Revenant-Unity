@@ -18,6 +18,7 @@ public class AttackPopUpElement : MonoBehaviour
     [SerializeField]
     private RawImage reinforcementIcon;
 
+   
     public void SetData(string attackName, string attackDescription, string reinforcementName, Texture2D attackBackground, Texture2D reinforcementIcon)
     {
         Debug.Log("Setting data");

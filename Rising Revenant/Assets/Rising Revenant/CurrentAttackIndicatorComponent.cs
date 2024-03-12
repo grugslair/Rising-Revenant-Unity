@@ -4,15 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum EventType
-{
-    NONE = -1,
-    EARTHQUAKE = 0,
-    GOBLIN =1,
-    DRAGON = 2,
-}
-
-
 public class CurrentAttackIndicatorComponent : MonoBehaviour
 {
 
@@ -38,6 +29,11 @@ public class CurrentAttackIndicatorComponent : MonoBehaviour
 
     [SerializeField]
     private GameObject tooltipPrefab;
+
+    private void Awake()
+    {
+        UiEntitiesReferenceManager.currentAttackIndicatorComponent = this;
+    }
 
     [SerializeField]
     private List<PopUpDataText> popUpData = new List<PopUpDataText>() { 
@@ -73,28 +69,13 @@ public class CurrentAttackIndicatorComponent : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            SetEventType(EventType.EARTHQUAKE);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            SetEventType(EventType.GOBLIN);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            SetEventType(EventType.DRAGON);
-        }
-    }
-
-    public void SetEventType(EventType eventType)
+    
+    public void SetEventType(RisingRevenantUtils.EventType eventType)
     {
         SetIndicator(eventType);
     }
 
-    private void SetIndicator(EventType eventType)
+    private void SetIndicator(RisingRevenantUtils.EventType eventType)
     {
         for (int i = 0; i < eventIcons.Count; i++)
         {

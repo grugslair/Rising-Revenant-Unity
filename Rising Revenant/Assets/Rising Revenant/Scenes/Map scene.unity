@@ -5544,6 +5544,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StartGameButton
       objectReference: {fileID: 0}
+    - target: {fileID: 1332157555262241910, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2740790605761820770, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
       propertyPath: m_RaycastTarget
       value: 0

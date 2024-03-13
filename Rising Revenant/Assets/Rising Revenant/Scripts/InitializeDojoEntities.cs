@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Dojo;
 using Dojo.Starknet;
-using UnityEditor.VersionControl;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class InitializeDojoEntities : MonoBehaviour
 {

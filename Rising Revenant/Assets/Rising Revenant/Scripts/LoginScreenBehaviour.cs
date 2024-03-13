@@ -81,15 +81,13 @@ public class LoginScreenBehaviour : Menu
             preparationBlock = 10
         };
 
-        Debug.Log("wdiojwdiijodwijiwodjawd");
 
-        var acc = initializeDojoEntitiesScript.GenerateAccount();
 
         var endpoint = new DojoCallsManager.EndpointDojoCallStruct
         {
             functionName = "create",
             addressOfSystem = DojoCallsManager.gameActionsAddress,
-            account = acc,
+            account = DojoEntitiesDataManager.currentAccount,
         };
 
         var transaction = await DojoCallsManager.CreateGameDojoCall(createGameProps, endpoint);

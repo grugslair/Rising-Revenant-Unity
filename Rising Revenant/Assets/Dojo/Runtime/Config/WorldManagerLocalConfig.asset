@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faed63f2427f3ed83a42d16bb3e73e6d, type: 3}
   m_Name: WorldManagerLocalConfig
   m_EditorClassIdentifier: 
-  toriiUrl: http://localhost:8080
-  rpcUrl: http://localhost:5050
+  toriiUrl: https://api.cartridge.gg/x/rr/torii
+  rpcUrl: https://api.cartridge.gg/x/rr/katana
   relayUrl: /ip4/127.0.0.1/tcp/9090
   relayWebrtcUrl: /ip4/127.0.0.1/udp/9091/webrtc-direct/certhash/uEiDx-luHsovHTHPuU5qzNHCCFkYYpFPirTn2p7ZIFP0Dig
   limit: 100
-  worldAddress: 0x64391fb1874628896a0ab666b40f6b5efd96ab01fb5a823279255e9c17a2e43
+  worldAddress: 0x739075d3eab7b1463ef8e99ad59afc470dbee7a4d5682fecde6c84c0798e1e7

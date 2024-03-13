@@ -3,7 +3,6 @@ using dojo_bindings;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
 
 public static class DojoCallsManager
 {
@@ -232,10 +231,6 @@ public static class DojoCallsManager
 
     public static async Task<FieldElement> SetReinforcementTypeCall(SetReinforcementType dataStruct, EndpointDojoCallStruct endpointData)
     {
-        Debug.Log(dataStruct.type);
-        Debug.Log(endpointData.addressOfSystem);
-        Debug.Log(endpointData.functionName);
-
         return await endpointData.account.ExecuteRaw(new dojo.Call[]
         {
         new dojo.Call

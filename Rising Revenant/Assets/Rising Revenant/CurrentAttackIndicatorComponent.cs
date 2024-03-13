@@ -69,7 +69,6 @@ public class CurrentAttackIndicatorComponent : MonoBehaviour
         }
     }
 
-    
     public void SetEventType(RisingRevenantUtils.EventType eventType)
     {
         SetIndicator(eventType);

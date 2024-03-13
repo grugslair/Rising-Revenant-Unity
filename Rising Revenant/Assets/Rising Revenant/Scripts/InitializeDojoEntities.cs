@@ -1,10 +1,7 @@
 using System.Collections.Generic;
-using System.Numerics;
 using Dojo;
 using Dojo.Starknet;
-using UnityEditor.VersionControl;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class InitializeDojoEntities : MonoBehaviour
 {
@@ -49,7 +46,6 @@ public class InitializeDojoEntities : MonoBehaviour
     public Account GenerateAccount() 
     {
         var signer = new SigningKey(testPrivK);
-        Debug.Log("called new accoutn");
         return new Account(provider, signer, new FieldElement(testAddress));
     }
 

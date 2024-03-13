@@ -156,6 +156,7 @@ public static class DojoCallsManager
     public struct CreateEventStruct
     {
         public FieldElement gameId;
+        public FieldElement eventType;
     }
 
 
@@ -462,6 +463,7 @@ public static class DojoCallsManager
             calldata = new dojo.FieldElement[]
             {
                 dataStruct.gameId.Inner(),
+                dataStruct.eventType.Inner(),
             },
             selector = endpointData.functionName,
             to = endpointData.addressOfSystem,

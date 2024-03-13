@@ -87,4 +87,28 @@ public class InitializeDojoEntities : MonoBehaviour
     //        }
     //    }
     //}
+
+
+    public async void CallCreateEvent()
+    {
+       
+            if (DojoEntitiesDataManager.currentAccount == null) { return; }
+
+            var createRevenantsProps = new DojoCallsManager.CreateEventStruct
+            {
+                gameId = DojoEntitiesDataManager.currentGameId,
+                eventType = new FieldElement(1)
+            };
+
+            var endpoint = new DojoCallsManager.EndpointDojoCallStruct
+            {
+                functionName = "create",
+                addressOfSystem = DojoCallsManager.eventActionsAddress,
+                account = DojoEntitiesDataManager.currentAccount,
+            };
+
+            var transaction = await DojoCallsManager.CreateEventDojoCall(createRevenantsProps, endpoint);
+        
+
+    }
 }

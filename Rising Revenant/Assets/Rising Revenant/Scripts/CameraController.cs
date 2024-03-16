@@ -175,7 +175,6 @@ public class CameraController : MonoBehaviour
     }
 
 
-    //yep this works
     void GetBoundsOfCam()
     {
         float distance = this.transform.position.y; 

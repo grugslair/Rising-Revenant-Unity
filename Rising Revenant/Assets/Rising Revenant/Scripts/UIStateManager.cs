@@ -8,6 +8,11 @@ public class UIStateManager : MonoBehaviour
     [SerializeField]
     private GameObject[] UIScreenObjs = new GameObject[4];
 
+    private void Awake()
+    {
+        UiEntitiesReferenceManager.UIStateManager = this;
+    }
+
     public enum UIState
     {
         LOGIN = 0,
@@ -54,10 +59,16 @@ public class UIStateManager : MonoBehaviour
         }
     }
 
-
-    private void TestFunction() 
+    private async void TestFunction() 
     {
-       
+        var endpoint = new DojoCallsManager.EndpointDojoCallStruct
+        {
+            account = DojoEntitiesDataManager.currentAccount,
+            addressOfSystem = DojoCallsManager.gameActionsAddress,
+            functionName = "update_state",
+        };
+
+        await DojoCallsManager.UpdateStateOfTheGame(1, endpoint);
     }
 
     /// <summary>
@@ -66,6 +77,12 @@ public class UIStateManager : MonoBehaviour
     /// <param name="stateNum"></param>
     public void SetUiState(int stateNum)
     {
+
+        if (stateNum == (int)currentUiState)
+        {
+            return;
+        }
+
         for (int i = 0; i < UIScreenObjs.Length; i++)
         {
             if (i == (int)stateNum)

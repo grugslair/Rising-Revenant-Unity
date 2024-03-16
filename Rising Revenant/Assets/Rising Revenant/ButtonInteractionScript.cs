@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
 
 public class ButtonInteractionScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
@@ -33,11 +32,14 @@ public class ButtonInteractionScript : MonoBehaviour, IPointerEnterHandler, IPoi
     private Coroutine textTransitionCoroutine;
     private Coroutine borderImageTransitionCoroutine;
 
+    private Button button;
+
     // the issue is that the button will not stay active
 
     void Start()
     {
-        UpdateDisabledState(); 
+        button = GetComponent<Button>();
+        UpdateDisabledState(disabled); 
     }
 
     //on disable everythign should go back 
@@ -101,14 +103,19 @@ public class ButtonInteractionScript : MonoBehaviour, IPointerEnterHandler, IPoi
         targetGraphic.color = targetColor;
     }
 
-    private void UpdateDisabledState()
+    public void UpdateDisabledState(bool disabled)
     {
+
+        this.disabled = disabled; 
+
         if (disabled)
         {
+            button.interactable = false;
             SetOpacity(startBackGroundColor, startTextColor, startImageColor, 0.5f);
         }
         else
         {
+            button.interactable = true;
             ResetColors();
         }
     }

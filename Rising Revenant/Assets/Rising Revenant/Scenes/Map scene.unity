@@ -19685,19 +19685,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5583820798489825118, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5583820798489825118, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1380497109}
+      objectReference: {fileID: 589114063}
     - target: {fileID: 5583820798489825118, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetUiState
+      value: SkipVideo
       objectReference: {fileID: 0}
     - target: {fileID: 5583820798489825118, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UIStateManager, Assembly-CSharp
+      value: VideoTrailerBehaviour, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5583820798489825118, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
@@ -19969,6 +19969,10 @@ PrefabInstance:
     - target: {fileID: 1332157555262241910, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
       propertyPath: m_Name
       value: continueFromLoadingButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 1332157555262241910, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2740790605761820770, guid: 65d9f73738b9ac7468553e737739e50a, type: 3}
       propertyPath: m_RaycastTarget
@@ -25728,7 +25732,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1411434950
 RectTransform:
   m_ObjectHideFlags: 0
@@ -32552,6 +32556,10 @@ PrefabInstance:
     - target: {fileID: 3269270482660702203, guid: d2e25933f4d69473a8994ee7470b2610, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4477060482053654553, guid: d2e25933f4d69473a8994ee7470b2610, type: 3}
+      propertyPath: limit
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4900589733936057544, guid: d2e25933f4d69473a8994ee7470b2610, type: 3}
       propertyPath: m_Name

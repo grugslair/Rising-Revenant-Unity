@@ -23,7 +23,7 @@ public class RevenantJurnalComponentBehaviour : MonoBehaviour
     {
         //eventNumText.text = $"Event Data #{RisingRevenantUtils.FieldElementToInt(worldEvent)}";
         //on call queyr to tot count?
-        eventNumText.text = $"Event Data {DojoEntitiesDataManager.worldEventDictInstance.Count -1}";
+        eventNumText.text = $"Event Data {DojoEntitiesDataManager.currentWorldEvent.number}";
         eventDataText.text = $"Radius: {worldEvent.radius} km\n" +
                              $"Position: X:{worldEvent.position.x} || Y:{worldEvent.position.y}\n" +
                              $"Next Attack: IDK";

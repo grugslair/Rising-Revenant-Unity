@@ -41,7 +41,7 @@ public class MinimapComponentBehaviour : MonoBehaviour
         var compHeight = parentMinimapComp.rect.height;
         var compWidth = parentMinimapComp.rect.width;
 
-        float scaledX =compWidth - (worldPosition.x / RisingRevenantUtils.MAP_WIDHT) * compWidth;
+        float scaledX =(worldPosition.x / RisingRevenantUtils.MAP_WIDHT) * compWidth;
         float scaledY = (worldPosition.y / RisingRevenantUtils.MAP_HEIGHT) * compHeight;
 
         spot.anchoredPosition = new Vector2(scaledX, scaledY);
@@ -57,8 +57,13 @@ public class MinimapComponentBehaviour : MonoBehaviour
                 if (RectTransformUtility.ScreenPointToLocalPointInRectangle(mapImage.rectTransform, Input.mousePosition, null, out localCursor))
                 {
                     var realLocation = new Vector2(localCursor.x + scale.x / 2, localCursor.y + scale.y / 2);
+
+                    Debug.Log(realLocation);
+
                     var evenRealerLocation = new Vector3(RisingRevenantUtils.MAP_WIDHT * (realLocation.x / scale.x), 0f, RisingRevenantUtils.MAP_HEIGHT * (realLocation.y / scale.y));
                     //lol what
+
+                    Debug.Log(evenRealerLocation);
 
                     CameraController.Instance.transform.position = evenRealerLocation;
                     //CameraController.Instance.MoveCameraTo( new Vector3(  RisingRevenantUtils.MAP_WIDHT * (realLocation.x / scale.x)    ,0f, RisingRevenantUtils.MAP_HEIGHT * (realLocation.y / scale.y))  , 2f);

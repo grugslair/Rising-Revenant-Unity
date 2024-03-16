@@ -42,6 +42,7 @@ public static class UiEntitiesReferenceManager
 
 
     // BOTH -----------------------------------
+    public static UIStateManager UIStateManager { get; set; }
 
     //comps
     public static TopBarUiElement topBarUiElement { get; set; }

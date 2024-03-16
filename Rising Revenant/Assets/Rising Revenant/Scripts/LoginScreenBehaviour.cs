@@ -81,8 +81,6 @@ public class LoginScreenBehaviour : Menu
             preparationBlock = 10
         };
 
-
-
         var endpoint = new DojoCallsManager.EndpointDojoCallStruct
         {
             functionName = "create",

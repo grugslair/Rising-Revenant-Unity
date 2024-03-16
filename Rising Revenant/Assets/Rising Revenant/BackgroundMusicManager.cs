@@ -14,9 +14,10 @@ public class BackgroundMusicManager : MonoBehaviour
         }
     }
 
-    public void TogglePauseBackgroundMusic()
+    public void TogglePauseBackgroundMusic(bool pause)
     {
-        if (backgroundMusicSource.isPlaying)
+
+        if (pause)
         {
             backgroundMusicSource.Pause();
         }

@@ -21,10 +21,7 @@ public class AttackPopUpElement : MonoBehaviour
    
     public void SetData(string attackName, string attackDescription, string reinforcementName, Texture2D attackBackground, Texture2D reinforcementIcon)
     {
-        Debug.Log("Setting data");
-        Debug.Log(attackName);
         this.attackName.text = attackName;
-        Debug.Log(this.attackName.text);
         this.attackDescription.text = attackDescription;
 
         this.reinforcementName.text = reinforcementName;

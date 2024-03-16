@@ -27,4 +27,12 @@ public class PrepPhaseManager : MonoBehaviour
         //    Debug.Log(subscribedModels[i].keys[0]);
         //}
     }
+
+    private void Update()
+    {
+        if (DojoEntitiesDataManager.currentWorldEvent != null)
+        {
+            UiEntitiesReferenceManager.UIStateManager.SetUiState(4);
+        }
+    }
 }

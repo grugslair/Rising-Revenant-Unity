@@ -89,13 +89,11 @@ public class InitializeDojoEntities : MonoBehaviour
 
     public async void CallCreateEvent()
     {
-       
             if (DojoEntitiesDataManager.currentAccount == null) { return; }
 
             var createRevenantsProps = new DojoCallsManager.CreateEventStruct
             {
-                gameId = DojoEntitiesDataManager.currentGameId,
-                eventType = new FieldElement(1)
+                gameId = DojoEntitiesDataManager.currentGameId
             };
 
             var endpoint = new DojoCallsManager.EndpointDojoCallStruct
@@ -106,7 +104,5 @@ public class InitializeDojoEntities : MonoBehaviour
             };
 
             var transaction = await DojoCallsManager.CreateEventDojoCall(createRevenantsProps, endpoint);
-        
-
     }
 }

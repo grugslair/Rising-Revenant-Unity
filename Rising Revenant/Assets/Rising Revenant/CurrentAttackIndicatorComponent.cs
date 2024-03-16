@@ -33,6 +33,7 @@ public class CurrentAttackIndicatorComponent : MonoBehaviour
     private void Awake()
     {
         UiEntitiesReferenceManager.currentAttackIndicatorComponent = this;
+        gameObject.SetActive(false);
     }
 
     [SerializeField]
@@ -72,6 +73,7 @@ public class CurrentAttackIndicatorComponent : MonoBehaviour
     
     public void SetEventType(RisingRevenantUtils.EventType eventType)
     {
+        Debug.Log("Setting event type");
         SetIndicator(eventType);
     }
 
@@ -84,9 +86,9 @@ public class CurrentAttackIndicatorComponent : MonoBehaviour
             if (i == (int)eventType)
             {
                 eventIcons[i].color = new Color(0.9f, 0, 0, 1);
-                var prefabComp = comp.tooltipPrefab.GetComponent<AttackPopUpElement>();
+                //var prefabComp = comp.tooltipPrefab.GetComponent<AttackPopUpElement>();
 
-                prefabComp.SetData(popUpData[i].attackName, popUpData[i].attackDescription, popUpData[i].reinforcementName, eventBackgroundImages[i], eventReinforcementsImages[i]);
+                //prefabComp.SetData(popUpData[i].attackName, popUpData[i].attackDescription, popUpData[i].reinforcementName, eventBackgroundImages[i], eventReinforcementsImages[i]);
                 comp.show = true;
                 this.attackName.text = $"Current Attack: {popUpData[i].attackName}";
             }

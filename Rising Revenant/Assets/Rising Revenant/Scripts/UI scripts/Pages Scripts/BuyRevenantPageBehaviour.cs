@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -80,23 +81,33 @@ public class BuyRevenantPageBehaviour : Menu
 
     public async void CallDojoSummonRevFunc()
     {
-        SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
-
-        var createRevenantsProps = new DojoCallsManager.SummonRevenantStruct
+        try
         {
-            gameId = DojoEntitiesDataManager.currentGameId,
-            count = (uint)counterUiElement.currentValue,
-        };
+            SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
 
-        var endpoint = new DojoCallsManager.EndpointDojoCallStruct
+            var createRevenantsProps = new DojoCallsManager.SummonRevenantStruct
+            {
+                gameId = DojoEntitiesDataManager.currentGameId,
+                count = (uint)counterUiElement.currentValue,
+            };
+
+            var endpoint = new DojoCallsManager.EndpointDojoCallStruct
+            {
+                functionName = "purchase",
+                addressOfSystem = DojoCallsManager.outpostActionsAddress,
+                account = DojoEntitiesDataManager.currentAccount,
+            };
+
+            var transaction = await DojoCallsManager.SummonRevenantsDojoCall(createRevenantsProps, endpoint);
+            UiEntitiesReferenceManager.notificationManager.CreateNotification($"succesfull creation of {counterUiElement.currentValue} outposts", null, 2f);
+        }
+        catch (Exception ex)
         {
-            functionName = "purchase",
-            addressOfSystem = DojoCallsManager.outpostActionsAddress,
-            account = DojoEntitiesDataManager.currentAccount,
-        };
-
-        var transaction = await DojoCallsManager.SummonRevenantsDojoCall(createRevenantsProps, endpoint);
+            UiEntitiesReferenceManager.notificationManager.CreateNotification("error occured bla bla bla", null, 2f);
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
     }
+
 
     private void OnDisable()
     {

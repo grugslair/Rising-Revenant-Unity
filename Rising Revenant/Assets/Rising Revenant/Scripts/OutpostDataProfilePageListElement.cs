@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,10 +31,7 @@ public class OutpostDataProfilePageListElement : MonoBehaviour
         RisingRevenantUtils.ReinforcementType reinfType = outpostData.reinforcementType;
         reinforcementTypeNameText.text = reinfType.ToCustomString();
 
-        Texture2D reinfTypeImage = Resources.Load<Texture2D>($"Icons/{reinfType.ToCustomString()}.png");
-
-        Debug.Log($"Icons/{reinfType.ToCustomString()}.png");
-
+        Texture2D reinfTypeImage = Resources.Load<Texture2D>($"Icons/{reinfType.ToCustomString()}");
         reinforcementPic.texture = reinfTypeImage;
 
         Texture2D revImage = Resources.Load<Texture2D>($"Revenants_Pics/{RisingRevenantUtils.GetConsistentRandomNumber((int)(outpostData.position.x * outpostData.position.y), RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId), 1, 24)}");
@@ -87,7 +81,8 @@ public class OutpostDataProfilePageListElement : MonoBehaviour
 
     public void GoHere()
     {
-        Debug.Log("call to move cam");
+        CameraController.Instance.transform.position = new Vector3(outpostData.position.x,0f,outpostData.position.y);
+        //CameraController.Instance.MoveCameraToPosition(outpostData.position);
     }
 
     public async void ReinforceOutpost()

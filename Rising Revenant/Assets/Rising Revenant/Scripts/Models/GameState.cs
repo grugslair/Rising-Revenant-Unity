@@ -43,7 +43,6 @@ public class GameState : ModelInstance
         }
     }
 
-
     public override void OnUpdate(Model model)
     {
         base.OnUpdate(model);
@@ -57,8 +56,6 @@ public class GameState : ModelInstance
         {
             UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
             UiEntitiesReferenceManager.topBarUiElement.CalcContrib();
-        }
+        }   
     }
-
-
 }

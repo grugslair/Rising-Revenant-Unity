@@ -99,6 +99,9 @@ public class TooltipComponentBehaviour : MonoBehaviour
             i++;
         }
 
+        Texture2D reinfTypeImage = Resources.Load<Texture2D>($"Icons/{outpostData.reinforcementType.ToCustomString()}");
+        //reinforcementPic.texture = reinfTypeImage;
+
         revenantDataText.text = $"Owner: {outpostData.ownerAddress.Hex().Substring(0,6)}\nName {RisingRevenantUtils.GetFullRevenantName(outpostData.position)}";
     }
 

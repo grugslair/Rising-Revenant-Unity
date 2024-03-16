@@ -35,5 +35,7 @@ public class GamePhases : ModelInstance
     public override void OnUpdate(Model model)
     {
         base.OnUpdate(model);
+
+        Debug.Log(status);
     }
 }

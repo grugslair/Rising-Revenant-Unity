@@ -10,8 +10,8 @@ public class TooltipAsker : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public bool follow = false;
     public GameObject tooltipPrefab; 
     public bool show = true;
-    public bool allowKeep = false;
-    public bool keep = false; 
+    public bool allowPermanence = false;
+    public bool isCurrentlyPermanent = false; 
 
     public GameObject currentTooltipObj;
 
@@ -22,29 +22,30 @@ public class TooltipAsker : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (!show) return;
-        currentTooltipObj = UiEntitiesReferenceManager.tooltipManager.ShowTooltip(tooltipPrefab, message, GetComponent<RectTransform>(), position, margin, follow);
+        currentTooltipObj = UiEntitiesReferenceManager.tooltipManager.ShowTooltip(tooltipPrefab, message, GetComponent<RectTransform>(), position, margin, follow, this);
         OnTooltipShown?.Invoke(currentTooltipObj); 
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!show || keep) return; 
+        if (!show || isCurrentlyPermanent) return; 
         UiEntitiesReferenceManager.tooltipManager.HideTooltip();
         OnTooltipHidden?.Invoke(currentTooltipObj);
     }
-
+        
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!show || !allowKeep) return;
-        if (keep) 
+        if (!allowPermanence) return;
+
+        if (isCurrentlyPermanent) 
         {
             UiEntitiesReferenceManager.tooltipManager.HideTooltip();
-            keep = false; 
+            isCurrentlyPermanent = false; 
             OnTooltipHidden?.Invoke(currentTooltipObj); 
         }
         else
         {
-            keep = true; 
+            isCurrentlyPermanent = true; 
         }
     }
 }

@@ -9,6 +9,7 @@ public class TooltipManager : MonoBehaviour
     private bool liveDeltaMove = false;
     private RectTransform currentTargetUIElement;
     private TooltipPosition currentPosition;
+    private TooltipAsker currentAsker;
     private Vector2 currentMargin; // Changed to Vector2 to support both X and Y margins
 
     public enum TooltipPosition
@@ -26,12 +27,21 @@ public class TooltipManager : MonoBehaviour
         canvasRectTransform = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
     }
 
-    public GameObject ShowTooltip(GameObject tooltipPrefab, string message, RectTransform targetUIElement, TooltipPosition position, Vector2 margin, bool liveDeltaMove)
+    public GameObject ShowTooltip(GameObject tooltipPrefab, string message, RectTransform targetUIElement, TooltipPosition position, Vector2 margin, bool liveDeltaMove, TooltipAsker tooltipAsker)
     {
+
+        if (currentAsker != null)
+        {
+            Debug.Log("Hiding main call tooltip");
+            currentAsker.isCurrentlyPermanent = false;
+        }
+
+
         this.liveDeltaMove = liveDeltaMove;
         this.currentTargetUIElement = targetUIElement;
         this.currentPosition = position;
-        this.currentMargin = margin; // Now a Vector2
+        this.currentMargin = margin; 
+        this.currentAsker = tooltipAsker;
 
         if (currentTooltip != null) Destroy(currentTooltip);
 
@@ -47,6 +57,14 @@ public class TooltipManager : MonoBehaviour
     {
         if (currentTooltip != null) 
         {
+            //if (currentAsker != null)
+            //{
+            //    Debug.Log("Hiding main call tooltip");
+            //    Debug.Log
+            //    currentAsker.isCurrentlyPermanent = false;
+            //}
+
+            Debug.Log("Hiding tooltip");
             Destroy(currentTooltip);
         }
     }

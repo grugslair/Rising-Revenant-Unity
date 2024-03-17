@@ -1091,8 +1091,8 @@ MonoBehaviour:
   follow: 0
   tooltipPrefab: {fileID: 6839760935249872255, guid: 6fbc500766bfcc844af63686d48b8c85, type: 3}
   show: 1
-  allowKeep: 1
-  keep: 0
+  allowPermanence: 1
+  isCurrentlyPermanent: 0
   currentTooltipObj: {fileID: 0}
 --- !u!1 &7377354170259479744
 GameObject:

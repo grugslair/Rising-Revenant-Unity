@@ -70,7 +70,25 @@ public class CurrentAttackIndicatorComponent : MonoBehaviour
         }
     }
 
-    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SetEventType(RisingRevenantUtils.EventType.Earthquake);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SetEventType(RisingRevenantUtils.EventType.Goblin);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SetEventType(RisingRevenantUtils.EventType.Dragon);
+        }
+    }
+
+
     public void SetEventType(RisingRevenantUtils.EventType eventType)
     {
         Debug.Log("Setting event type");

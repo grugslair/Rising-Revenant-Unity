@@ -15022,8 +15022,8 @@ MonoBehaviour:
   follow: 0
   tooltipPrefab: {fileID: 0}
   show: 0
-  allowKeep: 0
-  keep: 0
+  allowPermanence: 0
+  isCurrentlyPermanent: 0
   currentTooltipObj: {fileID: 0}
 --- !u!1 &840631443
 GameObject:
@@ -16522,7 +16522,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Current Attack: ukrainian drones'
+  m_text: 'Current Attack: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: df42b8b1ba75ede458145b83d77b335d, type: 2}
   m_sharedMaterial: {fileID: 7672003761425889706, guid: df42b8b1ba75ede458145b83d77b335d, type: 2}
@@ -19263,8 +19263,8 @@ MonoBehaviour:
   follow: 0
   tooltipPrefab: {fileID: 0}
   show: 0
-  allowKeep: 0
-  keep: 0
+  allowPermanence: 0
+  isCurrentlyPermanent: 0
   currentTooltipObj: {fileID: 0}
 --- !u!1 &1089133220
 GameObject:
@@ -35751,8 +35751,8 @@ MonoBehaviour:
   follow: 0
   tooltipPrefab: {fileID: 0}
   show: 0
-  allowKeep: 0
-  keep: 0
+  allowPermanence: 0
+  isCurrentlyPermanent: 0
   currentTooltipObj: {fileID: 0}
 --- !u!1 &1915851212
 GameObject:

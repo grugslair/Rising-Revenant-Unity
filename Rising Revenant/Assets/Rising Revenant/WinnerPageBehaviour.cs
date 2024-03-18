@@ -33,13 +33,13 @@ public class WinnerPageBehaviour : Menu
             if (lastOutpost.ownerAddress.Hex() == DojoEntitiesDataManager.currentAccount.Address.Hex())
             {
                 addressName.text = DojoEntitiesDataManager.currentAccount.Address.Hex();
-                winningOutcomeText.text = "You have won the game, you are the Rising Revenant";
+                winningOutcomeText.text = "YOU HAVE WON THE GAME, YOU ARE THE RISING REVENANT";
                 jackpotClaim.SetActive(true);
             }
             else
             {
                 addressName.text = lastOutpost.ownerAddress.Hex();
-                winningOutcomeText.text = "You have lost the game, the last outpost standing is owned by someone else";
+                winningOutcomeText.text = "YOU HAVE LOST THE GAME, SOMEONE ELSE IS THE RISING REVENANT";
             }
         }
         else

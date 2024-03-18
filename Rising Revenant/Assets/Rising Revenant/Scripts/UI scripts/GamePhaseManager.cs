@@ -55,10 +55,12 @@ public class GamePhaseManager : MonoBehaviour
 
     public void CheckForWin()
     {
+        Debug.Log("this is called");
+
         if (DojoEntitiesDataManager.gameEntCounter.outpostRemainingCount <= 1)
         {
             winningPopUp.SetActive(true);
-            winningPopUp.SetActive(false);
+            eventObj.SetActive(false);
         }
         else
         {

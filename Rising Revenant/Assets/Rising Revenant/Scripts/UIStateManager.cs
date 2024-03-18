@@ -53,10 +53,10 @@ public class UIStateManager : MonoBehaviour
             SetUiState(4);
         }
 
-        if (Input.GetKeyUp(KeyCode.H))
-        {
-            UiEntitiesReferenceManager.notificationManager.CreateNotification("Test", null, 5);
-        }
+        //if (Input.GetKeyUp(KeyCode.H))
+        //{
+        //    UiEntitiesReferenceManager.notificationManager.CreateNotification("Test", null, 5);
+        //}
     }
 
     private async void TestFunction() 

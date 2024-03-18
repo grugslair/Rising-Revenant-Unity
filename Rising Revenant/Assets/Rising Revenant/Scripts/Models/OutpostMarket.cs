@@ -1,14 +1,11 @@
-using Dojo; using Dojo.Starknet; using Dojo.Torii;
-using SimpleGraphQL;
+using Dojo; 
+using Dojo.Starknet; 
+using Dojo.Torii;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Threading.Tasks;
-using UnityEngine;
 
 public class OutpostMarket : ModelInstance
 {
-    public event Action OnValueChange;
 
     [ModelField("game_id")]
     public FieldElement gameId;
@@ -18,7 +15,6 @@ public class OutpostMarket : ModelInstance
 
     [ModelField("available")]
     public UInt32 maxAmountOfOutposts;
-
 
     void Start()
     {
@@ -39,6 +35,4 @@ public class OutpostMarket : ModelInstance
             UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
         }
     }
-
-  
 }

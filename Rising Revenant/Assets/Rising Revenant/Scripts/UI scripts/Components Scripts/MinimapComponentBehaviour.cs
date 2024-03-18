@@ -58,12 +58,8 @@ public class MinimapComponentBehaviour : MonoBehaviour
                 {
                     var realLocation = new Vector2(localCursor.x + scale.x / 2, localCursor.y + scale.y / 2);
 
-                    Debug.Log(realLocation);
-
                     var evenRealerLocation = new Vector3(RisingRevenantUtils.MAP_WIDHT * (realLocation.x / scale.x), 0f, RisingRevenantUtils.MAP_HEIGHT * (realLocation.y / scale.y));
                     //lol what
-
-                    Debug.Log(evenRealerLocation);
 
                     CameraController.Instance.transform.position = evenRealerLocation;
                     //CameraController.Instance.MoveCameraTo( new Vector3(  RisingRevenantUtils.MAP_WIDHT * (realLocation.x / scale.x)    ,0f, RisingRevenantUtils.MAP_HEIGHT * (realLocation.y / scale.y))  , 2f);

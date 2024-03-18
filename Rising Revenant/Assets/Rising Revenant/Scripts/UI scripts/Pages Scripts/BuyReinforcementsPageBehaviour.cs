@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +22,9 @@ public class BuyReinforcementsPageBehaviour : Menu
 
     [SerializeField]
     private AudioClip[] soundEffects;
+
+
+    private double pricePerReinforcement = 6;
 
     private string[] explanation = new string[2] {
         "Reinforcements provide an additional extra life to your outpost, enhancing the player's ability to withstand hostile attacks",
@@ -63,12 +68,16 @@ public class BuyReinforcementsPageBehaviour : Menu
 
     public void CalcNewTotal()
     {
-        //confirmBuyText.text = "Purchase (Tot: " + RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost, 2) + " $LORDS)";
-        confirmBuyText.text = "Purchase (Tot: " + RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost, 2) + " $LORDS)";
+        confirmBuyText.text = "Purchase (Tot: " + pricePerReinforcement * counterUiElement.currentValue + " $LORDS)";
     }
 
-    public async void CallDojoBuyReinforcementsFunc()
+    private async Task CallDojoBuyReinforcementsFunc()
     {
+        var gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
+        var oldValueJackpot = RisingRevenantUtils.BigintToFloat(gamePot[1], 3);
+
+        Debug.Log("old value " + oldValueJackpot);
+
         SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
 
         var createRevenantsProps = new DojoCallsManager.PurchaseReinforcementsStruct
@@ -85,6 +94,28 @@ public class BuyReinforcementsPageBehaviour : Menu
         };
 
         var transaction = await DojoCallsManager.PurchaseReinforcementsDojoCall(createRevenantsProps, endpoint);
+
+        // Wait for 1 second
+        await Task.Delay(TimeSpan.FromSeconds(1));
+
+        gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
+        var newValueJackpot = RisingRevenantUtils.BigintToFloat(gamePot[1], 3);
+
+        var diff = newValueJackpot - oldValueJackpot;
+        pricePerReinforcement = Math.Round(diff / counterUiElement.currentValue, 3);
+
+        staticPriceText.text = $"1 Reinforcement = {pricePerReinforcement} $LORDS";
+    }
+
+
+    IEnumerator CallDojoBuyReinforcementsCoroutine()
+    {
+        yield return CallDojoBuyReinforcementsFunc();
+    }
+
+    public void OnButtonClick()
+    {
+        StartCoroutine(CallDojoBuyReinforcementsCoroutine());
     }
 
     private void OnDisable()
@@ -95,8 +126,6 @@ public class BuyReinforcementsPageBehaviour : Menu
     {
         CalcNewTotal();
         StartCoroutine(ChangeTextPeriodically());
-
-        staticPriceText.text = "1 Reinforcement = " + "VRGDA goes here" + " $LORDS";
     }
 }
 

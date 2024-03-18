@@ -72,6 +72,16 @@ public class LoginScreenBehaviour : Menu
         uiStateManager.SetUiState(1);
     }
 
+
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            StartGame();
+        }
+    }
+
     public async void StartGame()
     {
 

@@ -156,13 +156,8 @@ public class WorldEventManager : MonoBehaviour
 
         if (UiEntitiesReferenceManager.currentAttackIndicatorComponent != null)
         {
-            Debug.Log("call to attack indicator component");
             UiEntitiesReferenceManager.currentAttackIndicatorComponent.transform.gameObject.SetActive(true);
             UiEntitiesReferenceManager.currentAttackIndicatorComponent.SetEventType(lastWorldEvent.eventType);
-        }
-        else
-        {
-            Debug.Log("no attack indicator component");
         }
     }
 

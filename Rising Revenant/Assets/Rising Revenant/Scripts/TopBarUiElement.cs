@@ -78,7 +78,7 @@ public class TopBarUiElement : MonoBehaviour
         if (DojoEntitiesDataManager.gamePot != null)
         {
             var gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-            jackpotText.text = $"Jackpot: {RisingRevenantUtils.HexToFloat(gamePot[1], 3)}";
+            jackpotText.text = $"Jackpot: {RisingRevenantUtils.BigintToFloat(gamePot[1], 3)}";
         }
     }
 
@@ -87,12 +87,12 @@ public class TopBarUiElement : MonoBehaviour
     {
         if (DojoEntitiesDataManager.currentDevWallet == null)
         {
-            walletAmount.text = "150";
+            walletAmount.text = "300";
         }
         else
         {
             var devWallet = await RisingRevenantUtils.devWalletInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() , DojoEntitiesDataManager.currentAccount.Address.Hex());
-            walletAmount.text = RisingRevenantUtils.HexToFloat(devWallet,3).ToString();
+            walletAmount.text = RisingRevenantUtils.BigintToFloat(devWallet,3).ToString();
         }
     }
 
@@ -113,7 +113,8 @@ public class TopBarUiElement : MonoBehaviour
                 var playerContrib = await RisingRevenantUtils.playerContributionInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString(), DojoEntitiesDataManager.currentAccount.Address.Hex());
                 var totContrib = await RisingRevenantUtils.gameStateInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
 
-                var perc = RisingRevenantUtils.HexToFloat(playerContrib, 2) / RisingRevenantUtils.HexToFloat(totContrib,2) * 100;
+                var perc = RisingRevenantUtils.GeneralHexToInt(playerContrib) / RisingRevenantUtils.GeneralHexToInt(totContrib) * 100;
+
                 contribText.text = $"Contribution: {perc}%";
             }
             else

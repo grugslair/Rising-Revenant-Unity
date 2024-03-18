@@ -37,8 +37,14 @@ public class CurrentAttackIndicatorComponent : MonoBehaviour
     }
 
     [SerializeField]
-    private List<PopUpDataText> popUpData = new List<PopUpDataText>() { 
-    
+    private List<PopUpDataText> popUpData = new List<PopUpDataText>() {
+        new PopUpDataText
+        {
+            attackName = "NOne",
+            attackDescription = "none",
+            reinforcementName = "none",
+        },
+
         new PopUpDataText
         {
             attackName = "EARTHQUAKE",
@@ -91,7 +97,6 @@ public class CurrentAttackIndicatorComponent : MonoBehaviour
 
     public void SetEventType(RisingRevenantUtils.EventType eventType)
     {
-        Debug.Log("Setting event type");
         SetIndicator(eventType);
     }
 
@@ -99,14 +104,20 @@ public class CurrentAttackIndicatorComponent : MonoBehaviour
     {
         for (int i = 0; i < eventIcons.Count; i++)
         {
+            if (i == 0) { continue; }
             var comp = eventIcons[i].GetComponent<TooltipAsker>();
 
             if (i == (int)eventType)
             {
+                Debug.Log("Setting indicator" + i);
                 eventIcons[i].color = new Color(0.9f, 0, 0, 1);
-                //var prefabComp = comp.tooltipPrefab.GetComponent<AttackPopUpElement>();
+                var prefabComp = comp.tooltipPrefab.GetComponent<AttackPopUpElement>();
 
-                //prefabComp.SetData(popUpData[i].attackName, popUpData[i].attackDescription, popUpData[i].reinforcementName, eventBackgroundImages[i], eventReinforcementsImages[i]);
+                prefabComp.SetData(popUpData[i].attackName, 
+                    popUpData[i].attackDescription, 
+                    popUpData[i].reinforcementName, 
+                    eventBackgroundImages[i], 
+                    eventReinforcementsImages[i]);
                 comp.show = true;
                 this.attackName.text = $"Current Attack: {popUpData[i].attackName}";
             }

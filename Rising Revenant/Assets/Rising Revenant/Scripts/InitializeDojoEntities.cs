@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Numerics;
 using Dojo;
 using Dojo.Starknet;
 using UnityEngine;
@@ -45,7 +44,6 @@ public class InitializeDojoEntities : MonoBehaviour
     public Account GenerateAccount() 
     {
         var signer = new SigningKey(testPrivK);
-        Debug.Log("called new account");
         return new Account(provider, signer, new FieldElement(testAddress));
     }
 

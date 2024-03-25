@@ -77,7 +77,6 @@ public class GamePlay : MonoBehaviour
         {
             Debug.LogError($"error on the main function: {ex.Message}");
         }
-
     }
 
     public void Erc721Callback(string response)

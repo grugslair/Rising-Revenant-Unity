@@ -85,7 +85,6 @@ public class LoginScreenBehaviour : Menu
 
     public async void StartGame()
     {
-
         var createGameProps = new DojoCallsManager.CreateGameStruct
         {
             startBlock = 209,

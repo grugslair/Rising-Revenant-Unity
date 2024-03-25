@@ -10,19 +10,18 @@ public static class DojoCallsManager
     public readonly static string graphlQLEndpoint = "http://localhost:8080/graphql";
     public readonly static string katanaEndpoint = "http://localhost:5050";
 
-    public readonly static string worldAddress = "0x64391fb1874628896a0ab666b40f6b5efd96ab01fb5a823279255e9c17a2e43";
+    public readonly static string worldAddress = "0x7a4adc3dc01142811d2db99848998828b30e8a3c3d2a3875751f427ff11ad35";
 
-    public readonly static string gameActionsAddress = "0x550d0856811a0eecf61847771c1293344a751dfe0a0422a34dd9147154e71b6";
-    public readonly static string eventActionsAddress = "0x29d7c04fba830a9af1ce47b8fac1cb1790c7f3cfc201378adaf3aed60cc45d0";
-    public readonly static string outpostActionsAddress = "0x3bdb0f8918378fc3da0b8437a3c043c30c2cabfab0c4a77746ae260d1a8c8bc";
-    public readonly static string reinforcementActionsAddress = "0x457287e08259fdbf7e3b3f2e8918b82d2feb522842ab76523975e3ae25a206c";
-    public readonly static string paymentActionsAddress = "0x55aee8fcc216662fb6599af9380afeadef8ec16443b40b0a3eb78cb358f4f32";
-    public readonly static string tradeOutpostActionsAddress = "0x1316bc6a2b1c0402066e80d524ae3464ee460c6affdab48f5c1373a2cd12387";
-    public readonly static string tradeReinforcementActionsAddress = "0x21493ba896ac16eea4150a5ca1e23b1a7ab2f76655ba794429841ba3be8be33";
+    public readonly static string gameActionsAddress = "0x54017a9219f6483af430c0aa45dd5d6d1fa129d768b01d427636a5121b5f285";
+    public readonly static string eventActionsAddress = "0x1f69f004d6bfd4e09b328cff8e84ad9a73d6b2b034741b69ec200d30fc7df97";
+    public readonly static string outpostActionsAddress = "0x71977a0f344a88cd338279dc01795428ce9872062f353eea3cc2d5ade58cf40";
+    public readonly static string reinforcementActionsAddress = "0x64d6e5d52b28941226a0a4148a6a26f8fd4271a5150b2cfe49ab6f64788bff2";
+    public readonly static string paymentActionsAddress = "0x1cbf7df5c43cefe7d497b5e8985e566c0ef910f600a1ea0ebb2efcd34577d99";
+    public readonly static string tradeOutpostActionsAddress = "0x76a4dc474308a5ea36e3b089940269d90a6b4c6dcb98acb6f6018a177e1a827";
+    public readonly static string tradeReinforcementActionsAddress = "0x696cde8aa85d7e3191eab7396640f11a002c68dc11fe6cb6dc94471bd35ff90";
 
-    public readonly static string masterAddress = "0x6162896d1d7ab204c7ccac6dd5f8e9e7c25ecd5ae4fcb4ad32e57786bb46e03";
-    public readonly static string masterPrivateKey = "0x1800000000300000180000000000030000000000003006001800006600";
-
+    public readonly static string masterAddress = "0xb3ff441a68610b30fd5e2abbf3a1548eb6ba6f3559f2862bf2dc757e5828ca";
+    public readonly static string masterPrivateKey = "0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a";
 
     //public static string graphlQLEndpoint = "https://api.cartridge.gg/x/rr/torii/graphql";
     //public static string katanaEndpoint = "https://api.cartridge.gg/x/rr/katana";
@@ -41,11 +40,7 @@ public static class DojoCallsManager
     //public static string masterPrivateKey = "0x1d2ce4b504f4dcf9061d4db9e10e9d5d14f37b4ec595a648d6cd6e005ef937e";
 
 
-
-
     //here should go an enum for all the functions to call
-
-
 
 
     #region structs structure for calls
@@ -173,21 +168,23 @@ public static class DojoCallsManager
     {
         try
         {
-            UiEntitiesReferenceManager.notificationManager.CreateNotification("Created a game", null, 5f);
-            return await endpointData.account.ExecuteRaw(new dojo.Call[]
+            var transaction =  await endpointData.account.ExecuteRaw(new dojo.Call[]
             {
-            new dojo.Call
-            {
-                calldata = new dojo.FieldElement[]
+                new dojo.Call
                 {
-                    new FieldElement(dataStruct.startBlock.ToString("X")).Inner(),
-                    new FieldElement(dataStruct.preparationBlock.ToString("X")).Inner(),
-                },
-                selector = endpointData.functionName,
-                to = endpointData.addressOfSystem,
-            }
+                    calldata = new dojo.FieldElement[]
+                    {
+                        new FieldElement(dataStruct.startBlock.ToString("X")).Inner(),
+                        new FieldElement(dataStruct.preparationBlock.ToString("X")).Inner(),
+                    },
+                    selector = endpointData.functionName,
+                    to = endpointData.addressOfSystem,
+                }
             });
 
+            UiEntitiesReferenceManager.notificationManager.CreateNotification("Created a game", null, 5f);
+
+            return transaction;
         }
         catch (Exception ex)
         {

@@ -10,9 +10,9 @@ public class InitializeDojoEntities : MonoBehaviour
     public BurnerManager burnerManager;
     private Dictionary<FieldElement, string> spawnedBurners = new();
 
-    public string testPubK = "0x4c339f18b9d1b95b64a6d378abd1480b2e0d5d5bd33cd0828cbce4d65c27284";
-    public string testPrivK = "0x1c9053c053edf324aec366a34c6901b1095b07af69495bffec7d7fe21effb1b";
-    public string testAddress = "0x6b86e40118f29ebe393a75469b4d926c7a44c2e2681b6d319520b7c1156d114";
+    //public string testPubK = "0x4c339f18b9d1b95b64a6d378abd1480b2e0d5d5bd33cd0828cbce4d65c27284";
+    //public string testPrivK = "0x1c9053c053edf324aec366a34c6901b1095b07af69495bffec7d7fe21effb1b";
+    //public string testAddress = "0x6b86e40118f29ebe393a75469b4d926c7a44c2e2681b6d319520b7c1156d114";
 
     public JsonRpcClient provider;
 
@@ -41,11 +41,11 @@ public class InitializeDojoEntities : MonoBehaviour
         //}
     }
 
-    public Account GenerateAccount() 
-    {
-        var signer = new SigningKey(testPrivK);
-        return new Account(provider, signer, new FieldElement(testAddress));
-    }
+    //public Account GenerateAccount() 
+    //{
+    //    var signer = new SigningKey(testPrivK);
+    //    return new Account(provider, signer, new FieldElement(testAddress));
+    //}
 
     public async void SpawnBurner()
     {

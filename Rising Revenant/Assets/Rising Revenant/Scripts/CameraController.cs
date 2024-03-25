@@ -140,10 +140,13 @@ public class CameraController : MonoBehaviour
             RaycastHit[] hits;
             int layerMask = 1 << LayerMask.NameToLayer("Outpost");
 
+            Debug.Log("Sending data to tooltip");
+
             hits = Physics.RaycastAll(ray, Mathf.Infinity, layerMask);
 
             if (hits.Length > 0)
             {
+                Debug.Log("actually sending  data to tooltip");
                 List<RisingRevenantUtils.Vec2> hitIds = new List<RisingRevenantUtils.Vec2>();
 
                 Debug.Log(hits.Length);
@@ -175,7 +178,6 @@ public class CameraController : MonoBehaviour
     }
 
 
-    //yep this works
     void GetBoundsOfCam()
     {
         float distance = this.transform.position.y; 

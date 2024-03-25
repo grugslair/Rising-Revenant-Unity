@@ -1,7 +1,6 @@
 using bottlenoselabs.C2CS.Runtime;
 using Dojo;
 using dojo_bindings;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PrepPhaseManager : MonoBehaviour
@@ -29,14 +28,11 @@ public class PrepPhaseManager : MonoBehaviour
         //}
     }
 
-
-
-
     private void Update()
     {
         if (DojoEntitiesDataManager.currentWorldEvent != null)
         {
-            //UiEntitiesReferenceManager.uistat.setu
+            UiEntitiesReferenceManager.UIStateManager.SetUiState(4);
         }
     }
 }

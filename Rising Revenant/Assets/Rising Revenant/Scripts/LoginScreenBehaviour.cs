@@ -23,8 +23,6 @@ public class LoginScreenBehaviour : Menu
     public TextMeshProUGUI loginButtonText;
     public Button loginButton;
 
-    public GamePlay gamePlay;
-
     private void Start()
     {
         if (initializeDojoEntitiesScript.burnerManager.CurrentBurner == null)
@@ -57,6 +55,7 @@ public class LoginScreenBehaviour : Menu
         //initializeDojoEntitiesScript.SpawnBurner();
 
         var burner = initializeDojoEntitiesScript.burnerManager.CurrentBurner;
+        Debug.Log("Burner: " + burner.Address.Hex());
         loginButtonText.text = "Login as: " + burner.Address.Hex().Substring(0, 8);
 
         loginButton.onClick.RemoveListener(CreateBurner);
@@ -74,6 +73,16 @@ public class LoginScreenBehaviour : Menu
         uiStateManager.SetUiState(1);
     }
 
+
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            StartGame();
+        }
+    }
+
     public async void StartGame()
     {
 
@@ -83,13 +92,11 @@ public class LoginScreenBehaviour : Menu
             preparationBlock = 10
         };
 
-        var acc = initializeDojoEntitiesScript.GenerateAccount();
-
         var endpoint = new DojoCallsManager.EndpointDojoCallStruct
         {
             functionName = "create",
             addressOfSystem = DojoCallsManager.gameActionsAddress,
-            account = acc,
+            account = DojoEntitiesDataManager.currentAccount,
         };
 
         var transaction = await DojoCallsManager.CreateGameDojoCall(createGameProps, endpoint);

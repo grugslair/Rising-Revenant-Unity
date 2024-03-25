@@ -1,13 +1,8 @@
 using Dojo; 
 using Dojo.Starknet; 
 using Dojo.Torii;
-using SimpleGraphQL;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Threading.Tasks;
-using UnityEngine;
-using static GraphQLTypes;
 
 public class GameState : ModelInstance
 {
@@ -43,7 +38,6 @@ public class GameState : ModelInstance
         }
     }
 
-
     public override void OnUpdate(Model model)
     {
         base.OnUpdate(model);
@@ -57,8 +51,6 @@ public class GameState : ModelInstance
         {
             UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
             UiEntitiesReferenceManager.topBarUiElement.CalcContrib();
-        }
+        }   
     }
-
-
 }

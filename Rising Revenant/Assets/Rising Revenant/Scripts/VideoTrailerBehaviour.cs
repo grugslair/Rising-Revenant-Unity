@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class VideoTrailerBehaviour : MonoBehaviour
@@ -21,7 +19,7 @@ public class VideoTrailerBehaviour : MonoBehaviour
 
     private void OnVideoStarted(VideoPlayer source)
     {
-        backgroundMusicManager.TogglePauseBackgroundMusic();
+        backgroundMusicManager.TogglePauseBackgroundMusic(true);
         StartCoroutine(StartCountdown(seconds));
     }
 
@@ -33,8 +31,12 @@ public class VideoTrailerBehaviour : MonoBehaviour
 
     private void OnVideoEnded(VideoPlayer source)
     {
-        backgroundMusicManager.TogglePauseBackgroundMusic();
+        SkipVideo();
+    }
 
+    public void SkipVideo()
+    {
+        backgroundMusicManager.TogglePauseBackgroundMusic(false);
         if (DojoEntitiesDataManager.currentWorldEvent != null)
         {
             uIStateManager.SetUiState(4);

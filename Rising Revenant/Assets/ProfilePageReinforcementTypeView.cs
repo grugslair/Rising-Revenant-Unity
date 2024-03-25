@@ -21,6 +21,13 @@ public class ProfilePageReinforcementTypeView : MonoBehaviour
     [SerializeField]
     private Outpost savedOutpost;
 
+
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
+
+
     private void OnEnable()
     {
         savedOutpost = DojoEntitiesDataManager.outpostDictInstance[UiEntitiesReferenceManager.profilePageBehaviour.currentlySelectedOutpost.Value];
@@ -49,10 +56,19 @@ public class ProfilePageReinforcementTypeView : MonoBehaviour
             if (i == (int)savedOutpost.reinforcementType)
             {
                 reinforcementTypeCards[i].sizeDelta = new Vector2(standardSizeOfCards.x * 1.1f, standardSizeOfCards.y * 1.1f);
+                var buttonComp = reinforcementTypeCards[i].GetComponentInChildren<Button>();
+                buttonComp.GetComponent<ButtonInteractionScript>().UpdateDisabledState(true);
+                var buttonTextComp = buttonComp.GetComponentInChildren<TMP_Text>();
+                buttonTextComp.text = "Current";
             }
             else
             {
                 reinforcementTypeCards[i].sizeDelta = standardSizeOfCards;
+                var buttonComp = reinforcementTypeCards[i].GetComponentInChildren<Button>();
+                buttonComp.GetComponent<ButtonInteractionScript>().UpdateDisabledState(false);
+                var buttonTextComp = buttonComp.GetComponentInChildren<TMP_Text>();
+                buttonTextComp.text = "Select";
+
             }
         }
     }

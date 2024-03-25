@@ -7,7 +7,6 @@ using Vector2 = UnityEngine.Vector2;
 using Random = System.Random;
 using SimpleGraphQL;
 using System.Threading.Tasks;
-using System.Drawing;
 
 public static class RisingRevenantUtils
 {
@@ -15,23 +14,25 @@ public static class RisingRevenantUtils
     public enum EventType
     {
         None = 0,
-        Dragon,
-        Goblin,
         Earthquake,
+        Goblin,
+        Dragon,
     }
 
     [Serializable]
     public enum ReinforcementType
     {
         None = 0,
-        Wall_Of_Stone,
-        Trenches,
         Obsidian,
+        Trenches,
+        Wall_Of_Stone,
     }
 
 
     public static string ToCustomString(this EventType eventType)
     {
+
+        Debug.Log("in the tocustomstring " + eventType);
         switch (eventType)
         {
             case EventType.None:
@@ -63,6 +64,24 @@ public static class RisingRevenantUtils
                 return reinforcementType.ToString();
         }
     }
+
+    public static Color ToCustomColor(this EventType eventType)
+    {
+        switch (eventType)
+        {
+            case EventType.None:
+                return Color.black;
+            case EventType.Earthquake:
+                return new Color(0.6f, 0.4f, 0.2f); // Brown approximation
+            case EventType.Goblin:
+                return new Color(0.05f, 0.34f, 0.15f);
+            case EventType.Dragon:
+                return Color.red;
+            default:
+                return Color.white;
+        }
+    }
+
 
     [Serializable]
     public struct U256
@@ -454,7 +473,7 @@ public static class RisingRevenantUtils
         return false;
     }
 
-    public static double HexToFloat(string hexString, int decimalPlaces = -1)
+    public static double BigintToFloat(string hexString, int decimalPlaces = -1)
     {
         if (string.IsNullOrWhiteSpace(hexString))
             throw new ArgumentException("Input cannot be null or empty.", nameof(hexString));
@@ -462,7 +481,7 @@ public static class RisingRevenantUtils
         hexString = hexString.StartsWith("0x", StringComparison.OrdinalIgnoreCase) ? hexString[2..] : hexString;
 
         BigInteger totalValue = BigInteger.Parse("0" + hexString, System.Globalization.NumberStyles.AllowHexSpecifier);
-        
+
         double result = (double)totalValue / Math.Pow(10, 18); 
 
         if (decimalPlaces == -1 || decimalPlaces >= 7)
@@ -922,7 +941,6 @@ public static class RisingRevenantUtils
         return new string[] { "", "", "", "" };
     }
 
-
     public static async Task<HashSet<Vec2>> GetOutpostVerifiedInfo(string gameId, int number)
     {
         string query = $@"
@@ -1022,7 +1040,6 @@ public static class RisingRevenantUtils
         return listOfVerifiedOutpost;
     }
 
-
     public static async Task<HashSet<Vec2>> GetAllOutpostSelling(string gameId, int number)
     {
         string query = $@"
@@ -1096,7 +1113,6 @@ public static class RisingRevenantUtils
 
             if (response.Data.outpostTradeModels.edges.Length == 0)
             {
-                Debug.Log("No verification outpost shits found");
                 return listOfCurrentActiveOutpostTrades;
             }
 

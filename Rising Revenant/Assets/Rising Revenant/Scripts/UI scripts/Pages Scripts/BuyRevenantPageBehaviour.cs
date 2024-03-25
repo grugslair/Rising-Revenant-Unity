@@ -29,7 +29,6 @@ public class BuyRevenantPageBehaviour : Menu
         "Summoning a Revenant will allow you to call forth a powerful ally from the realm of the undead",
         "This Revenant, after being summoned successfully, will settle and be responsible for protecting an outpost with the goal of being the last one alive" };
 
-
     private IEnumerator ChangeTextPeriodically()
     {
         int index = 0;
@@ -73,13 +72,12 @@ public class BuyRevenantPageBehaviour : Menu
     public async void CalcNewTotal()
     {
         var value = await RisingRevenantUtils.outpostMarketInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-        
-        confirmBuyText.text = "Summon (Tot: " + (10 * counterUiElement.currentValue) + " $LORDS)";
-        //confirmBuyText.text = "Summon (Tot: " + (RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost * counterUiElement.currentValue, 2)) + " $LORDS)";
+        confirmBuyText.text = "Summon (Tot: " + (RisingRevenantUtils.BigintToFloat(value,3) * counterUiElement.currentValue) + " $LORDS)";
     }
 
     public async void CallDojoSummonRevFunc()
     {
+        
         SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
 
         var createRevenantsProps = new DojoCallsManager.SummonRevenantStruct
@@ -96,7 +94,9 @@ public class BuyRevenantPageBehaviour : Menu
         };
 
         var transaction = await DojoCallsManager.SummonRevenantsDojoCall(createRevenantsProps, endpoint);
+        
     }
+
 
     private void OnDisable()
     {

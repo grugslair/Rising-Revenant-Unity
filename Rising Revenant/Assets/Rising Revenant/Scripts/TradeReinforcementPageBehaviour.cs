@@ -300,7 +300,6 @@ public class TradeReinforcementPageBehaviour : Menu
                 break;
 
             case 3: // address
-
                 //see if the value is correct
 
                 queryStruct = graphqlQueryStructure[1];
@@ -314,10 +313,7 @@ public class TradeReinforcementPageBehaviour : Menu
 
         if (queryStruct.Length > 0)
         {
-            Debug.Log("this is getting called");
             lastSavedGraphqlQueryStructure = queryStruct;
-
-            Debug.Log(queryStruct);
             RefreshTrades();
         }
     }

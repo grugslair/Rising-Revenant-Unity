@@ -70,7 +70,6 @@ public class WorldEventManager : MonoBehaviour
             shaderMaterial.SetFloat(SizeOfCircle, sizeOfCircle);
             shaderMaterial.SetFloat(FullnessOfColor, fullnessOfColor);
 
-            // Optionally change the base color gradually
             //if (increasing)
             //{
             //    shaderMaterial.SetColor(BaseColor, Color.Lerp(Color.blue, Color.red, normalizedTime));
@@ -109,10 +108,14 @@ public class WorldEventManager : MonoBehaviour
         }
 
         gameObject.transform.position = new Vector3(lastWorldEvent.position.x, 0.01f, lastWorldEvent.position.y);
-        float scaleFactor = MathF.Sqrt(lastWorldEvent.radius * 2) * 2;
+        float scaleFactor = MathF.Sqrt(lastWorldEvent.radius) * 2;
         gameObject.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
         CheckOutpostsAffectedByEvent(lastWorldEvent);
+
+        Debug.Log(lastWorldEvent.eventType);
+
+        shaderMaterial.SetColor(BaseColor, lastWorldEvent.eventType.ToCustomColor());
     }
 
     private async void CheckOutpostsAffectedByEvent(CurrentWorldEvent lastWorldEvent)
@@ -124,7 +127,6 @@ public class WorldEventManager : MonoBehaviour
         {
             if (RisingRevenantUtils.IsPointInsideCircle(new Vector2(lastWorldEvent.position.x, lastWorldEvent.position.y), lastWorldEvent.radius, new Vector2(outpost.position.x, outpost.position.y)))
             {
-               
                 if (allOutpostsAlreadyConfirmed.Contains(outpost.position))
                 {
                     outpost.SetAttackState(false);
@@ -143,7 +145,6 @@ public class WorldEventManager : MonoBehaviour
             }
         }
 
-        // Additional logic here, like updating the minimap and rev journal
         if (UiEntitiesReferenceManager.minimapComp != null)
         {
             UiEntitiesReferenceManager.minimapComp.SpawnEventOnMinimap(new Vector2(lastWorldEvent.position.x, lastWorldEvent.position.y));
@@ -154,10 +155,14 @@ public class WorldEventManager : MonoBehaviour
             UiEntitiesReferenceManager.revJournalCompBehaviour.HandleWorldEventAdded(lastWorldEvent);
         }
 
-        if (UiEntitiesReferenceManager.currentAttackIndicatorComponent != null)
+        if (UiEntitiesReferenceManager.currentAttackIndicatorComponent != null && DojoEntitiesDataManager.gameEntCounter.outpostRemainingCount != 1)
         {
             UiEntitiesReferenceManager.currentAttackIndicatorComponent.transform.gameObject.SetActive(true);
             UiEntitiesReferenceManager.currentAttackIndicatorComponent.SetEventType(lastWorldEvent.eventType);
+        }
+        else
+        {
+            UiEntitiesReferenceManager.currentAttackIndicatorComponent.transform.gameObject.SetActive(false);
         }
     }
 

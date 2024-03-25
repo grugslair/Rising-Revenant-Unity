@@ -724,6 +724,7 @@ MonoBehaviour:
   entGameDataText: {fileID: 2809514136232199096}
   walletAddressText: {fileID: 3553672347600629385}
   walletAmount: {fileID: 6279420806232984562}
+  contribTooltip: {fileID: 7321357183425120435}
 --- !u!1 &6909697839080729376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1015,12 +1016,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bac9b6052a146048815e36612a6ace4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  message: T
+  message: 
   position: 1
-  margin: 10
+  margin: {x: 10, y: 10}
   follow: 0
   tooltipPrefab: {fileID: 9019773305316235809, guid: 4a5cdf72c88687345a64be50c2a794af, type: 3}
-  enable: 1
+  show: 1
+  allowPermanence: 0
+  isCurrentlyPermanent: 0
+  currentTooltipObj: {fileID: 0}
 --- !u!1 &9072072984740884302
 GameObject:
   m_ObjectHideFlags: 0

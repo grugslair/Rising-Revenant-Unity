@@ -1,8 +1,4 @@
-using Dojo.Torii;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +18,8 @@ public class TopBarUiElement : MonoBehaviour
     public TMP_Text walletAddressText;
 
     public TMP_Text walletAmount;
+
+    public TooltipAsker contribTooltip;
 
     /*
         GameState 
@@ -78,7 +76,7 @@ public class TopBarUiElement : MonoBehaviour
         if (DojoEntitiesDataManager.gamePot != null)
         {
             var gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-            jackpotText.text = "Jackpot: " +   RisingRevenantUtils.HexToFloat(gamePot[1]);
+            jackpotText.text = $"Jackpot: {RisingRevenantUtils.BigintToFloat(gamePot[1], 3)}";
         }
     }
 
@@ -87,12 +85,12 @@ public class TopBarUiElement : MonoBehaviour
     {
         if (DojoEntitiesDataManager.currentDevWallet == null)
         {
-            walletAmount.text = "150";
+            walletAmount.text = "300";
         }
         else
         {
             var devWallet = await RisingRevenantUtils.devWalletInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() , DojoEntitiesDataManager.currentAccount.Address.Hex());
-            walletAmount.text = RisingRevenantUtils.HexToFloat(devWallet).ToString();
+            walletAmount.text = RisingRevenantUtils.BigintToFloat(devWallet,3).ToString();
         }
     }
 
@@ -103,9 +101,6 @@ public class TopBarUiElement : MonoBehaviour
     {
         if (DojoEntitiesDataManager.playerContrib != null && DojoEntitiesDataManager.gameEntCounter != null)
         {
-            Debug.Log("DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal: " + DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal);
-            Debug.Log("DojoEntitiesDataManager.playerContrib.score: " + DojoEntitiesDataManager.playerContrib.score);
-
             if (DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal > 0)
             {
                 if (contribText.transform.gameObject.activeSelf == false)
@@ -114,29 +109,22 @@ public class TopBarUiElement : MonoBehaviour
                 }
 
                 var playerContrib = await RisingRevenantUtils.playerContributionInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString(), DojoEntitiesDataManager.currentAccount.Address.Hex());
-                Debug.Log("playerContrib: " + playerContrib);
-                Debug.Log("this si after the hex thing " + RisingRevenantUtils.HexToFloat(playerContrib) );
-
                 var totContrib = await RisingRevenantUtils.gameStateInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-                Debug.Log("totContrib: " + totContrib);
-                Debug.Log("this si after the hex thing " + RisingRevenantUtils.HexToFloat(totContrib) );
 
-                //float percOfContrib = RisingRevenantUtils.HexToFloat(DojoEntitiesDataManager.playerContrib.scoreString, 3) / RisingRevenantUtils.HexToFloat(DojoEntitiesDataManager.gameEntCounter.contributionScoreTotalString, 3) * 100; // Multiply by 100 to get percentage
-                contribText.text = $"Contribution: {0}%";
+                var perc = RisingRevenantUtils.GeneralHexToInt(playerContrib) / RisingRevenantUtils.GeneralHexToInt(totContrib) * 100;
+
+                contribText.text = $"Contribution: {perc}%";
+                contribTooltip.message = $"Total game contribution: {RisingRevenantUtils.GeneralHexToInt(totContrib)}\nYour contribution: {RisingRevenantUtils.GeneralHexToInt(playerContrib)}";
             }
             else
             {
                 if (contribText.transform.gameObject.activeSelf == true)
                 {
                     contribText.transform.gameObject.SetActive(false);
-                    //return;
                 }
 
                 return;
-                //contribText.text = "Contribution: 0%";
             }
         }
     }
-
-
 }

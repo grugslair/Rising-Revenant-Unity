@@ -10,7 +10,9 @@ public class RulesPageBehaviour : Menu
 
     public GameObject textPrefab;
 
-  
+    [SerializeField]
+    private ButtonInteractionScript[] buttons = new ButtonInteractionScript[4];
+
 
     private string[] explanationPP = new string[8] {
         "#Summoning the Revenants:",
@@ -81,61 +83,33 @@ public class RulesPageBehaviour : Menu
 
     public void ChangeSelectedMenuArrow(int index)
     {
-        if (selectedMenu + index < 0)
-        {
-            return;
-        }
-        else if (selectedMenu + index > 3)
-        {
-            return;
-        }
+        int newIndex = selectedMenu + index;
+        if (newIndex < 0 || newIndex > 3) return;
 
-        selectedMenu += index;
+        buttons[selectedMenu].disabled = false;
+        selectedMenu = newIndex;
+        buttons[selectedMenu].disabled = true;
 
-        if (selectedMenu == 0)
-        {
-            leftArrow.transform.gameObject.SetActive(false);
-        }
-        else
-        {
-            leftArrow.transform.gameObject.SetActive(true);
-        }
+        leftArrow.transform.gameObject.SetActive(selectedMenu != 0);
 
-        if (selectedMenu == 3)
-        {
-            rightArrow.transform.gameObject.SetActive(false);
-        }
-        else
-        {
-            rightArrow.transform.gameObject.SetActive(true);
-        }
+        rightArrow.transform.gameObject.SetActive(selectedMenu != 3);
 
         WriteRules();
     }
 
     public void ChangeSelectedMenuButton(int index)
     {
-        if (index == selectedMenu) { return;  }
+        if (index == selectedMenu) return;
+
+        buttons[selectedMenu].disabled = false;
 
         selectedMenu = index;
 
-        if (selectedMenu == 0)
-        {
-            leftArrow.transform.gameObject.SetActive(false);
-        }
-        else
-        {
-            leftArrow.transform.gameObject.SetActive(true);
-        }
+        buttons[index].disabled = true;
 
-        if (selectedMenu == 3)
-        {
-            rightArrow.transform.gameObject.SetActive(false);
-        }
-        else
-        {
-            rightArrow.transform.gameObject.SetActive(true);
-        }
+        leftArrow.transform.gameObject.SetActive(selectedMenu != 0);
+
+        rightArrow.transform.gameObject.SetActive(selectedMenu != 3);
 
         WriteRules();
     }
@@ -143,8 +117,6 @@ public class RulesPageBehaviour : Menu
 
     private void WriteRules()
     {
-        
-
         foreach (Transform child in rulesParent.transform)
         {
             Destroy(child.gameObject);
@@ -164,7 +136,6 @@ public class RulesPageBehaviour : Menu
             }
             else
             {
-                // Set the text as is for regular lines
                 tmpTextComponent.text = text;
             }
         }

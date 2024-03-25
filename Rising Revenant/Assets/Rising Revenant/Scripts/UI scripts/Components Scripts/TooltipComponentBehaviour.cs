@@ -74,7 +74,10 @@ public class TooltipComponentBehaviour : MonoBehaviour
     {
         Outpost outpostData = DojoEntitiesDataManager.outpostDictInstance[savedIds[currentIndex]];
        
-        outpostDataText.text = $"{-1} ID - X:{outpostData.position.x} || Y:{outpostData.position.y}\nReinforcements: {outpostData.life}\nState: ";
+        outpostDataText.text = $"{RisingRevenantUtils.CantonPair((int)outpostData.position.x, (int)outpostData.position.y)} ID -- X:{outpostData.position.x} || Y:{outpostData.position.y}" +
+            $"\nReinforcements: {outpostData.life}" +
+            $"\nReinforcement type: {outpostData.reinforcementType.ToCustomString()}" +
+            $"\nState: ";
 
         var state = CalcState( outpostData);
 
@@ -99,7 +102,7 @@ public class TooltipComponentBehaviour : MonoBehaviour
             i++;
         }
 
-        revenantDataText.text = $"Owner: {outpostData.ownerAddress.Hex().Substring(0,6)}\nName {RisingRevenantUtils.GetFullRevenantName(outpostData.position)}";
+        revenantDataText.text = $"Owner: {outpostData.ownerAddress.Hex().Substring(0,6)}\nName: {RisingRevenantUtils.GetFullRevenantName(outpostData.position)}";
     }
 
     int CalcState( Outpost outpost)
@@ -127,8 +130,6 @@ public class TooltipComponentBehaviour : MonoBehaviour
     {
         if (hitIds.Count > 0)
         {
-            Debug.Log("Waht is gionuibefuibe");
-
             parentObject.SetActive(true);
             savedIds.Clear();
             currentIndex = 0;
@@ -158,6 +159,5 @@ public class TooltipComponentBehaviour : MonoBehaviour
         };
 
         var transaction = DojoCallsManager.DamageOutpostDojoCall(structCall, endpoint);
-
     }
 }

@@ -32,10 +32,14 @@ public class TradeReinforcementsUiElement : MonoBehaviour
 
         TMP_Text buttonText = interactButton.GetComponentInChildren<TMP_Text>();
 
+        Debug.Log($"seller: {seller}");
+        Debug.Log($"current account: {DojoEntitiesDataManager.currentAccount.Address.Hex().Substring(0, 2) + DojoEntitiesDataManager.currentAccount.Address.Hex().Substring(3)}");
+
         if (seller == DojoEntitiesDataManager.currentAccount.Address.Hex().Substring(0, 2) + DojoEntitiesDataManager.currentAccount.Address.Hex().Substring(3) )
         {
             owner = true;
             interactButton.onClick.AddListener(RevokeTrade);
+            Debug.Log("is the owner of this trade");
             buttonText.text = "Revoke";
 
             tooltipAsker.OnTooltipShown += OnTooltipEnable;
@@ -43,6 +47,7 @@ public class TradeReinforcementsUiElement : MonoBehaviour
         else
         {
             owner = false;
+            Debug.Log("is not the owner of this trade");
             interactButton.onClick.AddListener(PurchaseTrade);
             buttonText.text = "Purchase";
         }
@@ -89,7 +94,7 @@ public class TradeReinforcementsUiElement : MonoBehaviour
         }
         catch (Exception ex)
         {
-            UiEntitiesReferenceManager.notificationManager.CreateNotification("Trade purchased successfully", null, 3);
+            UiEntitiesReferenceManager.notificationManager.CreateNotification("Failed to purchase trade: ", null, 3);
             Debug.LogError($"Failed to purchase trade: {ex.Message}");
         }
     }

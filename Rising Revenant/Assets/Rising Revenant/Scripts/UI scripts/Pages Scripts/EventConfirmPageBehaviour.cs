@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EventConfirmPageBehaviour : Menu
 {
@@ -10,8 +11,10 @@ public class EventConfirmPageBehaviour : Menu
     public GameObject sortingButton;
     public GameObject sortingMenu;
 
-    private bool toggleSortingMenu = false;
+    public RawImage background;
+    public List<Texture2D> picturesOfBackground = new List<Texture2D>();
 
+    private bool toggleSortingMenu = false;
 
     private bool hideOwnOutposts = false;
     private bool hideOthersOutposts = false;
@@ -28,6 +31,8 @@ public class EventConfirmPageBehaviour : Menu
         {
             Destroy(child.gameObject);
         }
+
+        background.texture = picturesOfBackground[(int)DojoEntitiesDataManager.currentWorldEvent.eventType];
 
         foreach (var outpost in DojoEntitiesDataManager.outpostDictInstance.Values)
         {

@@ -8,6 +8,11 @@ public class UIStateManager : MonoBehaviour
     [SerializeField]
     private GameObject[] UIScreenObjs = new GameObject[4];
 
+    private void Awake()
+    {
+        UiEntitiesReferenceManager.UIStateManager = this;
+    }
+
     public enum UIState
     {
         LOGIN = 0,
@@ -21,12 +26,6 @@ public class UIStateManager : MonoBehaviour
 
     private void Update()
     {
-
-        if (Input.GetKeyUp(KeyCode.T))
-        {
-            TestFunction();
-        }
-
         if (Input.GetKeyUp(KeyCode.Y))
         {
             SetUiState(0);
@@ -48,16 +47,10 @@ public class UIStateManager : MonoBehaviour
             SetUiState(4);
         }
 
-        if (Input.GetKeyUp(KeyCode.H))
-        {
-            UiEntitiesReferenceManager.notificationManager.CreateNotification("Test", null, 5);
-        }
-    }
-
-
-    private void TestFunction() 
-    {
-       
+        //if (Input.GetKeyUp(KeyCode.H))
+        //{
+        //    UiEntitiesReferenceManager.notificationManager.CreateNotification("Test", null, 5);
+        //}
     }
 
     /// <summary>
@@ -66,6 +59,12 @@ public class UIStateManager : MonoBehaviour
     /// <param name="stateNum"></param>
     public void SetUiState(int stateNum)
     {
+
+        if (stateNum == (int)currentUiState)
+        {
+            return;
+        }
+
         for (int i = 0; i < UIScreenObjs.Length; i++)
         {
             if (i == (int)stateNum)

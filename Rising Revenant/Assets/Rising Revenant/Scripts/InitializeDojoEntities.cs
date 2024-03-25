@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class InitializeDojoEntities : MonoBehaviour
 {
-
     public WorldManager worldManager;
 
     public BurnerManager burnerManager;
@@ -42,7 +41,6 @@ public class InitializeDojoEntities : MonoBehaviour
         //}
     }
 
-
     public Account GenerateAccount() 
     {
         var signer = new SigningKey(testPrivK);
@@ -56,7 +54,6 @@ public class InitializeDojoEntities : MonoBehaviour
         DojoEntitiesDataManager.currentAccount = burner;
     }
 
-    // Update is called once per frame
     async void Update()
     {
         if (Input.GetKeyUp(KeyCode.Space))
@@ -83,4 +80,24 @@ public class InitializeDojoEntities : MonoBehaviour
     //        }
     //    }
     //}
+
+
+    public async void CallCreateEvent()
+    {
+            if (DojoEntitiesDataManager.currentAccount == null) { return; }
+
+            var createRevenantsProps = new DojoCallsManager.CreateEventStruct
+            {
+                gameId = DojoEntitiesDataManager.currentGameId
+            };
+
+            var endpoint = new DojoCallsManager.EndpointDojoCallStruct
+            {
+                functionName = "random",
+                addressOfSystem = DojoCallsManager.eventActionsAddress,
+                account = DojoEntitiesDataManager.currentAccount,
+            };
+
+            var transaction = await DojoCallsManager.CreateEventDojoCall(createRevenantsProps, endpoint);
+    }
 }

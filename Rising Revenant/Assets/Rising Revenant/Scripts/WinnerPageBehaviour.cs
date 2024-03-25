@@ -32,21 +32,20 @@ public class WinnerPageBehaviour : Menu
             
             if (lastOutpost.ownerAddress.Hex() == DojoEntitiesDataManager.currentAccount.Address.Hex())
             {
-                addressName.text = DojoEntitiesDataManager.currentAccount.Address.Hex();
+                addressName.text =  RisingRevenantUtils.ShortenAddress(DojoEntitiesDataManager.currentAccount.Address.Hex());
                 winningOutcomeText.text = "YOU HAVE WON THE GAME, YOU ARE THE RISING REVENANT";
                 jackpotClaim.SetActive(true);
             }
             else
             {
-                addressName.text = lastOutpost.ownerAddress.Hex();
+                addressName.text = RisingRevenantUtils.ShortenAddress(lastOutpost.ownerAddress.Hex());
                 winningOutcomeText.text = "YOU HAVE LOST THE GAME, SOMEONE ELSE IS THE RISING REVENANT";
             }
         }
         else
         {
-            addressName.text = DojoEntitiesDataManager.currentAccount.Address.Hex();
+            addressName.text = RisingRevenantUtils.ShortenAddress( DojoEntitiesDataManager.currentAccount.Address.Hex());
             winningOutcomeText.text = $"how did you get here, there are still {DojoEntitiesDataManager.gameEntCounter.outpostRemainingCount} Outposts left";
-            
         }
     }
 

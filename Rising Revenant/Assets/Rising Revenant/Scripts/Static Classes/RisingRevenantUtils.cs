@@ -180,11 +180,23 @@ public static class RisingRevenantUtils
         return (int)number;
     }
 
+    public static string ShortenAddress(string address)
+    {
+        if (address == null || address.Length < 9)
+        {
+            throw new ArgumentException("Address must be at least 9 characters long.");
+        }
+
+        return address.Substring(0, 6) + "..." + address.Substring(address.Length - 3);
+    }
+
     public static bool IsPointInsideCircle(Vector2 circleCenter, float radius, Vector2 point)
     {
         float distance = Vector2.Distance(circleCenter, point);
         return distance <= radius;
     }
+
+
 
     public static string GetFullRevenantName(RisingRevenantUtils.Vec2 id) {
         var randomNum = DojoEntitiesDataManager.outpostDictInstance[id].position.x * DojoEntitiesDataManager.outpostDictInstance[id].position.y;

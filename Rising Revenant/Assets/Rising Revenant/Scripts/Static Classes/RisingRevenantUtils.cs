@@ -7,7 +7,6 @@ using Vector2 = UnityEngine.Vector2;
 using Random = System.Random;
 using SimpleGraphQL;
 using System.Threading.Tasks;
-using System.Drawing;
 
 public static class RisingRevenantUtils
 {
@@ -65,6 +64,24 @@ public static class RisingRevenantUtils
                 return reinforcementType.ToString();
         }
     }
+
+    public static Color ToCustomColor(this EventType eventType)
+    {
+        switch (eventType)
+        {
+            case EventType.None:
+                return Color.black;
+            case EventType.Earthquake:
+                return new Color(0.6f, 0.4f, 0.2f); // Brown approximation
+            case EventType.Goblin:
+                return new Color(0.05f, 0.34f, 0.15f);
+            case EventType.Dragon:
+                return Color.red;
+            default:
+                return Color.white;
+        }
+    }
+
 
     [Serializable]
     public struct U256
@@ -1096,7 +1113,6 @@ public static class RisingRevenantUtils
 
             if (response.Data.outpostTradeModels.edges.Length == 0)
             {
-                Debug.Log("No verification outpost shits found");
                 return listOfCurrentActiveOutpostTrades;
             }
 

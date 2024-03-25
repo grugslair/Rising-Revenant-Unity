@@ -61,6 +61,7 @@ public class GamePhaseManager : MonoBehaviour
         {
             winningPopUp.SetActive(true);
             eventObj.SetActive(false);
+            
         }
         else
         {

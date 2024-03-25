@@ -32,10 +32,8 @@ public class TooltipManager : MonoBehaviour
 
         if (currentAsker != null)
         {
-            Debug.Log("Hiding main call tooltip");
             currentAsker.isCurrentlyPermanent = false;
         }
-
 
         this.liveDeltaMove = liveDeltaMove;
         this.currentTargetUIElement = targetUIElement;
@@ -64,7 +62,6 @@ public class TooltipManager : MonoBehaviour
             //    currentAsker.isCurrentlyPermanent = false;
             //}
 
-            Debug.Log("Hiding tooltip");
             Destroy(currentTooltip);
         }
     }

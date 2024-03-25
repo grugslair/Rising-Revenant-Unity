@@ -17,4 +17,12 @@ public class NotificationManager : MonoBehaviour
         GameObject notification = Instantiate(notificationPrefab, notificationPanel);
         notification.GetComponent<NotificationBehaviourElement>().InitializedNotification(message, iconTexture, duration);
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            CreateNotification("This is a test notification", null, 25f);
+        }
+    }
 }

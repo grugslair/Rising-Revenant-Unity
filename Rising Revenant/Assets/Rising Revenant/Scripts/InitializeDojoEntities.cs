@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class InitializeDojoEntities : MonoBehaviour
 {
-
     public WorldManager worldManager;
 
     public BurnerManager burnerManager;
@@ -43,11 +42,10 @@ public class InitializeDojoEntities : MonoBehaviour
         //}
     }
 
-
     public Account GenerateAccount() 
     {
         var signer = new SigningKey(testPrivK);
-        Debug.Log("called new accoutn");
+        Debug.Log("called new account");
         return new Account(provider, signer, new FieldElement(testAddress));
     }
 
@@ -58,7 +56,6 @@ public class InitializeDojoEntities : MonoBehaviour
         DojoEntitiesDataManager.currentAccount = burner;
     }
 
-    // Update is called once per frame
     async void Update()
     {
         if (Input.GetKeyUp(KeyCode.Space))
@@ -98,7 +95,7 @@ public class InitializeDojoEntities : MonoBehaviour
 
             var endpoint = new DojoCallsManager.EndpointDojoCallStruct
             {
-                functionName = "create",
+                functionName = "random",
                 addressOfSystem = DojoCallsManager.eventActionsAddress,
                 account = DojoEntitiesDataManager.currentAccount,
             };

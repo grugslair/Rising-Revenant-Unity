@@ -1,8 +1,4 @@
-using Dojo.Torii;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +18,8 @@ public class TopBarUiElement : MonoBehaviour
     public TMP_Text walletAddressText;
 
     public TMP_Text walletAmount;
+
+    public TooltipAsker contribTooltip;
 
     /*
         GameState 
@@ -116,6 +114,7 @@ public class TopBarUiElement : MonoBehaviour
                 var perc = RisingRevenantUtils.GeneralHexToInt(playerContrib) / RisingRevenantUtils.GeneralHexToInt(totContrib) * 100;
 
                 contribText.text = $"Contribution: {perc}%";
+                contribTooltip.message = $"Total game contribution: {RisingRevenantUtils.GeneralHexToInt(totContrib)}\nYour contribution: {RisingRevenantUtils.GeneralHexToInt(playerContrib)}";
             }
             else
             {

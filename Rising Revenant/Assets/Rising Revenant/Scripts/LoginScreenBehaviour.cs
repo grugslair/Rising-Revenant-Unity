@@ -55,6 +55,7 @@ public class LoginScreenBehaviour : Menu
         //initializeDojoEntitiesScript.SpawnBurner();
 
         var burner = initializeDojoEntitiesScript.burnerManager.CurrentBurner;
+        Debug.Log("Burner: " + burner.Address.Hex());
         loginButtonText.text = "Login as: " + burner.Address.Hex().Substring(0, 8);
 
         loginButton.onClick.RemoveListener(CreateBurner);

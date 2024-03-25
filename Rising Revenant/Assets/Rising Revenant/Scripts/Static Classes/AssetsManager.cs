@@ -15,7 +15,6 @@ public static class AssetsManager
         GREEN_OUTPOST,
     }
 
-    // Static method to get the string representation of ColorOptions
     public static string ToTextureOutputString(OutpostColorOption color)
     {
         switch (color)
@@ -57,5 +56,8 @@ public static class AssetsManager
                 throw new ArgumentOutOfRangeException(nameof(color), color, null);
         }
     }
+
+
+
 
 }

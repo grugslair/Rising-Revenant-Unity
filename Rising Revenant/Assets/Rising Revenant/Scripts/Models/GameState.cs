@@ -1,13 +1,8 @@
 using Dojo; 
 using Dojo.Starknet; 
 using Dojo.Torii;
-using SimpleGraphQL;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Threading.Tasks;
-using UnityEngine;
-using static GraphQLTypes;
 
 public class GameState : ModelInstance
 {

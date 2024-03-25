@@ -21,6 +21,13 @@ public class ProfilePageReinforcementTypeView : MonoBehaviour
     [SerializeField]
     private Outpost savedOutpost;
 
+
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
+
+
     private void OnEnable()
     {
         savedOutpost = DojoEntitiesDataManager.outpostDictInstance[UiEntitiesReferenceManager.profilePageBehaviour.currentlySelectedOutpost.Value];

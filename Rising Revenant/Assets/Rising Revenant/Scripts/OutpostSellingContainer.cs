@@ -30,8 +30,6 @@ public class OutpostSellingContainer : MonoBehaviour
     [SerializeField]
     private TooltipAsker tooltipAsker;
 
-
-    //check the owner if it matches the player
     public void Initilize(RisingRevenantUtils.Vec2 id, string price, string tradeId)
     {
         outpostID = id;
@@ -39,7 +37,11 @@ public class OutpostSellingContainer : MonoBehaviour
         Outpost outpost = DojoEntitiesDataManager.outpostDictInstance[id];
 
         outpostIDText.text = $"ID: {RisingRevenantUtils.CantonPair((int)outpost.position.x, (int)outpost.position.y)}";
-        outpostDataText.text = $"Reinforcements: {outpost.life}\nReinf left: {outpost.reinforcesRemaining}\nOwner: {outpost.ownerAddress.Hex().Substring(0,7)}";
+        outpostDataText.text = $"Reinforcements: {outpost.life}\n" +
+            $"Reinforcement left: {outpost.reinforcesRemaining}\n" +
+            $"Reinforcement type: {outpost.reinforcementType.ToCustomString()}\n" + 
+            $"Owner: {outpost.ownerAddress.Hex().Substring(0,7)}";
+
         outpostPriceText.text = RisingRevenantUtils.GeneralHexToInt(price) + " $LORDS";
 
         actionButton.onClick.RemoveAllListeners();
@@ -86,7 +88,7 @@ public class OutpostSellingContainer : MonoBehaviour
 
     public void GoHereWithCam()
     {
-        CameraController.Instance.transform.position = new Vector3(outpostID.x, 0f, outpostID.y);
+        CameraController.Instance.transform.position = new Vector3(outpostID.x, CameraController.Instance.transform.position.y, outpostID.y);
     }
 
     public async void RevokeTrade()
@@ -99,7 +101,6 @@ public class OutpostSellingContainer : MonoBehaviour
             await DojoCallsManager.RevokeTradeRevenantDojoCall(revokeStruct, endpoint);
         }
     }
-
 
     private void OnTooltipEnable(GameObject tooltip)
     {

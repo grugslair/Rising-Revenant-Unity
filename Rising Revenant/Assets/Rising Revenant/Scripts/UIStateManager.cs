@@ -26,12 +26,6 @@ public class UIStateManager : MonoBehaviour
 
     private void Update()
     {
-
-        if (Input.GetKeyUp(KeyCode.T))
-        {
-            TestFunction();
-        }
-
         if (Input.GetKeyUp(KeyCode.Y))
         {
             SetUiState(0);
@@ -57,18 +51,6 @@ public class UIStateManager : MonoBehaviour
         //{
         //    UiEntitiesReferenceManager.notificationManager.CreateNotification("Test", null, 5);
         //}
-    }
-
-    private async void TestFunction() 
-    {
-        var endpoint = new DojoCallsManager.EndpointDojoCallStruct
-        {
-            account = DojoEntitiesDataManager.currentAccount,
-            addressOfSystem = DojoCallsManager.gameActionsAddress,
-            functionName = "update_state",
-        };
-
-        await DojoCallsManager.UpdateStateOfTheGame(1, endpoint);
     }
 
     /// <summary>

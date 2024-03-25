@@ -27,7 +27,6 @@ public class TableOfEntTypeDataPageBehaviour : Menu
 
     private string[] graphqlQueryStructure = new string[2]
     {
-
          @"
         query {
             playerInfoModels (
@@ -366,9 +365,6 @@ public class TableOfEntTypeDataPageBehaviour : Menu
 
         return "0";
     }
-
-
-
 
     public async void OutpostDataQuery()
     {

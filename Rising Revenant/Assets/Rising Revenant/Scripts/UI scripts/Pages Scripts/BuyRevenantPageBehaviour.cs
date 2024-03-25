@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -29,7 +28,6 @@ public class BuyRevenantPageBehaviour : Menu
     private string[] explanation = new string[2] { 
         "Summoning a Revenant will allow you to call forth a powerful ally from the realm of the undead",
         "This Revenant, after being summoned successfully, will settle and be responsible for protecting an outpost with the goal of being the last one alive" };
-
 
     private IEnumerator ChangeTextPeriodically()
     {
@@ -74,38 +72,29 @@ public class BuyRevenantPageBehaviour : Menu
     public async void CalcNewTotal()
     {
         var value = await RisingRevenantUtils.outpostMarketInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-        
-        confirmBuyText.text = "Summon (Tot: " + (10 * counterUiElement.currentValue) + " $LORDS)";
-        //confirmBuyText.text = "Summon (Tot: " + (RisingRevenantUtils.ConvertLargeNumberToString(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost * counterUiElement.currentValue, 2)) + " $LORDS)";
+        confirmBuyText.text = "Summon (Tot: " + (RisingRevenantUtils.BigintToFloat(value,3) * counterUiElement.currentValue) + " $LORDS)";
     }
 
     public async void CallDojoSummonRevFunc()
     {
-        try
+        
+        SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
+
+        var createRevenantsProps = new DojoCallsManager.SummonRevenantStruct
         {
-            SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
+            gameId = DojoEntitiesDataManager.currentGameId,
+            count = (uint)counterUiElement.currentValue,
+        };
 
-            var createRevenantsProps = new DojoCallsManager.SummonRevenantStruct
-            {
-                gameId = DojoEntitiesDataManager.currentGameId,
-                count = (uint)counterUiElement.currentValue,
-            };
-
-            var endpoint = new DojoCallsManager.EndpointDojoCallStruct
-            {
-                functionName = "purchase",
-                addressOfSystem = DojoCallsManager.outpostActionsAddress,
-                account = DojoEntitiesDataManager.currentAccount,
-            };
-
-            var transaction = await DojoCallsManager.SummonRevenantsDojoCall(createRevenantsProps, endpoint);
-            UiEntitiesReferenceManager.notificationManager.CreateNotification($"succesfull creation of {counterUiElement.currentValue} outposts", null, 2f);
-        }
-        catch (Exception ex)
+        var endpoint = new DojoCallsManager.EndpointDojoCallStruct
         {
-            UiEntitiesReferenceManager.notificationManager.CreateNotification("error occured bla bla bla", null, 2f);
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
+            functionName = "purchase",
+            addressOfSystem = DojoCallsManager.outpostActionsAddress,
+            account = DojoEntitiesDataManager.currentAccount,
+        };
+
+        var transaction = await DojoCallsManager.SummonRevenantsDojoCall(createRevenantsProps, endpoint);
+        
     }
 
 

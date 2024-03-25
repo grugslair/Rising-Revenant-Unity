@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.DebugUI;
 
 public class SellOutpostPageBehaviour : Menu
 {
@@ -102,21 +99,35 @@ public class SellOutpostPageBehaviour : Menu
 
         outpostDataText.text = $"Outpost Id: {RisingRevenantUtils.CantonPair((int)currentlySelectedOutpost.position.x, (int)currentlySelectedOutpost.position.y)} \n" +
                              $"Lifes: {currentlySelectedOutpost.life} \n" +
-                             $"Reinf Left: {currentlySelectedOutpost.reinforcesRemaining} \n" +
-                             $"Rev name: {RisingRevenantUtils.GetFullRevenantName(currentlySelectedOutpost.position)}";
+                             $"Reinforcement type: {currentlySelectedOutpost.reinforcementType.ToCustomString()}\n" +
+                             $"Reinforcement Left: {currentlySelectedOutpost.reinforcesRemaining} \n" +
+                             $"Revenant name: {RisingRevenantUtils.GetFullRevenantName(currentlySelectedOutpost.position)}";
 
         outpostPositionText.text = $"Position:\nX: {currentlySelectedOutpost.position.x} Y: {currentlySelectedOutpost.position.y}";
+
+        int i = 0;
+        foreach (Transform child in shieldContainer.transform)
+        {
+            if (i >= RisingRevenantUtils.CalculateShields(currentlySelectedOutpost.life))
+            {
+                RawImage image = child.GetComponent<RawImage>();
+                image.color = new Color(1, 1, 1, 0);
+            }
+
+            i++;
+        }
 
         SetUpOutpostPic(new Vector2(currentlySelectedOutpost.position.x, currentlySelectedOutpost.position.y));
     }
     
     private void SetUpOutpostPic(Vector2 pos)
     {
+        outpostMarker.gameObject.SetActive(true);
         var compHeight = mapView.rect.height;
         var compWidth = mapView.rect.width;
 
-        float scaledX = compWidth - (pos.x / RisingRevenantUtils.MAP_WIDHT) * compWidth;
-        float scaledY = (pos.y / RisingRevenantUtils.MAP_HEIGHT) * compHeight;
+        float scaledX = (currentlySelectedOutpost.position.x / RisingRevenantUtils.MAP_WIDHT) * compWidth;
+        float scaledY = (currentlySelectedOutpost.position.y / RisingRevenantUtils.MAP_HEIGHT) * compHeight;
 
         outpostMarker.anchoredPosition = new Vector2(scaledX, scaledY);
     }

@@ -81,7 +81,7 @@ public class OutpostDataProfilePageListElement : MonoBehaviour
 
     public void GoHere()
     {
-        CameraController.Instance.transform.position = new Vector3(outpostData.position.x,0f,outpostData.position.y);
+        CameraController.Instance.transform.position = new Vector3(outpostData.position.x, CameraController.Instance.transform.position.y, outpostData.position.y);
         //CameraController.Instance.MoveCameraToPosition(outpostData.position);
     }
 

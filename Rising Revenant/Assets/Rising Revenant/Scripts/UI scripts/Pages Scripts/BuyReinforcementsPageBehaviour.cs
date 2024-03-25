@@ -30,6 +30,7 @@ public class BuyReinforcementsPageBehaviour : Menu
         "Reinforcements provide an additional extra life to your outpost, enhancing the player's ability to withstand hostile attacks",
         "An outpost can only have a maximum of 20 reinforcements applied during its existance"};
 
+    // when a new price for the vrgda is received it should also call the function to update the price
     private IEnumerator ChangeTextPeriodically()
     {
         int index = 0;
@@ -76,8 +77,6 @@ public class BuyReinforcementsPageBehaviour : Menu
         var gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
         var oldValueJackpot = RisingRevenantUtils.BigintToFloat(gamePot[1], 3);
 
-        Debug.Log("old value " + oldValueJackpot);
-
         SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
 
         var createRevenantsProps = new DojoCallsManager.PurchaseReinforcementsStruct
@@ -102,9 +101,13 @@ public class BuyReinforcementsPageBehaviour : Menu
         var newValueJackpot = RisingRevenantUtils.BigintToFloat(gamePot[1], 3);
 
         var diff = newValueJackpot - oldValueJackpot;
-        pricePerReinforcement = Math.Round(diff / counterUiElement.currentValue, 3);
 
-        staticPriceText.text = $"1 Reinforcement = {pricePerReinforcement} $LORDS";
+        if (diff != 0)
+        {
+            pricePerReinforcement = Math.Round(diff / counterUiElement.currentValue, 3);
+            staticPriceText.text = $"1 Reinforcement = {pricePerReinforcement} $LORDS";
+            CalcNewTotal();
+        }
     }
 
 

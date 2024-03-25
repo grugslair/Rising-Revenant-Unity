@@ -71,10 +71,10 @@ mergeInto(LibraryManager.library,
 				calldata: calldataArray.array
 			}]).then((response) => {
 				const transactionHash = response.transaction_hash;
-				myGameInstance.SendMessage(callbackObjectStr, callbackMethodStr, transactionHash);
+				gameInstance.SendMessage(callbackObjectStr, callbackMethodStr, transactionHash);
 			}).catch((error) => {
 				const errorMessage = error.message;
-				myGameInstance.SendMessage(callbackObjectStr, callbackMethodStr, errorMessage);
+				gameInstance.SendMessage(callbackObjectStr, callbackMethodStr, errorMessage);
 			})	
 		}
 	},
@@ -103,10 +103,10 @@ mergeInto(LibraryManager.library,
 				calldata: calldataArray.array
 			}]).then((response) => {
 				const transactionHash = response.transaction_hash;
-				myGameInstance.SendMessage(callbackObjectStr, callbackMethodStr, transactionHash);
+				gameInstance.SendMessage(callbackObjectStr, callbackMethodStr, transactionHash);
 			}).catch((error) => {
 				const errorMessage = error.message;
-				myGameInstance.SendMessage(callbackObjectStr, callbackMethodStr, errorMessage);
+				gameInstance.SendMessage(callbackObjectStr, callbackMethodStr, errorMessage);
 			})	
 		}
 	},
@@ -135,10 +135,10 @@ mergeInto(LibraryManager.library,
 				calldata: calldataArray.array
 			}]).then((response) => {
 				const transactionHash = response.transaction_hash;
-				myGameInstance.SendMessage(callbackObjectStr, callbackMethodStr, transactionHash);
+				gameInstance.SendMessage(callbackObjectStr, callbackMethodStr, transactionHash);
 			}).catch((error) => {
 				const errorMessage = error.message;
-				myGameInstance.SendMessage(callbackObjectStr, callbackMethodStr, errorMessage);
+				gameInstance.SendMessage(callbackObjectStr, callbackMethodStr, errorMessage);
 			})
 		}
 	},
@@ -167,10 +167,10 @@ mergeInto(LibraryManager.library,
 				calldata: calldataArray.array
 			}).then((response) => {
 				const responseStr = JSON.stringify(response);
-				myGameInstance.SendMessage(callbackObjectStr, callbackMethodStr, responseStr);
+				gameInstance.SendMessage(callbackObjectStr, callbackMethodStr, responseStr);
 			}).catch((error) => {
 				const errorMessage = error.message;
-				myGameInstance.SendMessage(callbackObjectStr, callbackMethodStr, errorMessage);
+				gameInstance.SendMessage(callbackObjectStr, callbackMethodStr, errorMessage);
 			})
 		}
 	},

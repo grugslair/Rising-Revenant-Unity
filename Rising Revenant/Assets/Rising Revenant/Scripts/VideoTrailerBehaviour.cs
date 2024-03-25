@@ -34,7 +34,15 @@ public class VideoTrailerBehaviour : MonoBehaviour
     private void OnVideoEnded(VideoPlayer source)
     {
         backgroundMusicManager.TogglePauseBackgroundMusic();
-        uIStateManager.SetUiState(3);
+
+        if (DojoEntitiesDataManager.currentWorldEvent != null)
+        {
+            uIStateManager.SetUiState(4);
+        }
+        else
+        {
+            uIStateManager.SetUiState(3);
+        }
     }
 
     private void OnEnable()

@@ -94,11 +94,4 @@ public class LoginScreenBehaviour : Menu
 
         var transaction = await DojoCallsManager.CreateGameDojoCall(createGameProps, endpoint);
     }
-
-
-
-    public void TestCall()
-    {
-       gamePlay.Execute(new string[3] { "0x04eD97D7549E11745300b30036c327f14d70B5cDDE7085A8554327478f09c8Bc", "10000000000", "0" }); 
-    }
 }

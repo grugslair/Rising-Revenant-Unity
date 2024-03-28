@@ -36,37 +36,52 @@ public class Outpost : ModelInstance
 
     private void Start()
     {
-        DojoEntitiesDataManager.outpostDictInstance.Add(position, this);
-        initalOwner = ownerAddress;
+        Debug.Log("checking outpost");
 
-        if (DojoEntitiesDataManager.currentAccount != null)
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
         {
-            if (DojoEntitiesDataManager.currentAccount.Address.Hex() == ownerAddress.Hex())
+            Debug.Log($"this outpost was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"this outpost was spared {gameId.Hex()}");
+
+            DojoEntitiesDataManager.outpostDictInstance.Add(position, this);
+            initalOwner = ownerAddress;
+
+            if (DojoEntitiesDataManager.currentAccount != null)
             {
-                DojoEntitiesDataManager.ownOutpostIndex.Add(position);
+                if (DojoEntitiesDataManager.currentAccount.Address.Hex() == ownerAddress.Hex())
+                {
+                    DojoEntitiesDataManager.ownOutpostIndex.Add(position);
+                }
             }
+
+            MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
+            if (meshFilter == null)
+            {
+                meshFilter = gameObject.AddComponent<MeshFilter>();
+            }
+
+            MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
+            if (meshRenderer == null)
+            {
+                meshRenderer = gameObject.AddComponent<MeshRenderer>();
+            }
+
+            meshFilter.mesh = CreatePlaneMesh();
+            gameObject.layer = 6;
+            gameObject.transform.position = new Vector3(position.x, 0.1f, position.y);
+
+            gameObject.AddComponent<BoxCollider>();
+            gameObject.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+
+            SetOutpostTexture();
         }
 
-        MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
-        if (meshFilter == null)
-        {
-            meshFilter = gameObject.AddComponent<MeshFilter>();
-        }
-
-        MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();
-        if (meshRenderer == null)
-        {
-            meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        }
-
-        meshFilter.mesh = CreatePlaneMesh();
-        gameObject.layer = 6;
-        gameObject.transform.position = new Vector3(position.x, 0.1f, position.y);
-
-        gameObject.AddComponent<BoxCollider>();
-        gameObject.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-
-        SetOutpostTexture();
+        
+       
     }
 
     Mesh CreatePlaneMesh()
@@ -107,19 +122,6 @@ public class Outpost : ModelInstance
             renderer.material.mainTexture = outpostTexture;
 
             outpostMat = Resources.Load<Material>(AssetsManager.ToMaterialOutputString(AssetsManager.OutpostColorOption.DEAD_OUTPOST));
-            renderer.material = outpostMat;
-            return;
-        }
-
-        //check if mine
-        //check if your
-
-        if (DojoEntitiesDataManager.currentAccount == null)
-        {
-            outpostTexture = Resources.Load<Texture>(AssetsManager.ToTextureOutputString(AssetsManager.OutpostColorOption.ENEMY_OUTPOST));
-            renderer.material.mainTexture = outpostTexture;
-
-            outpostMat = Resources.Load<Material>(AssetsManager.ToMaterialOutputString(AssetsManager.OutpostColorOption.ENEMY_OUTPOST));
             renderer.material = outpostMat;
             return;
         }

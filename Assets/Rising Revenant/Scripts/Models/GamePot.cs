@@ -29,31 +29,38 @@ public class GamePot : ModelInstance
     [ModelField("claimed")]
     public bool claimed;
 
-    // Start is called before the first frame update
+
     void Start()
     {
-        DojoEntitiesDataManager.gamePot = this;
+        Debug.Log("checking GamePot");
 
-        if (UiEntitiesReferenceManager.topBarUiElement != null)
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
         {
-            UiEntitiesReferenceManager.topBarUiElement.ChangeInGameData();
+            Debug.Log($"GamePot was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
         }
+        else
+        {
+            Debug.Log($"GamePot was spared {gameId.Hex()}");
+
+
+            DojoEntitiesDataManager.gamePot = this;
+
+            if (UiEntitiesReferenceManager.topBarUiElement != null)
+            {
+                UiEntitiesReferenceManager.topBarUiElement.ChangeInGameData();
+            }
+        }
+
+
     }
 
     public override void OnUpdate(Model model)
     {
-        Debug.Log("\nGamePot");
-        Debug.Log("totalPot: " + totalPot.low.ToString() + "|| high: " + totalPot.high.ToString());
-        Debug.Log("winnersPot: " + winnersPot.low.ToString() + "|| high: " + winnersPot.high.ToString());
-        Debug.Log("confirmationPot: " + confirmationPot.low.ToString() + "|| high: " + confirmationPot.high.ToString());
-        Debug.Log("ltrPot: " + ltrPot.low.ToString() + "|| high: " + ltrPot.high.ToString());
-
 
         base.OnUpdate(model);
         OnValueChange?.Invoke();
 
         UiEntitiesReferenceManager.topBarUiElement.ChangeInGameData();
     }
-
-    
 }

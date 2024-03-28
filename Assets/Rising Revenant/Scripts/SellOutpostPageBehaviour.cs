@@ -126,8 +126,8 @@ public class SellOutpostPageBehaviour : Menu
         var compHeight = mapView.rect.height;
         var compWidth = mapView.rect.width;
 
-        float scaledX = (currentlySelectedOutpost.position.x / RisingRevenantUtils.MAP_WIDHT) * compWidth;
-        float scaledY = (currentlySelectedOutpost.position.y / RisingRevenantUtils.MAP_HEIGHT) * compHeight;
+        float scaledX = (currentlySelectedOutpost.position.x / RisingRevenantUtils.MAP_WIDHT) * compWidth   - compWidth/2;
+        float scaledY = (currentlySelectedOutpost.position.y / RisingRevenantUtils.MAP_HEIGHT) * compHeight  - compHeight/2;
 
         outpostMarker.anchoredPosition = new Vector2(scaledX, scaledY);
     }
@@ -152,6 +152,8 @@ public class SellOutpostPageBehaviour : Menu
                 account = DojoEntitiesDataManager.currentAccount,
                 addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.tradeOutpostActionsAddress,
                 functionName = "create",
+                objectName = "Main_Canvas",
+                callbackFunctionName = "OnChainTransactionCallbackFunction",
             };
 
             await DojoCallsManager.CreateTradeRevenantDojoCall(structToSellReinf, endPoint);

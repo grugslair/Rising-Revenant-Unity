@@ -47,7 +47,9 @@ public class EventPageDataContainerBehaviour : Menu
         {
             account = DojoEntitiesDataManager.currentAccount,
             addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.outpostActionsAddress,
-            functionName = "verify"
+            functionName = "verify",
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
         var validateStruct = new DojoCallsManager.DamageOutpostStruct {  gameId = DojoEntitiesDataManager.currentGameId, outpostId = outpost.position };
        

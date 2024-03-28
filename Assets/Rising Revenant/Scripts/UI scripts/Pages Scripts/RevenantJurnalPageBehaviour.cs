@@ -124,7 +124,7 @@ public class RevenantJurnalPageBehaviour : Menu
 
         var query = RisingRevenantUtils.ReplaceWords(worldEventQueryStructure, dict);
 
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
         var tradesRequest = new Request
         {
             Query = query,

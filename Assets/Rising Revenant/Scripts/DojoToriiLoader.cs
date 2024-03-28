@@ -19,30 +19,11 @@ public class DojoToriiLoader : MonoBehaviour
     [SerializeField]
     private WorldManager worldManager;
 
+
     private bool videoHasCompletedOnce = false; 
 
     private bool LoadingHasCompleted = false; 
     public bool actuallyLoad = true;
-
-    string queryForLastActiveGame = @"
-     query {
-        gameStateModels (first: 1)
-        {
-          edges {
-            node {
-              entity {
-                keys
-                models {
-                  ... on GameState {
-                    __typename
-               	    game_id
-                  }
-                }
-              }
-            }
-          }
-        }
-      }";
 
     void Start()
     {
@@ -86,9 +67,6 @@ public class DojoToriiLoader : MonoBehaviour
 
     private async void OnEnable()
     {
-
-        //worldManager.SubToEverything();
-
         LoadingHasCompleted = true;
         if (actuallyLoad)
         {
@@ -97,9 +75,14 @@ public class DojoToriiLoader : MonoBehaviour
                 outpost.Value.SetOutpostTexture();
             }
 
-            var gameId = await latestGameId();  // this shuold also set the dojo currentgmae id
-            Debug.Log(gameId);                  // no it shoudlnt what yu on abut
+            var gameId = await RisingRevenantUtils.FetchLatestGameId();  
+            //Debug.Log($"btw this is the latest game id {gameId}");                 
             //SubscribeToGameData(gameId);
+            DojoEntitiesDataManager.currentGameId = new Dojo.Starknet.FieldElement(gameId);
+            Debug.Log($"btw this is the latest game id {DojoEntitiesDataManager.currentGameId.Hex()}");
+
+
+            worldManager.LoadData();
 
             LoadingHasCompleted = true;
         }
@@ -109,126 +92,35 @@ public class DojoToriiLoader : MonoBehaviour
         }
     }
 
-    private async Task<int> latestGameId()
+ 
+    private async void SubscribeToGameData(int gameId)
     {
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
-        var tradesRequest = new Request
-        {
-            Query = queryForLastActiveGame,
-        };
-
-        var responseType = new
-        {
-            gameStateModels = new
-            {
-                edges = new[]
-                {
-                    new
-                    {
-                        node = new
-                        {
-                            entity = new
-                            {
-                                keys = new[]
-                                {
-                                    ""
-                                },
-                                models = new[]
-                                {
-                                    new
-                                    {
-                                        __typename = "",
-                                        game_id = ""
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
-
+        Debug.Log("subscribing to game data");
+        await synchManager.CustomSynchronizeEntities("GameState", new string[] { gameId.ToString() });
+        Debug.Log("subscribing to outpost data");
         try
         {
-            var response = await client.Send(() => responseType, tradesRequest);
-
-            if (response.Data.gameStateModels.edges.Length == 0)
-            {
-                Debug.Log("no game was ever created");
-                return -1;
-            }
-
-            if (response.Data != null && response.Data.gameStateModels != null)
-            {
-                for (int i = 0; i < response.Data.gameStateModels.edges.Length; i++)
-                {
-                    var edge = response.Data.gameStateModels.edges[i];
-
-                    for (int x = 0; x < edge.node.entity.keys.Length; x++)
-                    {
-                        Debug.Log("key: " + edge.node.entity.keys[x]);
-                    }
-
-                    for (int x = 0; x < edge.node.entity.models.Length; x++)
-                    {
-                        if (edge.node.entity.models[x].__typename == "GameState")
-                        {
-                            return RisingRevenantUtils.GeneralHexToInt(edge.node.entity.models[x].game_id);
-                        }
-                    }
-                }
-            }
-            Debug.LogError($"Failed to parse data for status");
+            await synchManager.CustomSynchronizeEntities("Outpost", new string[] { gameId.ToString() });
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Query failed for status: {ex.Message}");
+            Debug.LogError($"The query was empty there are no outposts right now");
         }
 
-        return 0;
-    }
-
-    private async void LoadGameDataModelsIn(int gameId)
-    {
-
-    }
-
-    private async void LoadGameEntitiesDataModelsIn(int gameId)
-    {
-
-    }
-
-    //will need webgl if statement
-    //also therre is something wrong with the game id
-    private void SubscribeToGameData(int gameId)
-    {
-        Debug.Log("subscribing to game data, " + gameId);
-
-        var gameStateModel = new dojo.KeysClause[]
-        { new() { model_ = CString.FromString("GameState"), keys = new[] { gameId.ToString() } } };
-
-        var outpostMarketModel = new dojo.KeysClause[]
-        { new() { model_ = CString.FromString("OutpostMarket"), keys = new[] { gameId.ToString() } } };
-
-        var gamePotModel = new dojo.KeysClause[]
-        { new() { model_ = CString.FromString("GamePot"), keys = new[] { gameId.ToString() } } };
-
-        worldManager.toriiClient.AddModelsToSync(gameStateModel);
-        worldManager.toriiClient.AddModelsToSync(outpostMarketModel);
-        worldManager.toriiClient.AddModelsToSync(gamePotModel);
-
-        if (DojoEntitiesDataManager.currentAccount != null)
+        if (DojoEntitiesDataManager.currentAccount.Address.Hex() != "")
         {
-            var devWalletModel = new dojo.KeysClause[]
-            { new() { model_ = CString.FromString("DevWallet"), keys = new[] { gameId.ToString(), DojoEntitiesDataManager.currentAccount.Address.Hex().ToLower() } } };
-
-            var playerContribModel = new dojo.KeysClause[]
-            { new() { model_ = CString.FromString("PlayerContribution"), keys = new[] { gameId.ToString(), DojoEntitiesDataManager.currentAccount.Address.Hex().ToLower() } } };
-
-            //here i need to do a query for the existance
-            Debug.Log("something");
-            worldManager.toriiClient.AddModelsToSync(devWalletModel);
-            worldManager.toriiClient.AddModelsToSync(playerContribModel);
+            try
+            {
+                if (DojoEntitiesDataManager.currentAccount.Address.Hex() != "")
+                {
+                    Debug.Log("subscribing to player data");
+                    await synchManager.CustomSynchronizeEntities("DevWallet", new string[] { DojoEntitiesDataManager.currentAccount.Address.Hex(), gameId.ToString() });
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"The query was empty the user has no data available");
+            }
         }
     }
 }

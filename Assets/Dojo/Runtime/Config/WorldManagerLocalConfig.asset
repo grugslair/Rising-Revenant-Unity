@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faed63f2427f3ed83a42d16bb3e73e6d, type: 3}
   m_Name: WorldManagerLocalConfig
   m_EditorClassIdentifier: 
-  environmentType: 0
-  toriiUrl: http://localhost:8080/graphql
-  rpcUrl: http://localhost:5050
+  environmentType: 2
+  toriiUrl: https://api.cartridge.gg/x/sepoliarr/torii
+  rpcUrl: https://starknet-sepolia.public.blastapi.io/rpc/v0_6
   relayUrl: /ip4/127.0.0.1/tcp/9090
   relayWebrtcUrl: /ip4/127.0.0.1/udp/9091/webrtc-direct/certhash/uEiDx-luHsovHTHPuU5qzNHCCFkYYpFPirTn2p7ZIFP0Dig
   worldAddress: 0x7a4adc3dc01142811d2db99848998828b30e8a3c3d2a3875751f427ff11ad35
@@ -25,6 +25,6 @@ MonoBehaviour:
   paymentActionsAddress: 0x1cbf7df5c43cefe7d497b5e8985e566c0ef910f600a1ea0ebb2efcd34577d99
   tradeOutpostActionsAddress: 0x76a4dc474308a5ea36e3b089940269d90a6b4c6dcb98acb6f6018a177e1a827
   tradeReinforcementActionsAddress: 0x696cde8aa85d7e3191eab7396640f11a002c68dc11fe6cb6dc94471bd35ff90
-  masterAddress: 0xb3ff441a68610b30fd5e2abbf3a1548eb6ba6f3559f2862bf2dc757e5828ca
-  masterPrivateKey: 0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a
+  masterAddress: 
+  masterPrivateKey: 
   limit: 100

@@ -30,7 +30,17 @@ public class ReinforcementMarket : ModelInstance
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("Checking ReinforcementMarket");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
+        {
+            Debug.Log($"ReinforcementMarket was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"ReinforcementMarket was spared {gameId.Hex()}");
+        }
     }
 
     // Update is called once per frame

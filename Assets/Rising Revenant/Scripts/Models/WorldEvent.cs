@@ -2,6 +2,7 @@ using Dojo;
 using Dojo.Starknet; 
 using Dojo.Torii;
 using System;
+using UnityEngine;
 
 public class WorldEvent : ModelInstance
 {
@@ -37,7 +38,18 @@ public class WorldEvent : ModelInstance
     // Start is called before the first frame update
     void Start()
     {
-        DojoEntitiesDataManager.worldEventDictInstance.Add(number, this);
+        Debug.Log("checking world event");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
+        {
+            Debug.Log($"WorldEvent was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"WorldEvent was spared {gameId.Hex()}");
+            DojoEntitiesDataManager.worldEventDictInstance.Add(number, this);
+        }
     }
 
     // Update is called once per frame

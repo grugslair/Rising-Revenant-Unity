@@ -25,6 +25,8 @@ public class SellReinforcementPageBehaviour : Menu
             account = DojoEntitiesDataManager.currentAccount,
             addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.tradeReinforcementActionsAddress,
             functionName = "create",
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
 
         await DojoCallsManager.CreateTradeReinforcementDojoCall(structToSellReinf, endPoint);

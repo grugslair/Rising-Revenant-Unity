@@ -1,6 +1,7 @@
-using Dojo; using Dojo.Starknet; using Dojo.Torii;
+using Dojo; 
+using Dojo.Starknet; 
+using Dojo.Torii;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldEventSetup : ModelInstance
@@ -18,7 +19,17 @@ public class WorldEventSetup : ModelInstance
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("checking world event setup");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
+        {
+            Debug.Log($"world event setup was destroyed  {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"world event setup was spared {gameId.Hex()}");
+        }
     }
 
     // Update is called once per frame

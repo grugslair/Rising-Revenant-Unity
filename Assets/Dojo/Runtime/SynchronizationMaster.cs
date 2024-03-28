@@ -26,6 +26,9 @@ namespace Dojo
         public UnityEvent<List<GameObject>> OnSynchronized;
         public UnityEvent<GameObject> OnEntitySpawned;
 
+        private HashSet<string> modelsNotToLoadSet = new HashSet<string>(new[] { "OutpostTrade", "ReinforcementTrade", "WorldEvent", "OutpostVerified" });
+
+
         // Awake is called when the script instance is being loaded.
         void Awake()
         {
@@ -65,12 +68,62 @@ namespace Dojo
             return entities.Count;
         }
 
+
+        public async Task<int> CustomSynchronizeEntities(string modelName, string[] keys)
+        {
+            var query = new dojo.Query
+            {
+                clause = new dojo.COptionClause
+                {
+                    tag = dojo.COptionClause_Tag.SomeClause,
+                    some = new dojo.Clause
+                    {
+                        tag = dojo.Clause_Tag.Keys,
+                        keys = new dojo.KeysClause
+                        {
+                            model = modelName,
+                            keys = keys
+                        }
+                    },
+                },
+                limit = 1,
+                offset = 0,
+            };
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            var entities = await worldManager.wasmClient.Entities(query);
+#else
+            var entities = await Task.Run(() => worldManager.toriiClient.Entities(query));
+#endif
+
+            var entityGameObjects = new List<GameObject>();
+            foreach (var entity in entities)
+            {
+                entityGameObjects.Add(SpawnEntity(entity.HashedKeys, entity.Models.Values.ToArray()));
+            }
+
+            OnSynchronized?.Invoke(entityGameObjects);
+            return entities.Count;
+        }
+
+
+
+
+
         // Spawn an Entity game object from a dojo.Entity
         private GameObject SpawnEntity(FieldElement hashedKeys, Model[] entityModels)
         {
             // Add the entity to the world.
-            var entityGameObject = worldManager.AddEntity(hashedKeys.Hex());
+            // HERE  we dont want an empty gameobject if there are no other things inside as they have been discarde
+            // fun fact, default is better when assinging vars that are yet to be used
+            GameObject entityGameObject = default;
+            bool entityAdded = false;
+            // also surely this can be parallized
+
             // Initialize each one of the entity models
+
+
+            //HERE
             foreach (var entityModel in entityModels)
             {
                 // Check if we have a model definition for this entity model
@@ -80,10 +133,45 @@ namespace Dojo
                     Debug.LogError($"Model {entityModel.Name} not found");
                     continue;
                 }
+                else if (modelsNotToLoadSet.Contains(entityModel.Name))
+                {
+                    //Debug.LogError($"Model {entityModel.Name} has been discarded");
+                    continue;
+                }
 
+                // this is how we check for the model name
+                if (!entityAdded)
+                {
+                    var ent = worldManager.Entity(hashedKeys.Hex());
+
+                    if (ent == null)
+                    {
+                        entityGameObject = worldManager.AddEntity(hashedKeys.Hex());
+                    }
+                    else
+                    {
+                        //here we need to check if the model we are adding is already there if it si skip
+                        Component[] components = ent.GetComponents<Component>();
+
+                        foreach (Component things in components)
+                        {
+                            if (things.GetType().Name == entityModel.Name)
+                            {
+                                continue;
+                            }
+                        }
+                    }
+
+                    entityAdded = true;
+                }
                 // Add the model component to the entity
-                var component = (ModelInstance)entityGameObject.AddComponent(model.GetType());
-                component.Initialize(entityModel);
+
+                if (entityGameObject != null)
+                {
+                    var component = (ModelInstance)entityGameObject.AddComponent(model.GetType());
+                    component.Initialize(entityModel);
+                }
+
             }
 
             OnEntitySpawned?.Invoke(entityGameObject);
@@ -114,6 +202,11 @@ namespace Dojo
                         Debug.LogError($"Model {entityModel.Name} not found");
                         continue;
                     }
+                    else if (modelsNotToLoadSet.Contains(entityModel.Name))
+                    {
+                        //Debug.LogError($"Model {entityModel.Name} has been discarded");
+                        continue;
+                    }
 
                     // we dont need to initialize the component
                     // because it'll get updated
@@ -124,6 +217,10 @@ namespace Dojo
                 ((ModelInstance)component).OnUpdate(entityModel);
             }
         }
+
+
+
+
 
         // Register our entity callbacks
         public void RegisterEntityCallbacks()

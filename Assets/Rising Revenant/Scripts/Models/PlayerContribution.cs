@@ -22,24 +22,35 @@ public class PlayerContribution : ModelInstance
 
     void Start()
     {
-        var currentAddress = DojoEntitiesDataManager.currentAccount.Address.Hex();
+        Debug.Log("checking PlayerContribution");
 
-        if (playerId.Hex() == currentAddress)
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
         {
-            DojoEntitiesDataManager.playerContrib = this;
-            UiEntitiesReferenceManager.topBarUiElement.CalcContrib();
+            Debug.Log($"PlayerContribution was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
         }
         else
         {
-            Destroy(this);
+            Debug.Log($"PlayerContribution was spared {gameId.Hex()}");
+            if (playerId.Hex() == DojoEntitiesDataManager.currentAccount.Address.Hex())
+            {
+                DojoEntitiesDataManager.playerContrib = this;
+                UiEntitiesReferenceManager.topBarUiElement.CalcContrib();
+            }
+            else
+            {
+                Destroy(this);
+            }
         }
+
+
+
+
+       
     }
 
     public override void OnUpdate(Model model)
     {
-        Debug.Log("\nplayerContribution");
-        Debug.Log("low: " + score.low.ToString() + "|| high: " + score.high.ToString());
-
         base.OnUpdate(model);
         OnValueChange?.Invoke();
 

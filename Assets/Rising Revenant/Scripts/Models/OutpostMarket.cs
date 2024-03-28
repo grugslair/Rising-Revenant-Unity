@@ -18,12 +18,26 @@ public class OutpostMarket : ModelInstance
 
     void Start()
     {
-        DojoEntitiesDataManager.outpostMarketData = this;
+        Debug.Log("checking OutpostMarket");
 
-        if (UiEntitiesReferenceManager.topBarUiElement != null)
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
         {
-            UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
+            Debug.Log($"OutpostMarket was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
         }
+        else
+        {
+            Debug.Log($"OutpostMarket was spared {gameId.Hex()}");
+            DojoEntitiesDataManager.outpostMarketData = this;
+
+            if (UiEntitiesReferenceManager.topBarUiElement != null)
+            {
+                UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
+            }
+        }
+
+
+
     }
 
     public override void OnUpdate(Model model)

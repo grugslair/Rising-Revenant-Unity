@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Numerics;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 public class BuyReinforcementsPageBehaviour : Menu
 {
@@ -30,7 +33,7 @@ public class BuyReinforcementsPageBehaviour : Menu
         "Reinforcements provide an additional extra life to your outpost, enhancing the player's ability to withstand hostile attacks",
         "An outpost can only have a maximum of 20 reinforcements applied during its existance"};
 
-    // when a new price for the vrgda is received it should also call the function to update the price
+    #region text update region
     private IEnumerator ChangeTextPeriodically()
     {
         int index = 0;
@@ -66,17 +69,63 @@ public class BuyReinforcementsPageBehaviour : Menu
             yield return null;
         }
     }
+    #endregion
+
+    #region price update region
+    
+    private IEnumerator UpdatePrice()
+    {
+        while (true)
+        {
+            GetVrgdaPrice();
+            yield return new WaitForSeconds(5);
+            CalcNewTotal();
+        }
+    }
+
+    public void GetVrgdaPrice()
+    {
+
+        if (DojoEntitiesDataManager.worldManager.chainConfig.environmentType != Dojo.EnvironmentType.TESTNET)
+        {
+            return;
+        }
+
+        try
+        {
+            string[] calldata = new string[0];
+            string calldataString = JsonUtility.ToJson(new ArrayWrapper { array = calldata });
+            JSInteropManager.CallContract(DojoEntitiesDataManager.worldManager.chainConfig.reinforcementActionsAddress, "balanceOf", calldataString, gameObject.transform.name, "VRGDACallback");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"error on the main function: {ex.Message}");
+        }
+    }
+
+    public void VRGDACallback(string response)
+    {
+        try
+        {
+            JsonResponse jsonResponse = JsonUtility.FromJson<JsonResponse>(response);
+            BigInteger balance = BigInteger.Parse(jsonResponse.result[0].Substring(2), NumberStyles.HexNumber);
+            Debug.Log($"this si the price per reinf {RisingRevenantUtils.BigIntToFloat(balance,5)}");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"error on the callback {ex.Message}");
+        }
+    }
+
+    #endregion
 
     public void CalcNewTotal()
     {
         confirmBuyText.text = "Purchase (Tot: " + pricePerReinforcement * counterUiElement.currentValue + " $LORDS)";
     }
 
-    private async Task CallDojoBuyReinforcementsFunc()
+    public async void CallDojoBuyReinforcementsFunc()
     {
-        var gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-        var oldValueJackpot = RisingRevenantUtils.BigintToFloat(gamePot[1], 3);
-
         SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
 
         var createRevenantsProps = new DojoCallsManager.PurchaseReinforcementsStruct
@@ -90,36 +139,14 @@ public class BuyReinforcementsPageBehaviour : Menu
             functionName = "purchase",
             addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.reinforcementActionsAddress,
             account = DojoEntitiesDataManager.currentAccount,
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
 
         var transaction = await DojoCallsManager.PurchaseReinforcementsDojoCall(createRevenantsProps, endpoint);
-
-        // Wait for 1 second
-        await Task.Delay(TimeSpan.FromSeconds(1));
-
-        gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-        var newValueJackpot = RisingRevenantUtils.BigintToFloat(gamePot[1], 3);
-
-        var diff = newValueJackpot - oldValueJackpot;
-
-        if (diff != 0)
-        {
-            pricePerReinforcement = Math.Round(diff / counterUiElement.currentValue, 3);
-            staticPriceText.text = $"1 Reinforcement = {pricePerReinforcement} $LORDS";
-            CalcNewTotal();
-        }
     }
 
 
-    IEnumerator CallDojoBuyReinforcementsCoroutine()
-    {
-        yield return CallDojoBuyReinforcementsFunc();
-    }
-
-    public void OnButtonClick()
-    {
-        StartCoroutine(CallDojoBuyReinforcementsCoroutine());
-    }
 
     private void OnDisable()
     {
@@ -129,7 +156,10 @@ public class BuyReinforcementsPageBehaviour : Menu
     {
         CalcNewTotal();
         StartCoroutine(ChangeTextPeriodically());
+        StartCoroutine(UpdatePrice());
     }
+
+
 }
 
 

@@ -28,6 +28,8 @@ public class ChangePriceTooltip : MonoBehaviour
             account = DojoEntitiesDataManager.currentAccount,
             addressOfSystem = type == 1 ? DojoEntitiesDataManager.worldManager.chainConfig.outpostActionsAddress : DojoEntitiesDataManager.worldManager.chainConfig.tradeReinforcementActionsAddress,
             functionName = "modify_price",
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
 
         if (type == 1)

@@ -93,7 +93,13 @@ public class OutpostDataProfilePageListElement : MonoBehaviour
             outpostId = outpostData.position 
         };
 
-        DojoCallsManager.EndpointDojoCallStruct endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.outpostActionsAddress, functionName = "reinforce" };
+        DojoCallsManager.EndpointDojoCallStruct endpoint = new DojoCallsManager.EndpointDojoCallStruct { 
+            account = DojoEntitiesDataManager.currentAccount, 
+            addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.outpostActionsAddress, 
+            functionName = "reinforce",
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
+        };
 
         var transaction = await DojoCallsManager.ReinforceOutpostDojoCall(callStructure, endpoint);
     }

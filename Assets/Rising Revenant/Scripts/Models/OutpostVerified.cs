@@ -1,6 +1,7 @@
 using Dojo; 
 using Dojo.Starknet; 
-using Dojo.Torii; 
+using Dojo.Torii;
+using UnityEngine;
 
 public class OutpostVerified : ModelInstance
 {
@@ -22,7 +23,17 @@ public class OutpostVerified : ModelInstance
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("checking outpost verified");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
+        {
+            Debug.Log($"OutpostVerified was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"OutpostVerified was spared {gameId.Hex()}");
+        }
     }
 
     // Update is called once per frame
@@ -30,7 +41,6 @@ public class OutpostVerified : ModelInstance
     {
         
     }
-
 
     public override void OnUpdate(Model model)
     {

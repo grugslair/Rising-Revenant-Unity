@@ -11,14 +11,13 @@ public class WorldManagerDataEditor : Editor
 
         WorldManagerData data = (WorldManagerData)target;
 
-      
         if (GUI.changed) // Check if any inspector value has changed
         {
             switch (data.environmentType) // Check the environment type
             {
                 case EnvironmentType.LOCAL:
 
-                    data.toriiUrl = "http://localhost:8080/graphql";
+                    data.toriiUrl = "http://localhost:8080";
                     data.rpcUrl = "http://localhost:5050";
 
                     data.worldAddress = "0x7a4adc3dc01142811d2db99848998828b30e8a3c3d2a3875751f427ff11ad35";
@@ -37,7 +36,7 @@ public class WorldManagerDataEditor : Editor
 
                 case EnvironmentType.TORII:
 
-                    data.toriiUrl = "https://api.cartridge.gg/x/rr/torii/graphql";
+                    data.toriiUrl = "https://api.cartridge.gg/x/rr/torii";
                     data.rpcUrl = "https://api.cartridge.gg/x/rr/katana";
 
                     data.worldAddress = "0x739075d3eab7b1463ef8e99ad59afc470dbee7a4d5682fecde6c84c0798e1e7";
@@ -55,7 +54,7 @@ public class WorldManagerDataEditor : Editor
 
                 case EnvironmentType.TESTNET:
 
-                    data.toriiUrl = "";
+                    data.toriiUrl = "https://api.cartridge.gg/x/sepoliarr/torii";
                     data.rpcUrl = "https://starknet-sepolia.public.blastapi.io/rpc/v0_6";
 
                     data.worldAddress = "0x7a4adc3dc01142811d2db99848998828b30e8a3c3d2a3875751f427ff11ad35";
@@ -74,7 +73,7 @@ public class WorldManagerDataEditor : Editor
                     break;
             }
 
-            EditorUtility.SetDirty(data); // Mark the object as dirty so Unity knows it has changed
+            EditorUtility.SetDirty(data); 
         }
     }
 }

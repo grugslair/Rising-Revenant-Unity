@@ -2,6 +2,7 @@ using Dojo;
 using Dojo.Starknet; 
 using Dojo.Torii;
 using System;
+using UnityEngine;
 
 public class GamePhases : ModelInstance
 {
@@ -22,7 +23,21 @@ public class GamePhases : ModelInstance
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("checking game phases");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
+        {
+            Debug.Log($"GamePhases was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"GamePhases was spared {gameId.Hex()}");
+        }
+
+        Debug.Log($"status: {status}");
+        Debug.Log($"preparationBlockNumber: {preparationBlockNumber}");
+        Debug.Log($"playBlockNumber: {playBlockNumber}");
     }
 
     // Update is called once per frame

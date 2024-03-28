@@ -2,6 +2,7 @@ using Dojo;
 using Dojo.Starknet; 
 using Dojo.Torii;
 using System;
+using UnityEngine;
 
 public class OutpostSetup : ModelInstance
 {
@@ -17,7 +18,17 @@ public class OutpostSetup : ModelInstance
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("checking outpost setup");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
+        {
+            Debug.Log($"OutpostSetup was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"OutpostSetup was spared {gameId.Hex()}");
+        }
     }
 
     // Update is called once per frame

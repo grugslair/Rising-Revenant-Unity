@@ -1,6 +1,7 @@
 using Dojo;
 using Dojo.Starknet;
 using Dojo.Torii;
+using UnityEngine;
 
 public class GameTradeTax : ModelInstance
 {
@@ -14,7 +15,17 @@ public class GameTradeTax : ModelInstance
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log($"checking GameTradeTax ");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
+        {
+            Debug.Log($"GameTradeTax was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"GameTradeTax was spared {gameId.Hex()}");
+        }
     }
 
     // Update is called once per frame
@@ -22,7 +33,6 @@ public class GameTradeTax : ModelInstance
     {
         
     }
-
 
     public override void OnUpdate(Model model)
     {

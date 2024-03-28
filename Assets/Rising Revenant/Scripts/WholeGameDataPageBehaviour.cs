@@ -160,7 +160,7 @@ public class WholeGameDataPageBehaviour : Menu
 
         var query = RisingRevenantUtils.ReplaceWords(tradesGraphqlQueryStructure, dict);
 
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
         var tradesRequest = new Request
         {
             Query = query,
@@ -251,7 +251,7 @@ public class WholeGameDataPageBehaviour : Menu
         var query = RisingRevenantUtils.ReplaceWords(tradesGraphqlQueryStructure, dict);
 
         Debug.Log(query);
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
         var tradesRequest = new Request
         {
             Query = query,

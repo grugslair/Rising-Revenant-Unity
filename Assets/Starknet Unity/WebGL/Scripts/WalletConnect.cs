@@ -6,7 +6,8 @@ using UnityEngine;
 public class WalletConnect : MonoBehaviour
 {
     public static string playerAddress;
-    public static event Action SuccessfulConnection; 
+
+    [SerializeField] LoginScreenBehaviour loginScreenBehaviour;
 
     private IEnumerator ConnectWalletAsync(Action connectWalletFunction)
     {
@@ -18,12 +19,11 @@ public class WalletConnect : MonoBehaviour
 
         playerAddress = JSInteropManager.GetAccount();
         PlayerPrefs.SetString("playerAddress", playerAddress);
-
-        DojoEntitiesDataManager.currentAccount = new Account(null, null, new FieldElement(playerAddress));
+        Debug.Log("Connected to wallet: " + playerAddress);
+        DojoEntitiesDataManager.currentAccount = new Account(new JsonRpcClient(DojoEntitiesDataManager.worldManager.chainConfig.rpcUrl), new SigningKey(""), new FieldElement(playerAddress));
         Debug.Log("Connected to wallet: " + playerAddress);
 
-        // Invoke the SuccessfulConnection event
-        SuccessfulConnection?.Invoke();
+        loginScreenBehaviour.OnSuccesfullConnection();
     }
 
     public void OnButtonConnectWalletArgentX()

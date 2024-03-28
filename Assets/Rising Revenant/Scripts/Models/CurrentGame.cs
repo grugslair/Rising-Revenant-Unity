@@ -21,7 +21,6 @@ public class CurrentGame : ModelInstance
         
     }
 
-
     public override void OnUpdate(Model model)
     {
         base.OnUpdate(model);

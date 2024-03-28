@@ -33,20 +33,32 @@ public class CurrentWorldEvent : ModelInstance
 
     void Start()
     {
-        DojoEntitiesDataManager.currentWorldEvent = this;
+        Debug.Log("checking current world event");
 
-        if(UiEntitiesReferenceManager.worldEventManager != null)
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
         {
-            if (UiEntitiesReferenceManager.worldEventManager.transform.gameObject.activeSelf == false)
-            {
-                UiEntitiesReferenceManager.worldEventManager.transform.gameObject.SetActive(true);
-            }
-
-            UiEntitiesReferenceManager.worldEventManager.LoadLastWorldEventData(this);
+            Debug.Log($"CurrentWorldEvent was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
         }
         else
         {
-            Debug.Log(UiEntitiesReferenceManager.worldEventManager);
+            Debug.Log($"CurrentWorldEvent was spared {gameId.Hex()}");
+
+            DojoEntitiesDataManager.currentWorldEvent = this;
+
+            if (UiEntitiesReferenceManager.worldEventManager != null)
+            {
+                if (UiEntitiesReferenceManager.worldEventManager.transform.gameObject.activeSelf == false)
+                {
+                    UiEntitiesReferenceManager.worldEventManager.transform.gameObject.SetActive(true);
+                }
+
+                UiEntitiesReferenceManager.worldEventManager.LoadLastWorldEventData(this);
+            }
+            else
+            {
+                Debug.Log(UiEntitiesReferenceManager.worldEventManager);
+            }
         }
     }
 
@@ -63,6 +75,5 @@ public class CurrentWorldEvent : ModelInstance
 
             UiEntitiesReferenceManager.worldEventManager.LoadLastWorldEventData(this);
         }
-
     }
 }

@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 public class TopBarUiElement : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class TopBarUiElement : MonoBehaviour
 
     void OnEnable()
     {
-        if (dojoEnts.burnerManager.CurrentBurner != null)
+        if (DojoEntitiesDataManager.currentAccount.Address.Hex() != "")
         {
             notLoggedIn.gameObject.SetActive(false);
             loggedIn.gameObject.SetActive(true);
@@ -71,17 +72,19 @@ public class TopBarUiElement : MonoBehaviour
     }
 
     //gamepot
-    public async void ChangeInGameData()
+    public void ChangeInGameData()
     {
         if (DojoEntitiesDataManager.gamePot != null)
         {
-            var gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-            jackpotText.text = $"Jackpot: {RisingRevenantUtils.BigintToFloat(gamePot[1], 3)}";
+            //var gamePot = await RisingRevenantUtils.gamePotInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
+            //jackpotText.text = $"Jackpot: {RisingRevenantUtils.BigintToFloat(gamePot[1], 3)}";
+
+            jackpotText.text = $"Jackpot: { RisingRevenantUtils.BigIntToFloat(DojoEntitiesDataManager.gamePot.winnersPot.low,5)}";
         }
     }
 
     //devWallet
-    public async void ChangeInPlayerSpecificData()
+    public void ChangeInPlayerSpecificData()
     {
         if (DojoEntitiesDataManager.currentDevWallet == null)
         {
@@ -89,15 +92,18 @@ public class TopBarUiElement : MonoBehaviour
         }
         else
         {
-            var devWallet = await RisingRevenantUtils.devWalletInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() , DojoEntitiesDataManager.currentAccount.Address.Hex());
-            walletAmount.text = RisingRevenantUtils.BigintToFloat(devWallet,3).ToString();
+            //var devWallet = await RisingRevenantUtils.devWalletInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() , DojoEntitiesDataManager.currentAccount.Address.Hex());
+            //walletAmount.text = RisingRevenantUtils.BigintToFloat(devWallet,3).ToString();
+
+
+            jackpotText.text = $"Jackpot: {RisingRevenantUtils.BigIntToFloat(DojoEntitiesDataManager.currentDevWallet.balance.low, 5)}";
         }
     }
 
 
     //PlayerContribution
     //GameState
-    public async void CalcContrib()
+    public void CalcContrib()
     {
         if (DojoEntitiesDataManager.playerContrib != null && DojoEntitiesDataManager.gameEntCounter != null)
         {
@@ -108,13 +114,17 @@ public class TopBarUiElement : MonoBehaviour
                     contribText.transform.gameObject.SetActive(true);
                 }
 
-                var playerContrib = await RisingRevenantUtils.playerContributionInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString(), DojoEntitiesDataManager.currentAccount.Address.Hex());
-                var totContrib = await RisingRevenantUtils.gameStateInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
+                //check if any of the two are 0 in case return
 
-                var perc = RisingRevenantUtils.GeneralHexToInt(playerContrib) / RisingRevenantUtils.GeneralHexToInt(totContrib) * 100;
+                if (DojoEntitiesDataManager.playerContrib.score.low == 0 || DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal.low == 0)
+                {
+                    return;
+                }
+
+                var perc = RisingRevenantUtils.BigIntToFloat(DojoEntitiesDataManager.playerContrib.score.low, 5) / RisingRevenantUtils.BigIntToFloat(DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal.low, 5) * 100;
 
                 contribText.text = $"Contribution: {perc}%";
-                contribTooltip.message = $"Total game contribution: {RisingRevenantUtils.GeneralHexToInt(totContrib)}\nYour contribution: {RisingRevenantUtils.GeneralHexToInt(playerContrib)}";
+                contribTooltip.message = $"Total game contribution: {RisingRevenantUtils.BigIntToFloat(DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal.low, 5)}\nYour contribution: {RisingRevenantUtils.BigIntToFloat(DojoEntitiesDataManager.gameEntCounter.contributionScoreTotal.low, 5)}";
             }
             else
             {

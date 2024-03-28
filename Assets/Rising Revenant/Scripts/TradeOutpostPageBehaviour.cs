@@ -13,6 +13,7 @@ public class TradeOutpostPageBehaviour : Menu
     public GameObject[] sortingAlgos;
     public GameObject tradesParent;
     public GameObject reinfTradePrefab;
+    [SerializeField] GameObject sellButton;
     private int currentSortingMethod;
 
     [Space(30)]
@@ -136,19 +137,6 @@ public class TradeOutpostPageBehaviour : Menu
         }"
     };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     private string lastSavedGraphqlQueryStructure = @"
       query {
         outpostTradeModels(where: {status : 1, game_id: ""GAME_ID""}) {
@@ -189,14 +177,21 @@ public class TradeOutpostPageBehaviour : Menu
     {
         lastSavedGraphqlQueryStructure = RisingRevenantUtils.ReplaceWords(lastSavedGraphqlQueryStructure, new Dictionary<string, string> { { "GAME_ID", RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString() } });
         StartCoroutine(CallRefreshTradesPeriodically());
+
+        if (DojoEntitiesDataManager.currentDevWallet != null)
+        {
+            sellButton.SetActive(true);
+        }
+        else
+        {
+            sellButton.SetActive(false);
+        }
     }
 
     private void OnDisable()
     {
         StopCoroutine(CallRefreshTradesPeriodically());
     }
-
-
 
     public void HideYourTrades()
     {
@@ -321,7 +316,7 @@ public class TradeOutpostPageBehaviour : Menu
         }
 
 
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
         var tradesRequest = new Request
         {
             Query = lastSavedGraphqlQueryStructure,

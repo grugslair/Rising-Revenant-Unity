@@ -1,6 +1,7 @@
 using Dojo; 
 using Dojo.Starknet; 
-using Dojo.Torii; 
+using Dojo.Torii;
+using UnityEngine;
 
 public class GamePotConsts : ModelInstance
 {
@@ -24,7 +25,17 @@ public class GamePotConsts : ModelInstance
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("checking GamePotConsts ");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
+        {
+            Debug.Log($"GamePotConsts was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"GamePotConsts was spared {gameId.Hex()}");
+        }
     }
 
     // Update is called once per frame

@@ -34,7 +34,17 @@ public class ReinforcementTrade : ModelInstance
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("Checking ReinforcementTrade");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
+        {
+            Debug.Log($"ReinforcementTrade was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"ReinforcementTrade was spared {gameId.Hex()}");
+        }
     }
 
     // Update is called once per frame

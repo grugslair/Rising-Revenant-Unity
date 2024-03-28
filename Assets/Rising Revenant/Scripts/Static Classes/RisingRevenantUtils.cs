@@ -277,6 +277,12 @@ public static class RisingRevenantUtils
         return ((int)x, (int)y);
     }
 
+    public static decimal BigIntToFloat(BigInteger bigInt, int decimalPlaces)
+    {
+        decimal result = (decimal)bigInt / (decimal)Math.Pow(10, 18);
+        return Math.Round(result, decimalPlaces, MidpointRounding.AwayFromZero);
+    }
+
     public async static Task<bool> IsOutpostOnSale(Vec2 outpostId, int gameId)
     {
 
@@ -313,7 +319,7 @@ public static class RisingRevenantUtils
           }";
 
         //var query = RisingRevenantUtils.ReplaceWords(lastSavedGraphqlQueryStructure, dict);
-        //var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        //var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
 
         var client = new GraphQLClient("https://api.cartridge.gg/x/rr/torii/graphql");
         var tradesRequest = new Request
@@ -419,7 +425,7 @@ public static class RisingRevenantUtils
 
         //var query = RisingRevenantUtils.ReplaceWords(lastSavedGraphqlQueryStructure, dict);
 
-        //var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        //var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
         var client = new GraphQLClient("https://api.cartridge.gg/x/rr/torii/graphql");
         var tradesRequest = new Request
         {
@@ -485,470 +491,470 @@ public static class RisingRevenantUtils
         return false;
     }
 
-    public static double BigintToFloat(string hexString, int decimalPlaces = -1)
-    {
-        if (string.IsNullOrWhiteSpace(hexString))
-            throw new ArgumentException("Input cannot be null or empty.", nameof(hexString));
+    //public static double BigintToFloatOld(string hexString, int decimalPlaces = -1)
+    //{
+    //    if (string.IsNullOrWhiteSpace(hexString))
+    //        throw new ArgumentException("Input cannot be null or empty.", nameof(hexString));
 
-        hexString = hexString.StartsWith("0x", StringComparison.OrdinalIgnoreCase) ? hexString[2..] : hexString;
+    //    hexString = hexString.StartsWith("0x", StringComparison.OrdinalIgnoreCase) ? hexString[2..] : hexString;
 
-        BigInteger totalValue = BigInteger.Parse("0" + hexString, System.Globalization.NumberStyles.AllowHexSpecifier);
+    //    BigInteger totalValue = BigInteger.Parse("0" + hexString, System.Globalization.NumberStyles.AllowHexSpecifier);
 
-        double result = (double)totalValue / Math.Pow(10, 18); 
+    //    double result = (double)totalValue / Math.Pow(10, 18); 
 
-        if (decimalPlaces == -1 || decimalPlaces >= 7)
-        {
-           return Math.Round(result, 7);
-        }
-        else
-        {
-           return Math.Round(result, decimalPlaces);
-        }
-    }
-
-
-
-    public static async Task<string> playerContributionInfo(string gameId, string playerId)
-    {
-        string queryForPlayerContribution = $@"
-        query {{
-            playerContributionModels(where: {{ game_id: ""{gameId}"", player_id: ""{playerId}""}}) {{
-                edges {{
-                    node {{
-                        entity {{
-                            keys
-                            models {{
-                                __typename
-                                ... on PlayerContribution {{
-                                    player_id
-                                    game_id
-                                    score
-                                }}
-                            }}
-                        }}
-                    }}
-                }}
-            }}
-        }}";
-
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
-        var request = new Request
-        {
-            Query = queryForPlayerContribution,
-        };
-
-        var responseType = new
-        {
-            playerContributionModels = new
-            {
-                edges = new[]
-                {
-                new
-                {
-                    node = new
-                    {
-                        entity = new
-                        {
-                            keys = new string[] {},
-                            models = new[]
-                            {
-                                new
-                                {
-                                    __typename = "",
-                                    player_id = "",
-                                    game_id = "",
-                                    score = ""
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            }
-        };
-
-        try
-        {
-            var response = await client.Send(() => responseType, request);
-
-            if (response.Data != null && response.Data.playerContributionModels != null)
-            {
-                foreach (var edge in response.Data.playerContributionModels.edges)
-                {
-                    foreach (var model in edge.node.entity.models)
-                    {
-                        if (model.__typename == "PlayerContribution")
-                        {
-                            return model.score;
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Query failed for PlayerContribution: {ex.Message}");
-        }
-
-        return "0";
-    }
-
-    public static async Task<string> outpostMarketInfo(string gameId)
-    {
-        string queryForOutpostMarket = $@"
-        query {{
-            outpostMarketModels(where: {{ game_id: ""{gameId}"" }}) {{
-                edges {{
-                    node {{
-                        entity {{
-                            keys
-                            models {{
-                                __typename
-                                ... on OutpostMarket {{
-                                    game_id
-                                    price
-                                }}
-                            }}
-                        }}
-                    }}
-                }}
-            }}
-        }}";
-
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
-        var request = new Request
-        {
-            Query = queryForOutpostMarket,
-        };
-
-        var responseType = new
-        {
-            outpostMarketModels = new
-            {
-                edges = new[]
-                {
-                new
-                {
-                    node = new
-                    {
-                        entity = new
-                        {
-                            keys = new string[] {},
-                            models = new[]
-                            {
-                                new
-                                {
-                                    __typename = "",
-                                    game_id = "",
-                                    price = ""
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            }
-        };
-
-        try
-        {
-            var response = await client.Send(() => responseType, request);
-
-            if (response.Data != null && response.Data.outpostMarketModels != null)
-            {
-                foreach (var edge in response.Data.outpostMarketModels.edges)
-                {
-                    foreach (var model in edge.node.entity.models)
-                    {
-                        if (model.__typename == "OutpostMarket")
-                        {
-                            return model.price;
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Query failed for OutpostMarket: {ex.Message}");
-        }
-
-        return "0";
-    }
-
-    public static async Task<string> gameStateInfo(string gameId)
-    {
-        string queryForGameState = $@"
-        query {{
-            gameStateModels(where: {{ game_id: ""{gameId}"" }}) {{
-                edges {{
-                    node {{
-                        entity {{
-                            keys
-                            models {{
-                                __typename
-                                ... on GameState {{
-                                    game_id
-                                    contribution_score_total
-                                }}
-                            }}
-                        }}
-                    }}
-                }}
-            }}
-        }}";
-
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
-        var request = new Request
-        {
-            Query = queryForGameState,
-        };
-
-        var responseType = new
-        {
-            gameStateModels = new
-            {
-                edges = new[]
-                {
-                new
-                {
-                    node = new
-                    {
-                        entity = new
-                        {
-                            keys = new string[] {},
-                            models = new[]
-                            {
-                                new
-                                {
-                                    __typename = "",
-                                    game_id = "",
-                                    contribution_score_total = ""
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            }
-        };
-
-        try
-        {
-            var response = await client.Send(() => responseType, request);
-
-            if (response.Data != null && response.Data.gameStateModels != null)
-            {
-                foreach (var edge in response.Data.gameStateModels.edges)
-                {
-                    foreach (var model in edge.node.entity.models)
-                    {
-                        if (model.__typename == "GameState")
-                        {
-                            return model.contribution_score_total;
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Query failed for GameState: {ex.Message}");
-        }
-
-        return "0";
-    }
-
-    public static async Task<string> devWalletInfo(string gameId, string ownerWallet)
-    {
-        string queryForDevWallet = $@"
-        query {{
-            devWalletModels(where: {{ game_id: ""{gameId}"", owner: ""{ownerWallet}""}}) {{
-                edges {{
-                    node {{
-                        entity {{
-                            keys
-                            models {{
-                                __typename
-                                ... on DevWallet {{
-                                    owner
-                                    game_id
-                                    balance
-                                }}
-                            }}
-                        }}
-                    }}
-                }}
-            }}
-        }}";
-
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
-        var request = new Request
-        {
-            Query = queryForDevWallet,
-        };
-
-        var responseType = new
-        {
-            devWalletModels = new
-            {
-                edges = new[]
-                {
-                new
-                {
-                    node = new
-                    {
-                        entity = new
-                        {
-                            keys = new string[] {},
-                            models = new[]
-                            {
-                                new
-                                {
-                                    __typename = "",
-                                    owner = "",
-                                    game_id = "",
-                                    balance = ""
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            }
-        };
-
-        try
-        {
-            var response = await client.Send(() => responseType, request);
-
-            if (response.Data.devWalletModels.edges.Length == 0)
-            {
-                Debug.Log("No matching dev wallet found");
-                return null;
-            }
-
-            if (response.Data != null && response.Data.devWalletModels != null)
-            {
-                foreach (var edge in response.Data.devWalletModels.edges)
-                {
-                    foreach (var model in edge.node.entity.models)
-                    {
-                        if (model.__typename == "DevWallet")
-                        {
-                            return model.balance;
-                        }
-                    }
-                }
-            }
-            Debug.LogError("Failed to parse data for DevWallet");
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Query failed for DevWallet: {ex.Message}");
-        }
-
-        return "";
-    }
+    //    if (decimalPlaces == -1 || decimalPlaces >= 7)
+    //    {
+    //       return Math.Round(result, 7);
+    //    }
+    //    else
+    //    {
+    //       return Math.Round(result, decimalPlaces);
+    //    }
+    //}
 
 
-    /// <summary>
-    /// total pot -- winners pot -- ltr pot -- dev pot
-    /// </summary>
-    /// <param name="gameId"></param>
-    /// <returns></returns>
-    public static async Task<string[]> gamePotInfo(string gameId)
-    {
-        string queryForGamePot = $@"
-        query {{
-            gamePotModels(where: {{ game_id: ""{gameId}"" }}) {{
-                edges {{
-                    node {{
-                        entity {{
-                            keys
-                            models {{
-                                __typename
-                                ... on GamePot {{
-                                    game_id
-                                    total_pot
-                                    winners_pot
-                                    ltr_pot
-                                    dev_pot
-                                }}
-                            }}
-                        }}
-                    }}
-                }}
-            }}
-        }}";
 
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
-        var request = new Request
-        {
-            Query = queryForGamePot,
-        };
+    //public static async Task<string> playerContributionInfo(string gameId, string playerId)
+    //{
+    //    string queryForPlayerContribution = $@"
+    //    query {{
+    //        playerContributionModels(where: {{ game_id: ""{gameId}"", player_id: ""{playerId}""}}) {{
+    //            edges {{
+    //                node {{
+    //                    entity {{
+    //                        keys
+    //                        models {{
+    //                            __typename
+    //                            ... on PlayerContribution {{
+    //                                player_id
+    //                                game_id
+    //                                score
+    //                            }}
+    //                        }}
+    //                    }}
+    //                }}
+    //            }}
+    //        }}
+    //    }}";
 
-        var responseType = new
-        {
-            gamePotModels = new
-            {
-                edges = new[]
-                {
-                new
-                {
-                    node = new
-                    {
-                        entity = new
-                        {
-                            keys = new string[] {},
-                            models = new[]
-                            {
-                                new
-                                {
-                                    __typename = "",
-                                    game_id = "",
-                                    total_pot = "",
-                                    winners_pot = "",
-                                    ltr_pot = "",
-                                    dev_pot = ""
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            }
-        };
+    //    var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
+    //    var request = new Request
+    //    {
+    //        Query = queryForPlayerContribution,
+    //    };
 
-        try
-        {
-            var response = await client.Send(() => responseType, request);
+    //    var responseType = new
+    //    {
+    //        playerContributionModels = new
+    //        {
+    //            edges = new[]
+    //            {
+    //            new
+    //            {
+    //                node = new
+    //                {
+    //                    entity = new
+    //                    {
+    //                        keys = new string[] {},
+    //                        models = new[]
+    //                        {
+    //                            new
+    //                            {
+    //                                __typename = "",
+    //                                player_id = "",
+    //                                game_id = "",
+    //                                score = ""
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        }
+    //    };
 
-            if (response.Data != null && response.Data.gamePotModels != null)
-            {
-                foreach (var edge in response.Data.gamePotModels.edges)
-                {
-                    foreach (var model in edge.node.entity.models)
-                    {
-                        if (model.__typename == "GamePot")
-                        {
-                            return new string[] { 
-                                model.total_pot, 
-                                model.winners_pot, 
-                                model.ltr_pot, 
-                                model.dev_pot };
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Query failed for GamePot: {ex.Message}");
-        }
+    //    try
+    //    {
+    //        var response = await client.Send(() => responseType, request);
 
-        return new string[] { "", "", "", "" };
-    }
+    //        if (response.Data != null && response.Data.playerContributionModels != null)
+    //        {
+    //            foreach (var edge in response.Data.playerContributionModels.edges)
+    //            {
+    //                foreach (var model in edge.node.entity.models)
+    //                {
+    //                    if (model.__typename == "PlayerContribution")
+    //                    {
+    //                        return model.score;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Debug.LogError($"Query failed for PlayerContribution: {ex.Message}");
+    //    }
+
+    //    return "0";
+    //}
+
+    //public static async Task<string> outpostMarketInfo(string gameId)
+    //{
+    //    string queryForOutpostMarket = $@"
+    //    query {{
+    //        outpostMarketModels(where: {{ game_id: ""{gameId}"" }}) {{
+    //            edges {{
+    //                node {{
+    //                    entity {{
+    //                        keys
+    //                        models {{
+    //                            __typename
+    //                            ... on OutpostMarket {{
+    //                                game_id
+    //                                price
+    //                            }}
+    //                        }}
+    //                    }}
+    //                }}
+    //            }}
+    //        }}
+    //    }}";
+
+    //    var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
+    //    var request = new Request
+    //    {
+    //        Query = queryForOutpostMarket,
+    //    };
+
+    //    var responseType = new
+    //    {
+    //        outpostMarketModels = new
+    //        {
+    //            edges = new[]
+    //            {
+    //            new
+    //            {
+    //                node = new
+    //                {
+    //                    entity = new
+    //                    {
+    //                        keys = new string[] {},
+    //                        models = new[]
+    //                        {
+    //                            new
+    //                            {
+    //                                __typename = "",
+    //                                game_id = "",
+    //                                price = ""
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        }
+    //    };
+
+    //    try
+    //    {
+    //        var response = await client.Send(() => responseType, request);
+
+    //        if (response.Data != null && response.Data.outpostMarketModels != null)
+    //        {
+    //            foreach (var edge in response.Data.outpostMarketModels.edges)
+    //            {
+    //                foreach (var model in edge.node.entity.models)
+    //                {
+    //                    if (model.__typename == "OutpostMarket")
+    //                    {
+    //                        return model.price;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Debug.LogError($"Query failed for OutpostMarket: {ex.Message}");
+    //    }
+
+    //    return "0";
+    //}
+
+    //public static async Task<string> gameStateInfo(string gameId)
+    //{
+    //    string queryForGameState = $@"
+    //    query {{
+    //        gameStateModels(where: {{ game_id: ""{gameId}"" }}) {{
+    //            edges {{
+    //                node {{
+    //                    entity {{
+    //                        keys
+    //                        models {{
+    //                            __typename
+    //                            ... on GameState {{
+    //                                game_id
+    //                                contribution_score_total
+    //                            }}
+    //                        }}
+    //                    }}
+    //                }}
+    //            }}
+    //        }}
+    //    }}";
+
+    //    var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
+    //    var request = new Request
+    //    {
+    //        Query = queryForGameState,
+    //    };
+
+    //    var responseType = new
+    //    {
+    //        gameStateModels = new
+    //        {
+    //            edges = new[]
+    //            {
+    //            new
+    //            {
+    //                node = new
+    //                {
+    //                    entity = new
+    //                    {
+    //                        keys = new string[] {},
+    //                        models = new[]
+    //                        {
+    //                            new
+    //                            {
+    //                                __typename = "",
+    //                                game_id = "",
+    //                                contribution_score_total = ""
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        }
+    //    };
+
+    //    try
+    //    {
+    //        var response = await client.Send(() => responseType, request);
+
+    //        if (response.Data != null && response.Data.gameStateModels != null)
+    //        {
+    //            foreach (var edge in response.Data.gameStateModels.edges)
+    //            {
+    //                foreach (var model in edge.node.entity.models)
+    //                {
+    //                    if (model.__typename == "GameState")
+    //                    {
+    //                        return model.contribution_score_total;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Debug.LogError($"Query failed for GameState: {ex.Message}");
+    //    }
+
+    //    return "0";
+    //}
+
+    //public static async Task<string> devWalletInfo(string gameId, string ownerWallet)
+    //{
+    //    string queryForDevWallet = $@"
+    //    query {{
+    //        devWalletModels(where: {{ game_id: ""{gameId}"", owner: ""{ownerWallet}""}}) {{
+    //            edges {{
+    //                node {{
+    //                    entity {{
+    //                        keys
+    //                        models {{
+    //                            __typename
+    //                            ... on DevWallet {{
+    //                                owner
+    //                                game_id
+    //                                balance
+    //                            }}
+    //                        }}
+    //                    }}
+    //                }}
+    //            }}
+    //        }}
+    //    }}";
+
+    //    var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
+    //    var request = new Request
+    //    {
+    //        Query = queryForDevWallet,
+    //    };
+
+    //    var responseType = new
+    //    {
+    //        devWalletModels = new
+    //        {
+    //            edges = new[]
+    //            {
+    //            new
+    //            {
+    //                node = new
+    //                {
+    //                    entity = new
+    //                    {
+    //                        keys = new string[] {},
+    //                        models = new[]
+    //                        {
+    //                            new
+    //                            {
+    //                                __typename = "",
+    //                                owner = "",
+    //                                game_id = "",
+    //                                balance = ""
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        }
+    //    };
+
+    //    try
+    //    {
+    //        var response = await client.Send(() => responseType, request);
+
+    //        if (response.Data.devWalletModels.edges.Length == 0)
+    //        {
+    //            Debug.Log("No matching dev wallet found");
+    //            return null;
+    //        }
+
+    //        if (response.Data != null && response.Data.devWalletModels != null)
+    //        {
+    //            foreach (var edge in response.Data.devWalletModels.edges)
+    //            {
+    //                foreach (var model in edge.node.entity.models)
+    //                {
+    //                    if (model.__typename == "DevWallet")
+    //                    {
+    //                        return model.balance;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        Debug.LogError("Failed to parse data for DevWallet");
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Debug.LogError($"Query failed for DevWallet: {ex.Message}");
+    //    }
+
+    //    return "";
+    //}
+
+
+    ///// <summary>
+    ///// total pot -- winners pot -- ltr pot -- dev pot
+    ///// </summary>
+    ///// <param name="gameId"></param>
+    ///// <returns></returns>
+    //public static async Task<string[]> gamePotInfo(string gameId)
+    //{
+    //    string queryForGamePot = $@"
+    //    query {{
+    //        gamePotModels(where: {{ game_id: ""{gameId}"" }}) {{
+    //            edges {{
+    //                node {{
+    //                    entity {{
+    //                        keys
+    //                        models {{
+    //                            __typename
+    //                            ... on GamePot {{
+    //                                game_id
+    //                                total_pot
+    //                                winners_pot
+    //                                ltr_pot
+    //                                dev_pot
+    //                            }}
+    //                        }}
+    //                    }}
+    //                }}
+    //            }}
+    //        }}
+    //    }}";
+
+    //    var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
+    //    var request = new Request
+    //    {
+    //        Query = queryForGamePot,
+    //    };
+
+    //    var responseType = new
+    //    {
+    //        gamePotModels = new
+    //        {
+    //            edges = new[]
+    //            {
+    //            new
+    //            {
+    //                node = new
+    //                {
+    //                    entity = new
+    //                    {
+    //                        keys = new string[] {},
+    //                        models = new[]
+    //                        {
+    //                            new
+    //                            {
+    //                                __typename = "",
+    //                                game_id = "",
+    //                                total_pot = "",
+    //                                winners_pot = "",
+    //                                ltr_pot = "",
+    //                                dev_pot = ""
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        }
+    //    };
+
+    //    try
+    //    {
+    //        var response = await client.Send(() => responseType, request);
+
+    //        if (response.Data != null && response.Data.gamePotModels != null)
+    //        {
+    //            foreach (var edge in response.Data.gamePotModels.edges)
+    //            {
+    //                foreach (var model in edge.node.entity.models)
+    //                {
+    //                    if (model.__typename == "GamePot")
+    //                    {
+    //                        return new string[] { 
+    //                            model.total_pot, 
+    //                            model.winners_pot, 
+    //                            model.ltr_pot, 
+    //                            model.dev_pot };
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Debug.LogError($"Query failed for GamePot: {ex.Message}");
+    //    }
+
+    //    return new string[] { "", "", "", "" };
+    //}
 
     public static async Task<HashSet<Vec2>> GetOutpostVerifiedInfo(string gameId, int number)
     {
@@ -977,7 +983,7 @@ public static class RisingRevenantUtils
             }}
         }}";
 
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
         var request = new Request
         {
             Query = query,
@@ -1078,7 +1084,7 @@ public static class RisingRevenantUtils
 
         Debug.Log(query);
 
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
         var request = new Request
         {
             Query = query,
@@ -1146,4 +1152,102 @@ public static class RisingRevenantUtils
 
         return listOfCurrentActiveOutpostTrades;
     }
+
+
+
+    public static async Task<int> FetchLatestGameId()
+    {
+        string queryForLastActiveGame = @"
+        query {
+            currentGameModels   (first: 1)
+            {
+              edges {
+                node {
+                  entity {
+                    keys
+                    models {
+                      ... on CurrentGame {
+                        __typename
+                        game_id
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }";
+
+        var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
+        var tradesRequest = new Request
+        {
+            Query = queryForLastActiveGame,
+        };
+
+        var responseType = new
+        {
+            currentGameModels = new
+            {
+                edges = new[]
+                {
+                    new
+                    {
+                        node = new
+                        {
+                            entity = new
+                            {
+                                keys = new[]
+                                {
+                                    ""
+                                },
+                                models = new[]
+                                {
+                                    new
+                                    {
+                                        __typename = "",
+                                        game_id = ""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        try
+        {
+            var response = await client.Send(() => responseType, tradesRequest);
+
+            if (response.Data.currentGameModels.edges.Length == 0)
+            {
+                Debug.Log("no game was ever created");
+                return -1;
+            }
+
+            if (response.Data != null && response.Data.currentGameModels != null)
+            {
+                for (int i = 0; i < response.Data.currentGameModels.edges.Length; i++)
+                {
+                    var edge = response.Data.currentGameModels.edges[i];
+
+                    for (int x = 0; x < edge.node.entity.models.Length; x++)
+                    {
+                        if (edge.node.entity.models[x].__typename == "CurrentGame")
+                        {
+                            Debug.Log($"latest game id is {edge.node.entity.models[x].game_id}");
+                            return RisingRevenantUtils.GeneralHexToInt(edge.node.entity.models[x].game_id);
+                        }
+                    }
+                }
+            }
+            Debug.LogError($"Failed to parse data for status");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Query failed for status: {ex.Message}");
+        }
+
+        return 0;
+    }
+
 }

@@ -69,15 +69,14 @@ public class BuyRevenantPageBehaviour : Menu
         }
     }
 
-    public async void CalcNewTotal()
+    public void CalcNewTotal()
     {
-        var value = await RisingRevenantUtils.outpostMarketInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).ToString());
-        confirmBuyText.text = "Summon (Tot: " + (RisingRevenantUtils.BigintToFloat(value,3) * counterUiElement.currentValue) + " $LORDS)";
+        //var value = await RisingRevenantUtils.outpostMarketInfo(RisingRevenantUtils.FieldElementToInt(DojoEntitiesDataManager.currentGameId).Hex().ToString());
+        confirmBuyText.text = $"Summon (Tot: {RisingRevenantUtils.BigIntToFloat(DojoEntitiesDataManager.outpostMarketData.pricePerOutpost.low, 5) * counterUiElement.currentValue} $LORDS)";
     }
 
     public async void CallDojoSummonRevFunc()
     {
-        
         SoundEffectManager.Instance.PlaySoundEffect(soundEffects[0], true);
 
         var createRevenantsProps = new DojoCallsManager.SummonRevenantStruct
@@ -91,8 +90,10 @@ public class BuyRevenantPageBehaviour : Menu
             functionName = "purchase",
             addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.outpostActionsAddress,
             account = DojoEntitiesDataManager.currentAccount,
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
-
+        Debug.Log("why si  this not working");
         var transaction = await DojoCallsManager.SummonRevenantsDojoCall(createRevenantsProps, endpoint);
     }
 

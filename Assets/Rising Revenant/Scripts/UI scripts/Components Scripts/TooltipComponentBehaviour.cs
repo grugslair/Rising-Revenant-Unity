@@ -155,7 +155,9 @@ public class TooltipComponentBehaviour : MonoBehaviour
         {
             account = DojoEntitiesDataManager.currentAccount,
             addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.outpostActionsAddress,
-            functionName = "verify"
+            functionName = "verify",
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
 
         var transaction = DojoCallsManager.DamageOutpostDojoCall(structCall, endpoint);

@@ -65,7 +65,13 @@ public class TradeReinforcementsUiElement : MonoBehaviour
             if (owner)
             {
                 var revokeStruct = new DojoCallsManager.RevokeTradeReinforcementStruct { gameId = DojoEntitiesDataManager.currentGameId, tradeId = tradeId };
-                var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.tradeReinforcementActionsAddress, functionName = "revoke" };
+                var endpoint = new DojoCallsManager.EndpointDojoCallStruct {
+                    account = DojoEntitiesDataManager.currentAccount, 
+                    addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.tradeReinforcementActionsAddress, 
+                    functionName = "revoke",
+                    objectName = "Main_Canvas",
+                    callbackFunctionName = "OnChainTransactionCallbackFunction",
+                };
 
                 await DojoCallsManager.RevokeTradeReinforcementDojoCall(revokeStruct, endpoint);
                 Destroy(gameObject); 
@@ -84,7 +90,13 @@ public class TradeReinforcementsUiElement : MonoBehaviour
             if (!owner)
             {
                 var purchaseStruct = new DojoCallsManager.PurchaseTradeReinforcementStruct { gameId = DojoEntitiesDataManager.currentGameId, tradeId = tradeId };
-                var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.tradeReinforcementActionsAddress, functionName = "purchase" };
+                var endpoint = new DojoCallsManager.EndpointDojoCallStruct { 
+                    account = DojoEntitiesDataManager.currentAccount, 
+                    addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.tradeReinforcementActionsAddress,
+                    functionName = "purchase",
+                    objectName = "Main_Canvas",
+                    callbackFunctionName = "OnChainTransactionCallbackFunction",
+                };
 
                 await DojoCallsManager.PurchaseTradeReinforcementDojoCall(purchaseStruct, endpoint);
                 Destroy(gameObject);

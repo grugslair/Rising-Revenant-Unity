@@ -22,8 +22,9 @@ public class LoginScreenBehaviour : Menu
 
     public InitializeDojoEntities initializeDojoEntitiesScript;
     public UIStateManager uiStateManager;
-    [SerializeField] WalletConnect walletConnect;
     [SerializeField] WorldManager worldManager;
+
+    [SerializeField] TMP_Text enviText;
 
     //public TextMeshProUGUI loginButtonText;
     //public Button loginButton;
@@ -35,27 +36,28 @@ public class LoginScreenBehaviour : Menu
         switch (worldManager.chainConfig.environmentType)
         {
             case EnvironmentType.LOCAL:
+                enviText.text = "Environment is Local";
                 SetCorrectLoginBox(0);
-                WalletConnect.SuccessfulConnection += OnSuccesfullConnection;
                 break;
 
             case EnvironmentType.TORII:
+                enviText.text = "Environment is Torii";
                 SetCorrectLoginBox(0);
                 break;
 
             case EnvironmentType.TESTNET:
+                enviText.text = "Environment is Testnet";
                 SetCorrectLoginBox(1);
                 break;
         }
     }
 
-    private void OnSuccesfullConnection()
+    public void OnSuccesfullConnection()
     {
+        Debug.Log("Connected to wallet from login");
         SetCorrectLoginBox(2);
-
-        loginButtonObjs[2].GetComponentInChildren<TextMeshProUGUI>().text = $"Connected with {DojoEntitiesDataManager.currentAccount.Address.Hex().Substring(0,6)}";
-
-        WalletConnect.SuccessfulConnection -= OnSuccesfullConnection;
+        loginButtonObjs[2].GetComponentInChildren<TextMeshProUGUI>().text = $"Continue with {DojoEntitiesDataManager.currentAccount.Address.Hex().Substring(0,8)}";
+        DojoCallsManager.selectedWalletType = DojoCallsManager.WalletType.BRAAVOS;
     }
 
     public void SetCorrectLoginBox(int boxNum)
@@ -75,8 +77,8 @@ public class LoginScreenBehaviour : Menu
 
     public void JoinAsGuest()
     {
-        DojoEntitiesDataManager.currentAccount = new Account(null, null, null);
-        //set something to null
+        DojoEntitiesDataManager.currentAccount = new Account(new JsonRpcClient(DojoEntitiesDataManager.worldManager.chainConfig.rpcUrl), new SigningKey(""), new FieldElement(""));
+        uiStateManager.SetUiState(1);
     }
 
     public void CreateBurner()
@@ -84,13 +86,15 @@ public class LoginScreenBehaviour : Menu
         if (initializeDojoEntitiesScript.burnerManager.CurrentBurner != null)
         {
             SetCorrectLoginBox(2);
-            loginButtonObjs[2].GetComponentInChildren<TextMeshProUGUI>().text = $"Connected with {DojoEntitiesDataManager.currentAccount.Address.Hex().Substring(0, 6)}";
+            loginButtonObjs[2].GetComponentInChildren<TextMeshProUGUI>().text = $"Continue with {DojoEntitiesDataManager.currentAccount.Address.Hex().Substring(0, 6)}";
+
+            DojoCallsManager.selectedWalletType = DojoCallsManager.WalletType.BURNER;
         }
     }
 
     public void GoForwardNewUiState()
     {
-        if (initializeDojoEntitiesScript.burnerManager.CurrentBurner != null)
+        if (DojoEntitiesDataManager.currentAccount != null)
         {
             uiStateManager.SetUiState(1);
         }
@@ -117,6 +121,8 @@ public class LoginScreenBehaviour : Menu
             functionName = "create",
             addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.gameActionsAddress,
             account = DojoEntitiesDataManager.currentAccount,
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
 
         var transaction = await DojoCallsManager.CreateGameDojoCall(createGameProps, endpoint);

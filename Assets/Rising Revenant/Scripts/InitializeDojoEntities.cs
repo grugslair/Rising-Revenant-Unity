@@ -70,6 +70,8 @@ public class InitializeDojoEntities : MonoBehaviour
             functionName = "random",
             addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.eventActionsAddress,
             account = DojoEntitiesDataManager.currentAccount,
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
 
         var transaction = await DojoCallsManager.CreateEventDojoCall(createRevenantsProps, endpoint);

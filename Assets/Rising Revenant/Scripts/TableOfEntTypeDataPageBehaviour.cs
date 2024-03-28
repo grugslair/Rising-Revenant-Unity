@@ -199,7 +199,7 @@ public class TableOfEntTypeDataPageBehaviour : Menu
         Debug.Log("this is for the playerinfo");
         Debug.Log(lastSavedGraphqlQueryStructure);
 
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
         var tradesRequest = new Request
         {
             Query = lastSavedGraphqlQueryStructure,
@@ -302,7 +302,7 @@ public class TableOfEntTypeDataPageBehaviour : Menu
             { "PLAYERID", playerId },
         });
 
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
         var tradesRequest = new Request
         {
             Query = query,
@@ -373,7 +373,7 @@ public class TableOfEntTypeDataPageBehaviour : Menu
             Destroy(child.gameObject);
         }
         
-        var client = new GraphQLClient(DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl);
+        var client = new GraphQLClient($"{DojoEntitiesDataManager.worldManager.chainConfig.toriiUrl}/graphql");
         var tradesRequest = new Request
         {
             Query = lastSavedGraphqlQueryStructure,

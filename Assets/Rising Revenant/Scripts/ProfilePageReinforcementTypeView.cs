@@ -84,7 +84,9 @@ public class ProfilePageReinforcementTypeView : MonoBehaviour
         {
             account = DojoEntitiesDataManager.currentAccount,
             functionName = "set_reinforcement_type",
-            addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.outpostActionsAddress
+            addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.outpostActionsAddress,
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
 
         await DojoCallsManager.SetReinforcementTypeCall(dataStruct, endpoint);

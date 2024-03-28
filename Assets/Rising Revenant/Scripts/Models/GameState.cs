@@ -28,14 +28,30 @@ public class GameState : ModelInstance
 
     void Start()
     {
-        DojoEntitiesDataManager.gameEntCounter = this;
-        DojoEntitiesDataManager.currentGameId = gameId;
 
-        if (UiEntitiesReferenceManager.topBarUiElement != null)
+        Debug.Log("checking GameState");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
         {
-            UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
-            UiEntitiesReferenceManager.topBarUiElement.CalcContrib();
+            Debug.Log($"GameState was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
         }
+        else
+        {
+            Debug.Log($"GameState was spared {gameId.Hex()}");
+
+            DojoEntitiesDataManager.gameEntCounter = this;
+            DojoEntitiesDataManager.currentGameId = gameId;
+
+            if (UiEntitiesReferenceManager.topBarUiElement != null)
+            {
+                UiEntitiesReferenceManager.topBarUiElement.ChangeInGameEntCounter();
+                UiEntitiesReferenceManager.topBarUiElement.CalcContrib();
+            }
+        }
+
+
+
     }
 
     public override void OnUpdate(Model model)

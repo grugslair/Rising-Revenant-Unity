@@ -61,6 +61,8 @@ public class WinnerPageBehaviour : Menu
             account = DojoEntitiesDataManager.currentAccount,
             addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.paymentActionsAddress,
             functionName = "claim_confirmation_contribution",
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
 
         var transaction = await DojoCallsManager.ClaimContribEndgameRewardsDojoCall(callStruct, endpoint);
@@ -78,6 +80,8 @@ public class WinnerPageBehaviour : Menu
             account = DojoEntitiesDataManager.currentAccount,
             addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.paymentActionsAddress,
             functionName = "claim_jackpot",
+            objectName = "Main_Canvas",
+            callbackFunctionName = "OnChainTransactionCallbackFunction",
         };
 
         var transaction = await DojoCallsManager.ClaimEndgameRewardsDojoCall(callStruct, endpoint);

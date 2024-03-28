@@ -1,6 +1,7 @@
 using Dojo; 
 using Dojo.Starknet; 
-using Dojo.Torii; 
+using Dojo.Torii;
+using UnityEngine;
 
 public class OutpostTrade : ModelInstance
 {
@@ -33,7 +34,18 @@ public class OutpostTrade : ModelInstance
     // Start is called before the first frame update
     void Start()
     {
-        
+
+        Debug.Log("Checking OutpostTrade");
+
+        if (DojoEntitiesDataManager.currentGameId.Hex() != gameId.Hex())
+        {
+            Debug.Log($"OutpostTrade was destroyed {gameId.Hex()}");
+            //Destroy(gameObject); return;
+        }
+        else
+        {
+            Debug.Log($"OutpostTrade was spared {gameId.Hex()}");
+        }
     }
 
     // Update is called once per frame

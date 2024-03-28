@@ -96,7 +96,12 @@ public class OutpostSellingContainer : MonoBehaviour
         if (owner)
         {
             var revokeStruct = new DojoCallsManager.RevokeTradeRevenantStruct { gameId = new Dojo.Starknet.FieldElement(0), tradeId = tradeId };
-            var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.tradeOutpostActionsAddress, functionName = "revoke" };
+            var endpoint = new DojoCallsManager.EndpointDojoCallStruct {
+                account = DojoEntitiesDataManager.currentAccount, 
+                addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.tradeOutpostActionsAddress, 
+                functionName = "revoke", 
+                objectName = "Main_Canvas", 
+                callbackFunctionName = "OnChainTransactionCallbackFunction" };
 
             await DojoCallsManager.RevokeTradeRevenantDojoCall(revokeStruct, endpoint);
         }
@@ -112,7 +117,13 @@ public class OutpostSellingContainer : MonoBehaviour
         if (!owner)
         {
             var purchaseStruct = new DojoCallsManager.PurchaseTradeRevenantStruct { gameId = new Dojo.Starknet.FieldElement(0), tradeId = tradeId };
-            var endpoint = new DojoCallsManager.EndpointDojoCallStruct { account = DojoEntitiesDataManager.currentAccount, addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.tradeOutpostActionsAddress, functionName = "purchase" };
+            var endpoint = new DojoCallsManager.EndpointDojoCallStruct { 
+                account = DojoEntitiesDataManager.currentAccount, 
+                addressOfSystem = DojoEntitiesDataManager.worldManager.chainConfig.tradeOutpostActionsAddress, 
+                functionName = "purchase",
+                objectName = "Main_Canvas",
+                callbackFunctionName = "OnChainTransactionCallbackFunction",
+            };
 
             await DojoCallsManager.PurchaseTradeRevenantDojoCall(purchaseStruct, endpoint);
         }

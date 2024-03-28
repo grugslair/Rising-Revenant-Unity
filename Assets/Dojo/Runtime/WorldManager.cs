@@ -2,6 +2,7 @@ using System.Linq;
 using UnityEngine;
 using Dojo.Torii;
 using System.Threading.Tasks;
+using System;
 
 namespace Dojo
 {
@@ -15,8 +16,8 @@ namespace Dojo
         async void Awake()
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            wasmClient = new ToriiWasmClient(dojoConfig.toriiUrl, dojoConfig.rpcUrl,
-                                                dojoConfig.relayWebrtcUrl, dojoConfig.worldAddress);
+            wasmClient = new ToriiWasmClient(chainConfig.toriiUrl, chainConfig.rpcUrl,
+                                                chainConfig.relayUrl, chainConfig.worldAddress);
             await wasmClient.CreateClient();
 #else
             toriiClient = new ToriiClient(chainConfig.toriiUrl, chainConfig.rpcUrl,
@@ -28,6 +29,11 @@ namespace Dojo
                 problem is when to start the subscription service
             */
 
+         
+        }
+
+        public async void LoadData()
+        {
             await synchronizationMaster.SynchronizeEntities();
 
             // listen for entity updates
@@ -61,7 +67,7 @@ namespace Dojo
             var entity = transform.Find(name);
             if (entity == null)
             {
-                Debug.LogError($"Entity {name} not found");
+                //Debug.LogError($"Entity {name} not found");
                 return null;
             }
 
